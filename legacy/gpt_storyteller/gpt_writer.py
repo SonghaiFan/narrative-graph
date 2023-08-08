@@ -9,6 +9,8 @@ from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 
+from gpt_cartographer import Node, Edge, Graph, make_chapter
+
 # Load environment variables from .env file
 load_dotenv(find_dotenv())
 
@@ -20,6 +22,50 @@ class Chapter(BaseModel):
     themes: List[str] = Field(description="Themes related within chapter.")
     entity: List[str] = Field(description="Entity mentioned within chapter.")
     content: str = Field(description="Content of the chapter.")
+
+
+def make_chapter(node: Node, incoming_edge: Edge, model_name: str = "gpt-4", temperature: int = 0) -> Chapter:
+    title = node.headline
+    time_period = node.time_period
+    themes = node.themes
+    entity = node.entity
+    node_instructions = incoming_edge.description
+
+    chapter_parser = PydanticOutputParser(pydantic_object=Chapter)
+
+    prompt_template = """
+    You are an experienced New York Times journalist, adept at crafting in-depth, well-researched short articles around
+    specific entities or themes. Your writing is clear, concise, and engaging, upholding the highest journalistic standards.
+
+    Title: {title}
+    Time Period: {time_period}
+    Themes: {themes}
+    Entity: {entity}
+    {node_instructions}
+    {format_instructions}
+    """
+
+    model = OpenAI(model_name=model_name, temperature=temperature)
+    prompt = PromptTemplate(
+        template=prompt_template,
+        input_variables=["title", "time_period",
+                         "themes", "entity", "node_instructions"],
+        partial_variables={
+            "format_instructions": chapter_parser.get_format_instructions()},
+    )
+
+    formatted_prompt = prompt.format_prompt(
+        title=title,
+        time_period=time_period,
+        themes=themes,
+        entity=entity,
+        node_instructions=node_instructions,
+    )
+
+    output = model(formatted_prompt.to_string())
+    chapter = chapter_parser.parse(output)
+
+    return chapter
 
 
 class Story(BaseModel):
@@ -61,4 +107,24 @@ def make_story(
     output = model(formatted_prompt.to_string())
     story = story_parser.parse(output)
 
+    return story
+
+
+def add_chapter(story: Story, graph: Graph, nodeId: str) -> Story:
+    node = graph.nodes[nodeId]
+    # find incoming edges
+    incoming_edges = [edge for edge in graph.edges if edge.end_node == nodeId]
+
+    new_chapter = make_chapter(node, incoming_edges)
+
+    story.story.append(new_chapter)
+    return story
+
+
+def create_story_from_graph(graph: Graph) -> Story:
+    story = Story(story=[])
+    # loop through nodes
+    for node in graph.nodes:
+        # add chapter
+        story = add_chapter(story, graph, node.index)
     return story
