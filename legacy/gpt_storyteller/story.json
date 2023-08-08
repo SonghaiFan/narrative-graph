@@ -1,74 +1,48 @@
 {
-    "story": [
-        {
-            "title": "The Rise of Orion",
-            "time_period": [
-                "2020-03-04",
-                "2020-06-30"
-            ],
-            "themes": [
-                "Technology Innovation",
-                "Data Privacy"
-            ],
-            "entity": [
-                "Johnathan 'Johnny' Hammersmith",
-                "Orion Technologies",
-                "Brightwood"
-            ],
-            "content": "In the bustling city of Brightwood, Orion Technologies, led by the eccentric tech billionaire Johnny Hammersmith, was making waves with its groundbreaking innovations. However, their rapid rise to prominence was not without controversy. Accusations of data privacy violations began to surface, casting a shadow over their technological triumphs."
-        },
-        {
-            "title": "The Thornfield Scandal",
-            "time_period": [
-                "2020-07-01",
-                "2020-12-31"
-            ],
-            "themes": [
-                "Education"
-            ],
-            "entity": [
-                "Thornfield University",
-                "Brightwood"
-            ],
-            "content": "Meanwhile, Thornfield University, a prestigious institution in Brightwood, was embroiled in an academic scandal. The scandal threatened to tarnish the university's reputation and raised questions about the integrity of higher education in the city."
-        },
-        {
-            "title": "The Emerald Coalition's Rise",
-            "time_period": [
-                "2021-01-01",
-                "2021-06-30"
-            ],
-            "themes": [
-                "Politics",
-                "Environment"
-            ],
-            "entity": [
-                "The Emerald Coalition",
-                "Amelia Spector"
-            ],
-            "content": "As the city grappled with these controversies, a new political force emerged. The Emerald Coalition, an influential organization advocating for environmental causes, gained traction. Amelia Spector, a prominent politician, announced her support for the coalition and launched her presidential campaign."
-        },
-        {
-            "title": "The Intersection",
-            "time_period": [
-                "2021-07-01",
-                "2022-07-05"
-            ],
-            "themes": [
-                "Technology Innovation",
-                "Data Privacy",
-                "Politics",
-                "Education"
-            ],
-            "entity": [
-                "Johnathan 'Johnny' Hammersmith",
-                "Amelia Spector",
-                "Brightwood",
-                "Thornfield University",
-                "Orion Technologies",
-                "The Emerald Coalition"
-            ],
-            "content": "As the presidential campaign heated up, the issues of data privacy, education, and environmental sustainability intersected. Amelia Spector leveraged the Thornfield scandal and Orion's data privacy issues to push for reforms in education and technology sectors. Meanwhile, Johnny Hammersmith, despite the controversies, continued to innovate, hoping to sway public opinion with Orion's technological advancements."
-        }
-    ]
+  "story": [
+    {
+      "title": "The Rise of Orion",
+      "time_period": ["2020-03-04", "2020-06-30"],
+      "themes": ["Technology Innovation", "Data Privacy"],
+      "entity": [
+        "Johnathan 'Johnny' Hammersmith",
+        "Orion Technologies",
+        "Brightwood"
+      ],
+      "content": "In the bustling city of Brightwood, Orion Technologies, led by the eccentric tech billionaire Johnny Hammersmith, was making waves with its groundbreaking innovations. However, their rapid rise to prominence was not without controversy. Accusations of data privacy violations began to surface, casting a shadow over their technological triumphs."
+    },
+    {
+      "title": "The Thornfield Scandal",
+      "time_period": ["2020-07-01", "2020-12-31"],
+      "themes": ["Education"],
+      "entity": ["Thornfield University", "Brightwood"],
+      "content": "Meanwhile, Thornfield University, a prestigious institution in Brightwood, was embroiled in an academic scandal. The scandal threatened to tarnish the university's reputation and raised questions about the integrity of higher education in the city."
+    },
+    {
+      "title": "The Emerald Coalition's Rise",
+      "time_period": ["2021-01-01", "2021-06-30"],
+      "themes": ["Politics", "Environment"],
+      "entity": ["The Emerald Coalition", "Amelia Spector"],
+      "content": "As the city grappled with these controversies, a new political force emerged. The Emerald Coalition, an influential organization advocating for environmental causes, gained traction. Amelia Spector, a prominent politician, announced her support for the coalition and launched her presidential campaign."
+    },
+    {
+      "title": "The Intersection",
+      "time_period": ["2021-07-01", "2022-07-05"],
+      "themes": [
+        "Technology Innovation",
+        "Data Privacy",
+        "Politics",
+        "Education"
+      ],
+      "entity": [
+        "Johnathan 'Johnny' Hammersmith",
+        "Amelia Spector",
+        "Brightwood",
+        "Thornfield University",
+        "Orion Technologies",
+        "The Emerald Coalition"
+      ],
+      "content": "As the presidential campaign heated up, the issues of data privacy, education, and environmental sustainability intersected. Amelia Spector leveraged the Thornfield scandal and Orion's data privacy issues to push for reforms in education and technology sectors. Meanwhile, Johnny Hammersmith, despite the controversies, continued to innovate, hoping to sway public opinion with Orion's technological advancements."
+    }
+  ]
 }
