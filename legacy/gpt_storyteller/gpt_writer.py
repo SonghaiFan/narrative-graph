@@ -9,7 +9,7 @@ from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 
-from gpt_cartographer import Node, Edge, Graph, make_chapter
+from gpt_cartographer import Node, Edge, Graph
 
 # Load environment variables from .env file
 load_dotenv(find_dotenv())

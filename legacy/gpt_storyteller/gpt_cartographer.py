@@ -16,9 +16,8 @@ load_dotenv(find_dotenv())
 
 
 class Node(BaseModel):
-    headline: str = Field(
-        description="Headline of the news article corpus, also the title of chapter.")
     index: int = Field(description="Index of the node.")
+    label: str = Field(labels="Title of chapter.")
     time_period: List[date] = Field(
         description="Time period of the chapter (start date, end date).")
     themes: List[str] = Field(description="Themes related within chapter.")
@@ -28,8 +27,8 @@ class Node(BaseModel):
 class Edge(BaseModel):
     start_node: int = Field(description="Index of start node.")
     end_node: int = Field(description="Index of end node.")
-    description: str = Field(
-        description="Explain the connections (edges) between nodes using concise keyword labels.")
+    labels: str = Field(
+        labels="Keyword Explain the connections (edges) between nodes.")
 
 
 class Graph(BaseModel):
