@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Linear",
+    "description": "Four chapters progress sequentially, all adhering to Theme A.",
+    "structure": "A1 -> A2 -> A3 -> A4",
+    "instructions": "Contains ONLY 4 nodes and 3 edges in total.",
+    "nodes": ["A1", "A2", "A3", "A4"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "A3" },
+      { "from": "A3", "to": "A4" }
+    ]
+  },
+  {
+    "name": "Divergence",
+    "description": "Begins with Theme A and continues for two chapters. It then diverges, with one path retaining Theme A and the other shifting to Theme B.",
+    "structure": "A1 -> A2 -> A3; A1 -> A2 -> B3",
+    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
+    "nodes": ["A1", "A2", "A3", "B3"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "A3" },
+      { "from": "A2", "to": "B3" }
+    ]
+  },
+  {
+    "name": "Convergence",
+    "description": "Starts with two chapters: one from Theme A and another from Theme B. Both converge to follow Theme A for the subsequent chapters.",
+    "structure": "A1 -> A2 -> A3; B1 -> A2 -> A3",
+    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
+    "nodes": ["A1", "A2", "A3", "B1"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "A3" },
+      { "from": "B1", "to": "A2" }
+    ]
+  },
+  {
+    "name": "Diamond",
+    "description": "Begins and concludes with Theme A. In between, it branches into two paths: one following Theme B and the other Theme C.",
+    "structure": "A1 -> B2 -> A3; A1 -> C2 -> A3",
+    "instructions": "Contains ONLY 5 nodes and 4 edges in total.",
+    "nodes": ["A1", "B2", "A3", "C2"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "A3" },
+      { "from": "A1", "to": "C2" },
+      { "from": "C2", "to": "A3" }
+    ]
+  },
+  {
+    "name": "Hanger",
+    "description": "Starts with Theme A and diverges into two paths. One continues with Theme A, while the other explores Theme B, both eventually converging back to Theme A.",
+    "structure": "A1 -> A2 -> A3; A1 -> B2 -> A3",
+    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
+    "nodes": ["A1", "A2", "A3", "B2"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "A3" },
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "A3" }
+    ]
+  },
+  {
+    "name": "Parallelogram",
+    "description": "Starts with Theme A and branches into two paths. One remains with Theme A and concludes with Theme B, while the other directly shifts to Theme B and stays with it.",
+    "structure": "A1 -> A2 -> B3; A1 -> B2 -> B3",
+    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
+    "nodes": ["A1", "A2", "B2", "B3"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "B3" },
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "B3" }
+    ]
+  }
+]
