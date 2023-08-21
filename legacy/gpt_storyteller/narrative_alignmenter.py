@@ -9,9 +9,6 @@ load_dotenv(find_dotenv())
 with open("meta/narrtaive_structure.json", "r") as file:
     structure_instructions_list = json.load(file)
 
-with open("meta/simple_narrative_structure.json", "r") as file:
-    simple_structure_instructions_list = json.load(file)
-
 # Load data from 'narrative_context.json'
 with open("meta/narrative_context.json", "r") as file:
     narrative_context = json.load(file)
@@ -46,7 +43,7 @@ def align_theme_entity(narrative_obj, context, seed=None):
     entities_data = context["Entities"]
     times = context["Time"]
 
-    # Collect all entities into a list E and sample 5
+    # Collect all entities into a list E and sample it
     E = [ent for category in entities_data.values() for ent in category]
     E = random.sample(E, 7)
 
@@ -83,9 +80,23 @@ def align_theme_entity(narrative_obj, context, seed=None):
         num_entities_for_node = random.randint(
             1, len(E) - len(narrative_obj["nodes"]) + i + 1
         )  # Ensure all entities are used
-        entities_for_node = [
-            ent["name"] for ent in random.sample(E, num_entities_for_node)
-        ]
+
+        # If the current node has parent nodes
+        if node in parent_mapping:
+            # Fetch a shared entity from parent node(s)
+            shared_entities = [
+                ent
+                for parent_node in parent_mapping[node]
+                for ent in alignment[parent_node]["Entity"]
+            ]
+            # Make sure at least one shared entity is included in the current node's entities
+            entities_for_node = [
+                ent["name"] for ent in random.sample(E, num_entities_for_node - 1)
+            ] + [random.choice(shared_entities)]
+        else:
+            entities_for_node = [
+                ent["name"] for ent in random.sample(E, num_entities_for_node)
+            ]
 
         theme_obj = theme_allocation[node[0]]
 
@@ -111,18 +122,11 @@ def align_theme_entity(narrative_obj, context, seed=None):
 def get_alignment(
     topic="Politics",
     structure="SharpMerge",
-    level="Simple",
     seed=None,
 ):
-    instructions_list = (
-        simple_structure_instructions_list
-        if level == "Simple"
-        else structure_instructions_list
-    )
-
     # Safely extract the desired narrative structure or default to the first one if not found
     structure_instruction = next(
-        (s for s in instructions_list if s["name"] == structure),
+        (s for s in structure_instructions_list if s["name"] == structure),
         None,
     )
 
@@ -130,7 +134,7 @@ def get_alignment(
         print(
             f"No structure found with the name: {structure}. Using the first structure in the list."
         )
-        structure_instruction = instructions_list[0]
+        structure_instruction = structure_instructions_list[0]
 
     print("Selected structure_instruction:", structure_instruction)
 
@@ -146,14 +150,12 @@ def get_alignment(
 if __name__ == "__main__":
     TOPIC = "Science & Health"
     NARRATIVE_STRUCTURE = "SharpMerge"
-    LEVEL = "Simple"
 
     # Get the alignment results
     alignment_results = get_alignment(
         topic=TOPIC,
         structure=NARRATIVE_STRUCTURE,
-        level=LEVEL,
-        seed=42,
+        # seed=42,
     )
 
     print("Generated alignment_results:", alignment_results)

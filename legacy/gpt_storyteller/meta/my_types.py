@@ -35,6 +35,7 @@ class Graph(BaseModel):
 
 
 class Chapter(BaseModel):
+    id: str = Field(description="ID of the chapter.")
     title: str = Field(description="Headlines for news story chapters")
     time_period: List[str] = Field(
         description="Time period of the chapter (start date, end date), in format YYYY-MM-DD."

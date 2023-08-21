@@ -33,6 +33,7 @@ warnings.filterwarnings("ignore")
 
 
 def make_chapter(
+    id: str,
     theme: str,
     entity: List[str],
     time_period: List[str],
@@ -55,6 +56,7 @@ def make_chapter(
     prompt_template = f"""
     You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
 
+    ID: {id}
     Time Period: {time_period_str}
     Themes: {theme}
     Entity: {', '.join(entity)}
@@ -97,6 +99,7 @@ def create_story(alignment):
         print(f"Previous content: {prev_content}")
 
         new_chapter = make_chapter(
+            id=node,
             theme=details["Theme"],
             entity=details["Entity"],
             time_period=details["Time"],

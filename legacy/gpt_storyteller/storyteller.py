@@ -7,14 +7,14 @@ from narrative_alignmenter import get_alignment
 from narrative_deducer import create_story
 
 
-def generate_story_files(section: str, narrative_structure: str, level: str, seed: int):
+def generate_story_files(section: str, narrative_structure: str, seed: int):
     # Define folders
     alignment_folder = "alignment"
     stories_folder = "stories"
     log_folder = "logs"
 
     # Generate filenames based on the provided inputs
-    filename_suffix = f"{section}_{narrative_structure}_{level}_seed{seed}.json"
+    filename_suffix = f"{section}_{narrative_structure}_seed{seed}.json"
     alignment_filename = f"alignment_{filename_suffix}"
     story_filename = f"story_{filename_suffix}"
     log_filename = f"log_{filename_suffix}"
@@ -70,21 +70,19 @@ if __name__ == "__main__":
 
     keys_narrative_context = [
         "Politics",
-        "Sports",
-        "Science & Health",
-        "Economics",
-        "Culture",
-    ]
-    names_simple_narrative_structure = [
-        "Linear",
-        "Fork",
-        "WideMerge",
-        "WideBranch",
-        "SharpMerge",
-        "SharpBranch",
+        # "Sports",
+        # "Science & Health",
+        # "Economics",
+        # "Culture",
     ]
 
-    names_narrative_structure = [
+    narrative_structure = [
+        "SimpleLinear",
+        "SimpleFork",
+        "SimpleWideMerge",
+        "SimpleWideBranch",
+        "SimpleSharpMerge",
+        "SimpleSharpBranch",
         "Linear",
         "Divergence",
         "Convergence",
@@ -95,10 +93,12 @@ if __name__ == "__main__":
 
     # For the simple narrative structures
     for section in keys_narrative_context:
-        for structure in names_simple_narrative_structure:
-            generate_story_files(section, structure, "Simple", 42)
-
-    # For the complex narrative structures
-    # for section in keys_narrative_context:
-    #     for structure in names_narrative_structure:
-    #         generate_story_files(section, structure, "Complex", 42)
+        for structure in narrative_structure:
+            # show following print statements in the console!!
+            print(
+                f"Generating story for section: {section}, narrative_structure: {structure}..."
+            )
+            generate_story_files(section, structure, 42)
+            print(
+                f"Story generation complete for section: {section}, narrative_structure: {structure}!!!"
+            )
