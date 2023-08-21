@@ -1,0 +1,110 @@
+Fetching alignment results...
+Selected structure_instruction: {'name': 'Fork', 'description': 'The narrative follows Theme A for two chapters, then diverges to Theme B in the third chapter.', 'structure': 'A1 -> A2 -> B3', 'instructions': 'Contains 3 nodes and 2 edges in total.', 'nodes': ['A1', 'A2', 'B3'], 'edges': [{'from': 'A1', 'to': 'A2'}, {'from': 'A2', 'to': 'B3'}]}
+entities_data [{'name': 'Alexa Meyer', 'description': 'A journalist dedicated to unveiling the darker side of sports.'}, {'name': 'Liam Torres', 'description': 'A rising soccer star recently transferred to a top club.'}, {'name': 'Team Thunder', 'description': 'A popular basketball team with a massive fanbase.'}, {'name': 'Stadium One', 'description': 'A world-renowned sports arena.'}, {'name': 'Victory Marathon', 'description': 'A race attracting participants worldwide.'}, {'name': 'eSports Mania', 'description': 'A major tournament with top-tier gamers.'}, {'name': 'Jamie Patel', 'description': 'An eSports champion dominating international tournaments.'}]
+prefixes {'B', 'A'}
+num_periods 3
+Alignment results fetched for topic: Sports.
+Alignment results saved to alignment/alignment_Sports_Fork_Simple_seed42.json.
+Generating story based on alignment results...
+Generating story...
+Narrative structure:
+==================================================
+Generating chapter A1...
+This chapter based on previous chapter: []
+Previous content: 
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2020-01-01 to 2020-10-22
+    Themes: Evolution of Sports
+    Entity: Stadium One, Alexa Meyer, eSports Mania, Victory Marathon, Jamie Patel
+
+    Describtion: Evolution of Sports: The rise of eSports and its place alongside traditional sports.
+Alexa Meyer: A journalist dedicated to unveiling the darker side of sports.
+Stadium One: A world-renowned sports arena.
+Victory Marathon: A race attracting participants worldwide.
+eSports Mania: A major tournament with top-tier gamers.
+Jamie Patel: An eSports champion dominating international tournaments.
+    Previous content: None
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << The Rise of eSports: A New Era in Sports >> Finished!
+In the year 2020, the world of sports witnessed a paradigm shift. The traditional sports arena, Stadium One, known for hosting the Victory Marathon, saw a decline in footfall. The reason? The rise of eSports. eSports Mania, a major tournament, attracted top-tier gamers and millions of viewers worldwide, challenging the status quo of traditional sports. Jamie Patel, an eSports champion, dominated these tournaments, becoming a household name. Meanwhile, journalist Alexa Meyer delved into the darker side of sports, uncovering the challenges faced by traditional sports in the face of this digital revolution.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================================
+Generating chapter A2...
+This chapter based on previous chapter: ['A1']
+Previous content: In the year 2020, the world of sports witnessed a paradigm shift. The traditional sports arena, Stadium One, known for hosting the Victory Marathon, saw a decline in footfall. The reason? The rise of eSports. eSports Mania, a major tournament, attracted top-tier gamers and millions of viewers worldwide, challenging the status quo of traditional sports. Jamie Patel, an eSports champion, dominated these tournaments, becoming a household name. Meanwhile, journalist Alexa Meyer delved into the darker side of sports, uncovering the challenges faced by traditional sports in the face of this digital revolution.
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2020-10-22 to 2021-08-13
+    Themes: Evolution of Sports
+    Entity: Victory Marathon, Jamie Patel
+
+    Describtion: Evolution of Sports: The rise of eSports and its place alongside traditional sports.
+Victory Marathon: A race attracting participants worldwide.
+Jamie Patel: An eSports champion dominating international tournaments.
+    Previous content: In the year 2020, the world of sports witnessed a paradigm shift. The traditional sports arena, Stadium One, known for hosting the Victory Marathon, saw a decline in footfall. The reason? The rise of eSports. eSports Mania, a major tournament, attracted top-tier gamers and millions of viewers worldwide, challenging the status quo of traditional sports. Jamie Patel, an eSports champion, dominated these tournaments, becoming a household name. Meanwhile, journalist Alexa Meyer delved into the darker side of sports, uncovering the challenges faced by traditional sports in the face of this digital revolution.
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << eSports: The New Face of Sports >> Finished!
+From October 2020 to August 2021, the sports world continued to evolve, with eSports gaining significant ground. The Victory Marathon, once a global attraction, saw a further decline in participation and viewership. The spotlight shifted to eSports Mania, where gamers from around the world competed in a virtual arena. Jamie Patel, the reigning eSports champion, continued his dominance, winning multiple tournaments and further solidifying his status as a global icon. The shift from traditional sports to eSports was stark, with the digital revolution reshaping the sports landscape. The rise of eSports has raised questions about the future of traditional sports, with many wondering if they can coexist or if one will eventually overshadow the other.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================================
+Generating chapter B3...
+This chapter based on previous chapter: ['A2']
+Previous content: From October 2020 to August 2021, the sports world continued to evolve, with eSports gaining significant ground. The Victory Marathon, once a global attraction, saw a further decline in participation and viewership. The spotlight shifted to eSports Mania, where gamers from around the world competed in a virtual arena. Jamie Patel, the reigning eSports champion, continued his dominance, winning multiple tournaments and further solidifying his status as a global icon. The shift from traditional sports to eSports was stark, with the digital revolution reshaping the sports landscape. The rise of eSports has raised questions about the future of traditional sports, with many wondering if they can coexist or if one will eventually overshadow the other.
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2021-08-13 to 2022-06-06
+    Themes: Athletic Triumph & Tragedy
+    Entity: Victory Marathon
+
+    Describtion: Athletic Triumph & Tragedy: The highs and lows athletes face in their careers.
+Victory Marathon: A race attracting participants worldwide.
+    Previous content: From October 2020 to August 2021, the sports world continued to evolve, with eSports gaining significant ground. The Victory Marathon, once a global attraction, saw a further decline in participation and viewership. The spotlight shifted to eSports Mania, where gamers from around the world competed in a virtual arena. Jamie Patel, the reigning eSports champion, continued his dominance, winning multiple tournaments and further solidifying his status as a global icon. The shift from traditional sports to eSports was stark, with the digital revolution reshaping the sports landscape. The rise of eSports has raised questions about the future of traditional sports, with many wondering if they can coexist or if one will eventually overshadow the other.
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << Victory Marathon: A Tale of Athletic Triumph and Tragedy >> Finished!
+In the period from August 2021 to June 2022, the Victory Marathon experienced a dramatic turnaround. Despite the decline in traditional sports, the Victory Marathon managed to regain its former glory. The event saw a surge in participation and viewership, with athletes from around the globe competing in the grueling race. The marathon's revival was attributed to a renewed interest in physical endurance sports, a stark contrast to the digital eSports. However, the event was not without its share of tragedy. During the race, a seasoned athlete collapsed due to exhaustion and later succumbed to his injuries. This incident sparked a debate about the safety measures in place for such endurance events. Despite the tragedy, the Victory Marathon's resurgence marked a significant moment in the world of traditional sports, proving that they can coexist with eSports. The future of sports remains uncertain, but for now, the Victory Marathon stands as a symbol of athletic triumph and tragedy.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Story generation complete!
+Story saved to stories/story_Sports_Fork_Simple_seed42.json.

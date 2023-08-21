@@ -1,0 +1,110 @@
+Fetching alignment results...
+Selected structure_instruction: {'name': 'Linear', 'description': 'Three chapters progress in sequence, consistently following Theme A.', 'structure': 'A1 -> A2 -> A3', 'instructions': 'Contains ONLY 3 nodes and 2 edges in total.', 'nodes': ['A1', 'A2', 'A3'], 'edges': [{'from': 'A1', 'to': 'A2'}, {'from': 'A2', 'to': 'A3'}]}
+entities_data [{'name': 'Alexa Meyer', 'description': 'A journalist dedicated to unveiling the darker side of sports.'}, {'name': 'Liam Torres', 'description': 'A rising soccer star recently transferred to a top club.'}, {'name': 'Team Thunder', 'description': 'A popular basketball team with a massive fanbase.'}, {'name': 'Stadium One', 'description': 'A world-renowned sports arena.'}, {'name': 'Victory Marathon', 'description': 'A race attracting participants worldwide.'}, {'name': 'eSports Mania', 'description': 'A major tournament with top-tier gamers.'}, {'name': 'Jamie Patel', 'description': 'An eSports champion dominating international tournaments.'}]
+prefixes {'A'}
+num_periods 3
+Alignment results fetched for topic: Sports.
+Alignment results saved to alignment/alignment_Sports_Linear_Simple_seed42.json.
+Generating story based on alignment results...
+Generating story...
+Narrative structure:
+==================================================
+Generating chapter A1...
+This chapter based on previous chapter: []
+Previous content: 
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2020-01-01 to 2020-10-22
+    Themes: Athletic Triumph & Tragedy
+    Entity: Alexa Meyer, Victory Marathon, Stadium One, Jamie Patel, eSports Mania
+
+    Describtion: Athletic Triumph & Tragedy: The highs and lows athletes face in their careers.
+Alexa Meyer: A journalist dedicated to unveiling the darker side of sports.
+Stadium One: A world-renowned sports arena.
+Victory Marathon: A race attracting participants worldwide.
+eSports Mania: A major tournament with top-tier gamers.
+Jamie Patel: An eSports champion dominating international tournaments.
+    Previous content: None
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << Triumph and Tragedy: The Dual Faces of Sports in 2020 >> Finished!
+In the world of sports, 2020 has been a year of both triumph and tragedy. The Victory Marathon, held at the world-renowned Stadium One, saw record-breaking performances, showcasing the indomitable spirit of athletes worldwide. However, the year was not without its share of heartbreak. Alexa Meyer, a journalist known for her investigative reports, unveiled the darker side of sports, highlighting the physical and mental toll it takes on athletes. In the realm of eSports, Jamie Patel, a champion gamer, dominated international tournaments, bringing eSports Mania to new heights. Yet, the year also witnessed the tragic demise of several promising athletes, casting a shadow over the world of sports.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================================
+Generating chapter A2...
+This chapter based on previous chapter: ['A1']
+Previous content: In the world of sports, 2020 has been a year of both triumph and tragedy. The Victory Marathon, held at the world-renowned Stadium One, saw record-breaking performances, showcasing the indomitable spirit of athletes worldwide. However, the year was not without its share of heartbreak. Alexa Meyer, a journalist known for her investigative reports, unveiled the darker side of sports, highlighting the physical and mental toll it takes on athletes. In the realm of eSports, Jamie Patel, a champion gamer, dominated international tournaments, bringing eSports Mania to new heights. Yet, the year also witnessed the tragic demise of several promising athletes, casting a shadow over the world of sports.
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2020-10-22 to 2021-08-13
+    Themes: Athletic Triumph & Tragedy
+    Entity: Liam Torres
+
+    Describtion: Athletic Triumph & Tragedy: The highs and lows athletes face in their careers.
+Liam Torres: A rising soccer star recently transferred to a top club.
+    Previous content: In the world of sports, 2020 has been a year of both triumph and tragedy. The Victory Marathon, held at the world-renowned Stadium One, saw record-breaking performances, showcasing the indomitable spirit of athletes worldwide. However, the year was not without its share of heartbreak. Alexa Meyer, a journalist known for her investigative reports, unveiled the darker side of sports, highlighting the physical and mental toll it takes on athletes. In the realm of eSports, Jamie Patel, a champion gamer, dominated international tournaments, bringing eSports Mania to new heights. Yet, the year also witnessed the tragic demise of several promising athletes, casting a shadow over the world of sports.
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << Rising Star Liam Torres: A Year of Triumph and Tragedy >> Finished!
+In the world of soccer, the year between October 2020 and August 2021 was marked by the rise of a new star, Liam Torres. Torres, a young and promising player, was transferred to a top club, marking a significant triumph in his career. His exceptional skills on the field and his relentless dedication to the sport quickly made him a fan favorite. However, the year was not without its tragedies. In a shocking turn of events, Torres suffered a severe injury during a crucial match, casting a cloud of uncertainty over his promising career. Despite the setback, Torres displayed remarkable resilience, vowing to return to the field stronger than ever. His journey serves as a stark reminder of the highs and lows athletes face in their careers.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================================
+Generating chapter A3...
+This chapter based on previous chapter: ['A2']
+Previous content: In the world of soccer, the year between October 2020 and August 2021 was marked by the rise of a new star, Liam Torres. Torres, a young and promising player, was transferred to a top club, marking a significant triumph in his career. His exceptional skills on the field and his relentless dedication to the sport quickly made him a fan favorite. However, the year was not without its tragedies. In a shocking turn of events, Torres suffered a severe injury during a crucial match, casting a cloud of uncertainty over his promising career. Despite the setback, Torres displayed remarkable resilience, vowing to return to the field stronger than ever. His journey serves as a stark reminder of the highs and lows athletes face in their careers.
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2021-08-13 to 2022-06-06
+    Themes: Athletic Triumph & Tragedy
+    Entity: Victory Marathon, Jamie Patel
+
+    Describtion: Athletic Triumph & Tragedy: The highs and lows athletes face in their careers.
+Victory Marathon: A race attracting participants worldwide.
+Jamie Patel: An eSports champion dominating international tournaments.
+    Previous content: In the world of soccer, the year between October 2020 and August 2021 was marked by the rise of a new star, Liam Torres. Torres, a young and promising player, was transferred to a top club, marking a significant triumph in his career. His exceptional skills on the field and his relentless dedication to the sport quickly made him a fan favorite. However, the year was not without its tragedies. In a shocking turn of events, Torres suffered a severe injury during a crucial match, casting a cloud of uncertainty over his promising career. Despite the setback, Torres displayed remarkable resilience, vowing to return to the field stronger than ever. His journey serves as a stark reminder of the highs and lows athletes face in their careers.
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << From eSports to Marathon: Jamie Patel's Athletic Journey >> Finished!
+In the realm of eSports, Jamie Patel had been a dominant force, winning international tournaments with ease. However, in a surprising turn of events, Patel decided to switch gears and participate in the Victory Marathon, a race that attracts participants worldwide. Patel's transition from eSports to marathon running was met with skepticism, but he proved his critics wrong by finishing in the top ten in his first race. His triumph was short-lived, though. Patel suffered a severe injury during his second marathon, mirroring the tragedy that befell soccer star Liam Torres. Despite the setback, Patel, like Torres, displayed remarkable resilience, vowing to return to the race stronger than ever. His journey, much like Torres', serves as a stark reminder of the highs and lows athletes face in their careers.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Story generation complete!
+Story saved to stories/story_Sports_Linear_Simple_seed42.json.

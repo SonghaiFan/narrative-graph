@@ -2,7 +2,10 @@ import json
 import datetime
 import random
 
+# Load environment variables from .env file
+from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv())
 with open("meta/narrtaive_structure.json", "r") as file:
     structure_instructions_list = json.load(file)
 
@@ -143,11 +146,13 @@ def get_alignment(
 if __name__ == "__main__":
     TOPIC = "Science & Health"
     NARRATIVE_STRUCTURE = "SharpMerge"
+    LEVEL = "Simple"
 
     # Get the alignment results
     alignment_results = get_alignment(
         topic=TOPIC,
         structure=NARRATIVE_STRUCTURE,
+        level=LEVEL,
         seed=42,
     )
 

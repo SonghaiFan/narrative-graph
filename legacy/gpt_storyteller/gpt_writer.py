@@ -4,9 +4,6 @@ import json
 from datetime import date
 from typing import List
 
-# Third-party Imports
-from dotenv import load_dotenv, find_dotenv
-
 
 # Project-specific Imports
 from langchain.output_parsers import PydanticOutputParser
@@ -22,7 +19,10 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-load_dotenv(find_dotenv())  # Load environment variables from .env file
+# Load environment variables from .env file
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 
 def generate_chapter_prompt(

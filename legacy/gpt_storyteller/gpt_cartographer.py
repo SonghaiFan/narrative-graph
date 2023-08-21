@@ -1,4 +1,3 @@
-from dotenv import load_dotenv, find_dotenv
 from meta.my_types import Graph
 
 from langchain.output_parsers import PydanticOutputParser
@@ -7,6 +6,8 @@ from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 
 # Load environment variables from .env file
+from dotenv import load_dotenv, find_dotenv
+
 load_dotenv(find_dotenv())
 
 

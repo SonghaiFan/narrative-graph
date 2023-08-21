@@ -1,0 +1,110 @@
+Fetching alignment results...
+Selected structure_instruction: {'name': 'SharpBranch', 'description': 'A chapter under Theme A diverges into two chapters, one continuing Theme A and another shifting to Theme B.', 'structure': 'A1 -> A2; A1 -> B2', 'instructions': 'Contains 3 nodes and 2 edges in total.', 'nodes': ['A1', 'A2', 'B2'], 'edges': [{'from': 'A1', 'to': 'A2'}, {'from': 'A1', 'to': 'B2'}]}
+entities_data [{'name': 'Hannah Reid', 'description': 'An advocate for mental health awareness and support.'}, {'name': 'Dr. Nina Wallace', 'description': 'Leading a revolutionary study on gene editing.'}, {'name': 'Mental Health United', 'description': 'Offering support and resources for mental well-being.'}, {'name': 'Helix Labs', 'description': 'At the forefront of genetic research and innovation.'}, {'name': 'Science Fair Extravaganza', 'description': 'A festival celebrating innovations and discoveries.'}, {'name': 'Lunar Mission Launch', 'description': "An event marking mankind's leap into space exploration."}, {'name': 'Professor Ivan Chen', 'description': 'A pioneer in space exploration technologies.'}]
+prefixes {'B', 'A'}
+num_periods 2
+Alignment results fetched for topic: Science & Health.
+Alignment results saved to alignment/alignment_Science & Health_SharpBranch_Simple_seed42.json.
+Generating story based on alignment results...
+Generating story...
+Narrative structure:
+==================================================
+Generating chapter A1...
+This chapter based on previous chapter: []
+Previous content: 
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2019-01-01 to 2020-08-02
+    Themes: Space & Humanity
+    Entity: Helix Labs, Hannah Reid, Lunar Mission Launch, Science Fair Extravaganza, Professor Ivan Chen
+
+    Describtion: Space & Humanity: The human aspiration to explore and inhabit space.
+Hannah Reid: An advocate for mental health awareness and support.
+Helix Labs: At the forefront of genetic research and innovation.
+Science Fair Extravaganza: A festival celebrating innovations and discoveries.
+Lunar Mission Launch: An event marking mankind's leap into space exploration.
+Professor Ivan Chen: A pioneer in space exploration technologies.
+    Previous content: None
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << Helix Labs: Pioneering the Future of Space Exploration >> Finished!
+In a remarkable turn of events, Helix Labs, a leader in genetic research, has announced its collaboration with Professor Ivan Chen, a pioneer in space exploration technologies, for a lunar mission launch. The announcement was made at the Science Fair Extravaganza, a festival celebrating innovations and discoveries. The mission, scheduled for 2020, aims to explore the potential for human habitation in space, marking a significant leap in mankind's aspiration to conquer the final frontier. Hannah Reid, a mental health advocate, has been appointed as the mission's mental health advisor, ensuring the crew's psychological well-being during the mission. This collaboration between Helix Labs and Professor Chen signifies a new era in space exploration, where the boundaries of human potential are continually pushed.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================================
+Generating chapter A2...
+This chapter based on previous chapter: ['A1']
+Previous content: In a remarkable turn of events, Helix Labs, a leader in genetic research, has announced its collaboration with Professor Ivan Chen, a pioneer in space exploration technologies, for a lunar mission launch. The announcement was made at the Science Fair Extravaganza, a festival celebrating innovations and discoveries. The mission, scheduled for 2020, aims to explore the potential for human habitation in space, marking a significant leap in mankind's aspiration to conquer the final frontier. Hannah Reid, a mental health advocate, has been appointed as the mission's mental health advisor, ensuring the crew's psychological well-being during the mission. This collaboration between Helix Labs and Professor Chen signifies a new era in space exploration, where the boundaries of human potential are continually pushed.
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2020-08-02 to 2022-03-05
+    Themes: Space & Humanity
+    Entity: Science Fair Extravaganza, Professor Ivan Chen
+
+    Describtion: Space & Humanity: The human aspiration to explore and inhabit space.
+Science Fair Extravaganza: A festival celebrating innovations and discoveries.
+Professor Ivan Chen: A pioneer in space exploration technologies.
+    Previous content: In a remarkable turn of events, Helix Labs, a leader in genetic research, has announced its collaboration with Professor Ivan Chen, a pioneer in space exploration technologies, for a lunar mission launch. The announcement was made at the Science Fair Extravaganza, a festival celebrating innovations and discoveries. The mission, scheduled for 2020, aims to explore the potential for human habitation in space, marking a significant leap in mankind's aspiration to conquer the final frontier. Hannah Reid, a mental health advocate, has been appointed as the mission's mental health advisor, ensuring the crew's psychological well-being during the mission. This collaboration between Helix Labs and Professor Chen signifies a new era in space exploration, where the boundaries of human potential are continually pushed.
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << Lunar Mission Launch: A New Era in Space Exploration >> Finished!
+In the span of eighteen months, from August 2020 to March 2022, the collaboration between Helix Labs and Professor Ivan Chen has made significant strides in their lunar mission. The mission, announced at the Science Fair Extravaganza, has been a testament to humanity's aspiration to explore and inhabit space. The team has successfully developed a prototype habitat module, designed to withstand the harsh lunar environment. The module, equipped with advanced life-support systems, is a significant step towards making human habitation in space a reality. Professor Chen's expertise in space exploration technologies has been instrumental in this development. The mission's mental health advisor, Hannah Reid, has also been working closely with the team, ensuring the psychological well-being of the future crew. The progress made by this collaboration signifies a new era in space exploration, pushing the boundaries of human potential.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================================
+Generating chapter B2...
+This chapter based on previous chapter: ['A1']
+Previous content: In a remarkable turn of events, Helix Labs, a leader in genetic research, has announced its collaboration with Professor Ivan Chen, a pioneer in space exploration technologies, for a lunar mission launch. The announcement was made at the Science Fair Extravaganza, a festival celebrating innovations and discoveries. The mission, scheduled for 2020, aims to explore the potential for human habitation in space, marking a significant leap in mankind's aspiration to conquer the final frontier. Hannah Reid, a mental health advocate, has been appointed as the mission's mental health advisor, ensuring the crew's psychological well-being during the mission. This collaboration between Helix Labs and Professor Chen signifies a new era in space exploration, where the boundaries of human potential are continually pushed.
+--------------------------------------------------
+
+    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
+
+    Time Period: 2020-08-02 to 2022-03-05
+    Themes: Frontiers of Knowledge
+    Entity: Science Fair Extravaganza
+
+    Describtion: Frontiers of Knowledge: Breakthroughs and discoveries that redefine our understanding.
+Science Fair Extravaganza: A festival celebrating innovations and discoveries.
+    Previous content: In a remarkable turn of events, Helix Labs, a leader in genetic research, has announced its collaboration with Professor Ivan Chen, a pioneer in space exploration technologies, for a lunar mission launch. The announcement was made at the Science Fair Extravaganza, a festival celebrating innovations and discoveries. The mission, scheduled for 2020, aims to explore the potential for human habitation in space, marking a significant leap in mankind's aspiration to conquer the final frontier. Hannah Reid, a mental health advocate, has been appointed as the mission's mental health advisor, ensuring the crew's psychological well-being during the mission. This collaboration between Helix Labs and Professor Chen signifies a new era in space exploration, where the boundaries of human potential are continually pushed.
+
+    The output should be formatted as a JSON instance that conforms to the JSON schema below.
+
+As an example, for the schema {"properties": {"foo": {"title": "Foo", "description": "a list of strings", "type": "array", "items": {"type": "string"}}}, "required": ["foo"]}}
+the object {"foo": ["bar", "baz"]} is a well-formatted instance of the schema. The object {"properties": {"foo": ["bar", "baz"]}} is not well-formatted.
+
+Here is the output schema:
+```
+{"properties": {"title": {"title": "Title", "description": "Headlines for news story chapters", "type": "string"}, "time_period": {"title": "Time Period", "description": "Time period of the chapter (start date, end date), in format YYYY-MM-DD.", "type": "array", "items": {"type": "string"}}, "themes": {"title": "Themes", "description": "Themes related within chapter.", "type": "array", "items": {"type": "string"}}, "entity": {"title": "Entity", "description": "Entity mentioned within chapter.", "type": "array", "items": {"type": "string"}}, "content": {"title": "Content", "description": "Content of the chapter.", "type": "string"}}, "required": ["title", "time_period", "themes", "entity", "content"]}
+```
+    
+--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New chapter << Helix Labs and Professor Chen's Lunar Mission: A New Era in Space Exploration >> Finished!
+In the two years following the announcement of their collaboration, Helix Labs and Professor Ivan Chen have made significant strides in their lunar mission. The Science Fair Extravaganza of 2022 was abuzz with their latest breakthroughs, redefining our understanding of human potential in space. The mission, initially aimed at exploring the potential for human habitation in space, has now evolved into a comprehensive study of the lunar environment. The team has developed advanced technologies to monitor the mental health of the crew, a critical aspect of long-term space missions. This progress marks a new era in space exploration, pushing the frontiers of knowledge and bringing us closer to conquering the final frontier.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Story generation complete!
+Story saved to stories/story_Science & Health_SharpBranch_Simple_seed42.json.

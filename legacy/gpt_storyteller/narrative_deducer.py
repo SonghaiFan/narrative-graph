@@ -1,3 +1,8 @@
+# Load environment variables from .env file
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
@@ -6,6 +11,7 @@ from langchain.output_parsers import PydanticOutputParser
 from meta.my_types import Chapter, Story
 
 from typing import List
+
 
 import json
 import warnings
