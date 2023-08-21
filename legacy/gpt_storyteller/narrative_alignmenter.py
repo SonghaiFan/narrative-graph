@@ -1,18 +1,6 @@
 import json
 import datetime
-from datetime import date
 import random
-from typing import List, Union
-
-from pydantic import BaseModel, Field
-from dotenv import load_dotenv, find_dotenv
-from langchain.llms import OpenAI
-from langchain.prompts import PromptTemplate
-from langchain.output_parsers import PydanticOutputParser
-
-from meta.my_types import Chapter, Story
-
-load_dotenv(find_dotenv())
 
 
 with open("meta/narrtaive_structure.json", "r") as file:
@@ -24,13 +12,6 @@ with open("meta/simple_narrative_structure.json", "r") as file:
 # Load data from 'narrative_context.json'
 with open("meta/narrative_context.json", "r") as file:
     narrative_context = json.load(file)
-
-
-# Define a custom serialization function to handle date objects
-def date_serializer(obj):
-    if isinstance(obj, date):
-        return obj.isoformat()
-    raise TypeError("Type not serializable")
 
 
 def generate_time_periods(start_date, end_date, num_periods):
