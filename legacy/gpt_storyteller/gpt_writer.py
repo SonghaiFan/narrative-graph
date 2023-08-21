@@ -6,31 +6,23 @@ from typing import List
 
 # Third-party Imports
 from dotenv import load_dotenv, find_dotenv
-from pydantic import BaseModel, Field
+
 
 # Project-specific Imports
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
-from typing import Optional, Union
-from gpt_cartographer import Node, Edge, Graph
+
+# Type related imports
+from typing import Optional
+from meta.my_types import Node, Edge, Chapter, Graph, Story
 
 import warnings
 
 warnings.filterwarnings("ignore")
 
 load_dotenv(find_dotenv())  # Load environment variables from .env file
-
-
-class Chapter(BaseModel):
-    title: str = Field(description="Title of the chapter.")
-    time_period: List[date] = Field(
-        description="Time period of the chapter (start date, end date)."
-    )
-    themes: List[str] = Field(description="Themes related within chapter.")
-    entity: List[str] = Field(description="Entity mentioned within chapter.")
-    content: str = Field(description="Content of the chapter.")
 
 
 def generate_chapter_prompt(
@@ -70,10 +62,6 @@ def make_chapter(
     model = OpenAI(model_name=model_name, temperature=temperature)
     output = model(formatted_prompt)
     return chapter_parser.parse(output)
-
-
-class Story(BaseModel):
-    chapters: List[Chapter] = Field(description="List of chapters.")
 
 
 def make_story(
@@ -144,11 +132,11 @@ def load_graph_from_directory(directory: str = "graphs") -> Graph:
     return Graph(**data)
 
 
-class DateEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, date):
-            return obj.isoformat()
-        return super(DateEncoder, self).default(obj)
+# class DateEncoder(json.JSONEncoder):
+#     def default(self, obj):
+#         if isinstance(obj, date):
+#             return obj.isoformat()
+#         return super(DateEncoder, self).default(obj)
 
 
 if __name__ == "__main__":
@@ -160,6 +148,6 @@ if __name__ == "__main__":
     # save story to json file
 
     with open("story.json", "w") as file:
-        json.dump(story.dict(), file, indent=4, cls=DateEncoder)
+        json.dump(story.dict(), file, indent=4)
 
     pass

@@ -12,25 +12,16 @@ from langchain.chat_models import ChatOpenAI
 # Load environment variables from .env file
 load_dotenv(find_dotenv())
 
-
-class Article(BaseModel):
-    pub_date: date = Field(
-        description="Published date of the news article in date format.")
-    headline: str = Field(description="Headline of the news article.")
-    themes: List[str] = Field(description="Themes of the news article.")
-    entity: List[str] = Field(description="Entity of the news article.")
-    keywords: List[str] = Field(
-        description="Key words of the news article, avoiding repetition with themes and entities.")
-    lead_paragraph: str = Field(
-        description="Lead paragraph of the news article, approximately 100 words in length.")
-
-
-class ArticleCorpus(BaseModel):
-    articles: List[Article] = Field(description="A list of news articles.")
+from meta.my_types import ArticleCorpus
 
 
 def make_article_corpus(
-    time_range: str, entities: str, themes: str, context: str, model_name: str = "gpt-4", temperature: int = 0
+    time_range: str,
+    entities: str,
+    themes: str,
+    context: str,
+    model_name: str = "gpt-4",
+    temperature: int = 0,
 ):
     article_corpus_parser = PydanticOutputParser(pydantic_object=ArticleCorpus)
 
@@ -55,7 +46,8 @@ def make_article_corpus(
         template=prompt_template,
         input_variables=["time_range", "entities", "themes", "context"],
         partial_variables={
-            "format_instructions": article_corpus_parser.get_format_instructions()},
+            "format_instructions": article_corpus_parser.get_format_instructions()
+        },
     )
 
     formatted_prompt = prompt.format_prompt(

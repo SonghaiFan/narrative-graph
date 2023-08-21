@@ -1,10 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import List, Dict
-from datetime import date
-from typing import List
-
 from dotenv import load_dotenv, find_dotenv
-from pydantic import BaseModel, Field, validator
+from meta.my_types import Graph
 
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
@@ -13,32 +8,6 @@ from langchain.chat_models import ChatOpenAI
 
 # Load environment variables from .env file
 load_dotenv(find_dotenv())
-
-
-class Node(BaseModel):
-    index: str = Field(
-        description="Index of the node.Consists of a capital letter representing the theme and a number representing the chronological order (e.g. A1,B2)"
-    )
-    label: str = Field(labels="Title of chapter.")
-    time_period: List[date] = Field(
-        description="Time period of the chapter (start date, end date)."
-    )
-    themes: List[str] = Field(description="Themes related within chapter.")
-    entity: List[str] = Field(description="Entity mentioned within chapter.")
-    context: str = Field(
-        description="Context of chapter. Simple summary of the context of chapter."
-    )
-
-
-class Edge(BaseModel):
-    start_node: str = Field(description="Index of start node.")
-    end_node: str = Field(description="Index of end node.")
-    labels: str = Field(labels="Keyword Explain the connections (edges) between nodes.")
-
-
-class Graph(BaseModel):
-    nodes: List[Node]
-    edges: List[Edge]
 
 
 def make_graph(

@@ -87,14 +87,19 @@ def align_theme_entity(narrative_obj, context, seed=None):
         theme_obj = theme_allocation[node[0]]
 
         alignment[node] = {
-            "Theme": f"{theme_obj['name']}: {theme_obj['description']}",
-            "Entity": [
-                f"{e['name']}: {e['description']}"
-                for e in E
-                if e["name"] in entities_for_node
-            ],
+            "Theme": theme_obj["name"],
+            "Entity": entities_for_node,
             "Time": periods[int(node[-1]) - 1],
             "Prev": parent_mapping.get(node, []),
+            "Description": f"{theme_obj['name']}: {theme_obj['description']}"
+            + "\n"
+            + "\n".join(
+                [
+                    f"{e['name']}: {e['description']}"
+                    for e in E
+                    if e["name"] in entities_for_node
+                ]
+            ),
         }
 
     return alignment
