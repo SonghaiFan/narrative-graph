@@ -1,0 +1,62 @@
+{
+    "nodes": [
+        {
+            "index": 1,
+            "label": "A1: Media Influence and Political Outcomes",
+            "time_period": [
+                "2020-03-04",
+                "2020-12-13"
+            ],
+            "themes": [
+                "Media Influence"
+            ],
+            "entity": [
+                "Chancellor Eric Weber",
+                "The Bridgeside Pact Signing",
+                "Capital City",
+                "Rashida Al-Amin",
+                "The Grand Assembly Inauguration"
+            ]
+        },
+        {
+            "index": 2,
+            "label": "A2: Media Influence and the Grand Assembly Inauguration",
+            "time_period": [
+                "2020-12-13",
+                "2021-09-23"
+            ],
+            "themes": [
+                "Media Influence"
+            ],
+            "entity": [
+                "The Grand Assembly Inauguration"
+            ]
+        },
+        {
+            "index": 3,
+            "label": "B3: Democratic Renewal",
+            "time_period": [
+                "2021-09-23",
+                "2022-07-05"
+            ],
+            "themes": [
+                "Democratic Renewal"
+            ],
+            "entity": [
+                "The Grand Assembly Inauguration"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "start_node": 1,
+            "end_node": 2,
+            "labels": "Media Influence and the Grand Assembly Inauguration"
+        },
+        {
+            "start_node": 2,
+            "end_node": 3,
+            "labels": "Democratic Renewal"
+        }
+    ]
+}

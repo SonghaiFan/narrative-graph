@@ -85,7 +85,7 @@ def save_graph_json(graph_json, output_file="graph.json"):
         print("Graph json saved to", output_file)
 
 
-def plot_graph(graph_json, output_file="output.png", direction="LR"):
+def plot_graph_no_sub(graph_json, output_file, direction="LR"):
     # Parse the JSON if it's a string
     if isinstance(graph_json, str):
         graph_data = json.loads(graph_json)
@@ -99,6 +99,41 @@ def plot_graph(graph_json, output_file="output.png", direction="LR"):
     for node in graph_data["nodes"]:
         label = ", ".join(node["time_period"]) + " " + node["label"]
         G.add_node(node["index"], label=label)
+
+    # Add edges
+    for edge in graph_data["edges"]:
+        G.add_edge(edge["start_node"], edge["end_node"], label=edge["labels"])
+
+    # Draw the graph
+    G.draw(output_file, prog="dot")
+    print("Graph saved to", output_file)
+
+
+def plot_graph(graph_json, output_file, direction="LR"):
+    """Plot the graph using the given graph data."""
+    # Parse the JSON if it's a string
+    if isinstance(graph_json, str):
+        graph_data = json.loads(graph_json)
+    else:
+        graph_data = graph_json
+
+    # Create a new graph
+    G = pgv.AGraph(directed=True, rankdir=direction, strict=False, overlap=False)
+
+    # Add nodes
+    themes_to_nodes = {}
+    for node in graph_data["nodes"]:
+        label = ", ".join(node["time_period"]) + " " + node["label"]
+        G.add_node(node["index"], label=label)
+        for theme in node["themes"]:
+            if theme not in themes_to_nodes:
+                themes_to_nodes[theme] = []
+            themes_to_nodes[theme].append(node["index"])
+
+    # Group nodes by themes using subgraphs
+    for theme, nodes in themes_to_nodes.items():
+        sub = G.add_subgraph(nodes, name=f"cluster_{theme}")
+        sub.graph_attr["label"] = theme
 
     # Add edges
     for edge in graph_data["edges"]:
@@ -129,7 +164,9 @@ def process_story_files(stories_path, structure_data, graphs_path):
             output_graph_file = os.path.join(graphs_path, f"{base_name}.png")
             output_json_file = os.path.join(graphs_path, f"{base_name}.json")
 
+            # plot_graph_no_sub(graph_data, output_graph_file, direction="TB")
             plot_graph(graph_data, output_graph_file, direction="TB")
+
             save_graph_json(graph_data, output_json_file)
 
 
