@@ -2,16 +2,21 @@ import json
 import datetime
 import random
 
-# Load environment variables from .env file
-from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv())
-with open("meta/narrtaive_structure.json", "r") as file:
+with open("meta/narrative_structure.json", "r") as file:
     structure_instructions_list = json.load(file)
+
+narrative_structure = [item["name"] for item in structure_instructions_list]
+
+print("narrative_structure", narrative_structure)
 
 # Load data from 'narrative_context.json'
 with open("meta/narrative_context.json", "r") as file:
     narrative_context = json.load(file)
+
+print("narrative_context", narrative_context)
+
+keys_narrative_context = list(narrative_context.keys())
 
 
 def generate_time_periods(start_date, end_date, num_periods):
@@ -34,6 +39,30 @@ def generate_time_periods(start_date, end_date, num_periods):
     return periods
 
 
+def process_nodes_in_order(narrative_obj):
+    """Process nodes ensuring parent nodes are always processed before their child nodes."""
+    nodes_to_process = narrative_obj["nodes"].copy()
+    processed_nodes = []
+    parent_mapping = {}
+
+    # Build a dictionary to map each node to its parents
+    for edge in narrative_obj["edges"]:
+        if edge["to"] not in parent_mapping:
+            parent_mapping[edge["to"]] = []
+        parent_mapping[edge["to"]].append(edge["from"])
+
+    while nodes_to_process:
+        for node in nodes_to_process[:]:
+            # If the node has no parents or all its parents are already processed, process this node
+            if node not in parent_mapping or all(
+                parent in processed_nodes for parent in parent_mapping[node]
+            ):
+                processed_nodes.append(node)
+                nodes_to_process.remove(node)
+
+    return processed_nodes
+
+
 def align_theme_entity(narrative_obj, context, seed=None):
     # Set seed for reproducibility
     if seed:
@@ -47,12 +76,8 @@ def align_theme_entity(narrative_obj, context, seed=None):
     E = [ent for category in entities_data.values() for ent in category]
     E = random.sample(E, 7)
 
-    print("entities_data", E)
-
     # Identify unique prefixes in the narrative structure
     prefixes = set(node[0] for node in narrative_obj["nodes"])
-
-    print("prefixes", prefixes)
 
     # Pre-allocate a unique theme for each prefix
     theme_allocation = {}
@@ -62,7 +87,6 @@ def align_theme_entity(narrative_obj, context, seed=None):
     # Generate time periods
     if len(times) == 2:  # If only start and end dates are provided
         num_periods = max([int(n[-1]) for n in narrative_obj["nodes"]])
-        print("num_periods", num_periods)
         periods = generate_time_periods(times[0], times[1], num_periods)
     else:
         periods = times
@@ -76,9 +100,12 @@ def align_theme_entity(narrative_obj, context, seed=None):
 
     # Assign entities, themes, and parent nodes
     alignment = {}
-    for i, node in enumerate(narrative_obj["nodes"]):
+
+    ordered_nodes = process_nodes_in_order(narrative_obj)
+
+    for node in ordered_nodes:
         num_entities_for_node = random.randint(
-            1, len(E) - len(narrative_obj["nodes"]) + i + 1
+            1, len(E) - len(narrative_obj["nodes"]) + ordered_nodes.index(node) + 1
         )  # Ensure all entities are used
 
         # If the current node has parent nodes
@@ -102,7 +129,7 @@ def align_theme_entity(narrative_obj, context, seed=None):
 
         alignment[node] = {
             "Theme": theme_obj["name"],
-            "Entity": entities_for_node,
+            "Entity": list(set(entities_for_node)),
             "Time": periods[int(node[-1]) - 1],
             "Prev": parent_mapping.get(node, []),
             "Description": f"{theme_obj['name']}: {theme_obj['description']}"
@@ -120,8 +147,8 @@ def align_theme_entity(narrative_obj, context, seed=None):
 
 
 def get_alignment(
-    topic="Politics",
-    structure="SharpMerge",
+    topic,
+    structure,
     seed=None,
 ):
     # Safely extract the desired narrative structure or default to the first one if not found
@@ -148,8 +175,14 @@ def get_alignment(
 
 
 if __name__ == "__main__":
-    TOPIC = "Science & Health"
-    NARRATIVE_STRUCTURE = "SharpMerge"
+    # random select topic and structure
+    TOPIC = random.choice(keys_narrative_context)
+    NARRATIVE_STRUCTURE = random.choice(narrative_structure)
+
+    print("=" * 50)
+
+    print("Selected topic:", TOPIC)
+    print("Selected narrative structure:", NARRATIVE_STRUCTURE)
 
     # Get the alignment results
     alignment_results = get_alignment(

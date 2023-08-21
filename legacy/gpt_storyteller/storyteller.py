@@ -94,11 +94,4 @@ if __name__ == "__main__":
     # For the simple narrative structures
     for section in keys_narrative_context:
         for structure in narrative_structure:
-            # show following print statements in the console!!
-            print(
-                f"Generating story for section: {section}, narrative_structure: {structure}..."
-            )
             generate_story_files(section, structure, 42)
-            print(
-                f"Story generation complete for section: {section}, narrative_structure: {structure}!!!"
-            )

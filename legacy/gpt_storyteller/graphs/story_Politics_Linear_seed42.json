@@ -1,0 +1,84 @@
+{
+    "nodes": [
+        {
+            "index": 1,
+            "label": "A1: Democratic Renewal",
+            "time_period": [
+                "2020-03-04",
+                "2020-10-03"
+            ],
+            "themes": [
+                "Democratic Renewal"
+            ],
+            "entity": [
+                "The Grand Assembly Inauguration"
+            ]
+        },
+        {
+            "index": 2,
+            "label": "A2: The Bridgeside Pact",
+            "time_period": [
+                "2020-10-03",
+                "2021-05-04"
+            ],
+            "themes": [
+                "Democratic Renewal"
+            ],
+            "entity": [
+                "The Bridgeside Pact Signing",
+                "Chancellor Eric Weber",
+                "Rashida Al-Amin",
+                "The Grand Assembly Inauguration"
+            ]
+        },
+        {
+            "index": 3,
+            "label": "A3: Democratic Renewal",
+            "time_period": [
+                "2021-05-04",
+                "2021-12-03"
+            ],
+            "themes": [
+                "Democratic Renewal"
+            ],
+            "entity": [
+                "The Bridgeside Pact Signing",
+                "The Grand Assembly Inauguration"
+            ]
+        },
+        {
+            "index": 4,
+            "label": "A4: Democratic Renewal",
+            "time_period": [
+                "2021-12-03",
+                "2022-07-05"
+            ],
+            "themes": [
+                "Democratic Renewal"
+            ],
+            "entity": [
+                "The Bridgeside Pact Signing",
+                "Gregory Collins",
+                "Capital City",
+                "The Grand Assembly Inauguration"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "start_node": 1,
+            "end_node": 2,
+            "labels": "The Bridgeside Pact"
+        },
+        {
+            "start_node": 2,
+            "end_node": 3,
+            "labels": "Democratic Renewal"
+        },
+        {
+            "start_node": 3,
+            "end_node": 4,
+            "labels": "Democratic Renewal"
+        }
+    ]
+}
