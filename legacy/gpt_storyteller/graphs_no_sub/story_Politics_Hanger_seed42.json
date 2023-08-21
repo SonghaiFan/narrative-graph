@@ -71,22 +71,22 @@
         {
             "start_node": 1,
             "end_node": 2,
-            "labels": "Media Influence on The Grand Assembly Inauguration and The Bridgeside Pact Signing"
+            "labels": "The Bridgeside Pact Signing"
         },
         {
             "start_node": 2,
             "end_node": 4,
-            "labels": "Media Influence and the Rise of Activism in the New Political Term"
+            "labels": "The Grand Assembly Inauguration"
         },
         {
             "start_node": 1,
             "end_node": 3,
-            "labels": "Democratic Renewal"
+            "labels": "Chancellor Eric Weber, The Bridgeside Pact Signing, Gregory Collins"
         },
         {
             "start_node": 3,
             "end_node": 4,
-            "labels": "Media Influence and the Rise of Activism in the New Political Term"
+            "labels": "The Grand Assembly Inauguration"
         }
     ]
 }

@@ -51,12 +51,12 @@
         {
             "start_node": 1,
             "end_node": 2,
-            "labels": "Media Influence and the Grand Assembly Inauguration"
+            "labels": "The Grand Assembly Inauguration"
         },
         {
             "start_node": 2,
             "end_node": 3,
-            "labels": "Democratic Renewal"
+            "labels": "The Grand Assembly Inauguration"
         }
     ]
 }

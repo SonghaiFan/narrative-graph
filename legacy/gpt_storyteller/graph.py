@@ -43,34 +43,30 @@ def generate_graph_data(story_data, structure_data):
         )
 
     # Generate edges
+    # Generate edges
     edges = []
     for edge in structure["edges"]:
         start_node = next(
-            (
-                node["index"]
-                for node in nodes
-                if node["label"].split(":")[0] == edge["from"]
-            ),
+            (node for node in nodes if node["label"].split(":")[0] == edge["from"]),
             None,
         )
         end_node = next(
-            (
-                node["index"]
-                for node in nodes
-                if node["label"].split(":")[0] == edge["to"]
-            ),
-            None,
-        )
-        label = next(
-            (
-                node["label"].split(":")[1].strip()
-                for node in nodes
-                if node["label"].split(":")[0] == edge["to"]
-            ),
-            None,
+            (node for node in nodes if node["label"].split(":")[0] == edge["to"]), None
         )
 
-        edges.append({"start_node": start_node, "end_node": end_node, "labels": label})
+        # Identify common entities between the connected nodes
+        common_entities = list(
+            set(start_node["entity"]).intersection(set(end_node["entity"]))
+        )
+        label = ", ".join(common_entities)
+
+        edges.append(
+            {
+                "start_node": start_node["index"],
+                "end_node": end_node["index"],
+                "labels": label,
+            }
+        )
 
     return {"nodes": nodes, "edges": edges}
 
@@ -109,7 +105,7 @@ def plot_graph_no_sub(graph_json, output_file, direction="LR"):
     print("Graph saved to", output_file)
 
 
-def plot_graph(graph_json, output_file, direction="LR"):
+def plot_graph_theme_sub(graph_json, output_file, direction="LR"):
     """Plot the graph using the given graph data."""
     # Parse the JSON if it's a string
     if isinstance(graph_json, str):
@@ -144,6 +140,41 @@ def plot_graph(graph_json, output_file, direction="LR"):
     print("Graph saved to", output_file)
 
 
+def plot_graph_time_sub(graph_json, output_file, direction="LR"):
+    """Plot the graph using the given graph data."""
+    # Parse the JSON if it's a string
+    if isinstance(graph_json, str):
+        graph_data = json.loads(graph_json)
+    else:
+        graph_data = graph_json
+
+    # Create a new graph
+    G = pgv.AGraph(directed=True, rankdir=direction, strict=False, overlap=False)
+
+    # Add nodes
+    time_periods_to_nodes = {}
+    for node in graph_data["nodes"]:
+        label = ", ".join(node["time_period"]) + " " + node["label"]
+        G.add_node(node["index"], label=label)
+        time_period_str = ", ".join(node["time_period"])
+        if time_period_str not in time_periods_to_nodes:
+            time_periods_to_nodes[time_period_str] = []
+        time_periods_to_nodes[time_period_str].append(node["index"])
+
+    # Group nodes by time_period using subgraphs
+    for time_period, nodes in time_periods_to_nodes.items():
+        sub = G.add_subgraph(nodes, name=f"cluster_{time_period}")
+        sub.graph_attr["label"] = time_period
+
+    # Add edges
+    for edge in graph_data["edges"]:
+        G.add_edge(edge["start_node"], edge["end_node"], label=edge["labels"])
+
+    # Draw the graph
+    G.draw(output_file, prog="dot")
+    print("Graph saved to", output_file)
+
+
 def process_story_files(stories_path, structure_data, graphs_path):
     """Loop over all JSON files in the stories folder and generate graphs."""
     for file_name in os.listdir(stories_path):
@@ -165,7 +196,8 @@ def process_story_files(stories_path, structure_data, graphs_path):
             output_json_file = os.path.join(graphs_path, f"{base_name}.json")
 
             # plot_graph_no_sub(graph_data, output_graph_file, direction="TB")
-            plot_graph(graph_data, output_graph_file, direction="TB")
+            # plot_graph_theme_sub(graph_data, output_graph_file, direction="TB")
+            plot_graph_time_sub(graph_data, output_graph_file, direction="TB")
 
             save_graph_json(graph_data, output_json_file)
 

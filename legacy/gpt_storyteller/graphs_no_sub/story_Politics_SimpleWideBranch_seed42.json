@@ -55,12 +55,12 @@
         {
             "start_node": 1,
             "end_node": 3,
-            "labels": "A New Era of Transparency"
+            "labels": "Chancellor Eric Weber, The Bridgeside Pact Signing, Gregory Collins"
         },
         {
             "start_node": 1,
             "end_node": 2,
-            "labels": "Media Influence and the Dawn of a New Political Era"
+            "labels": "The Bridgeside Pact Signing"
         }
     ]
 }

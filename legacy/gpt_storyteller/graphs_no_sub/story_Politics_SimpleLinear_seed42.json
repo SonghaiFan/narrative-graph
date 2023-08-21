@@ -52,12 +52,12 @@
         {
             "start_node": 1,
             "end_node": 2,
-            "labels": "The Bridgeside Pact"
+            "labels": "The Bridgeside Pact Signing"
         },
         {
             "start_node": 2,
             "end_node": 3,
-            "labels": "Democratic Renewal"
+            "labels": "The Bridgeside Pact Signing"
         }
     ]
 }

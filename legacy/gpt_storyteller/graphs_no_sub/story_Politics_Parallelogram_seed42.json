@@ -71,22 +71,22 @@
         {
             "start_node": 1,
             "end_node": 2,
-            "labels": "Media Influence and Political Outcomes"
+            "labels": "The Bridgeside Pact Signing"
         },
         {
             "start_node": 2,
             "end_node": 4,
-            "labels": "Democratic Renewal"
+            "labels": "The Grand Assembly Inauguration"
         },
         {
             "start_node": 1,
             "end_node": 3,
-            "labels": "Democratic Renewal"
+            "labels": "Chancellor Eric Weber, The Bridgeside Pact Signing, Gregory Collins"
         },
         {
             "start_node": 3,
             "end_node": 4,
-            "labels": "Democratic Renewal"
+            "labels": "The Grand Assembly Inauguration"
         }
     ]
 }

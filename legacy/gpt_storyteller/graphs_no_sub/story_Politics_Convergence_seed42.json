@@ -66,17 +66,17 @@
         {
             "start_node": 1,
             "end_node": 3,
-            "labels": "Chancellor Weber"
+            "labels": "Chancellor Eric Weber"
         },
         {
             "start_node": 3,
             "end_node": 4,
-            "labels": "Media Influence and the Bridgeside Pact"
+            "labels": "Chancellor Eric Weber"
         },
         {
             "start_node": 2,
             "end_node": 3,
-            "labels": "Chancellor Weber"
+            "labels": "Chancellor Eric Weber"
         }
     ]
 }
