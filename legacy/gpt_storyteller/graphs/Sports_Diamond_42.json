@@ -1,0 +1,66 @@
+{
+  "nodes": [
+    {
+      "index": "A1",
+      "label": "The Rise of a New Era",
+      "time_period": ["2020-01-01", "2020-06-01"],
+      "themes": ["Youth & Potential", "Evolution of Sports"],
+      "entity": ["Jamie Patel", "Elevate eSports", "Hillcrest Academy"],
+      "context": "Jamie Patel, a student at Hillcrest Academy, begins his journey in eSports under the guidance of Elevate eSports."
+    },
+    {
+      "index": "B2",
+      "label": "The Legendary Coach",
+      "time_period": ["2020-06-02", "2020-12-01"],
+      "themes": ["Youth & Potential"],
+      "entity": ["Coach Mariana Garcia", "Hillcrest Academy"],
+      "context": "Coach Mariana Garcia, a legendary basketball coach with a controversial past, joins Hillcrest Academy."
+    },
+    {
+      "index": "C2",
+      "label": "The eSports Revolution",
+      "time_period": ["2020-06-02", "2020-12-01"],
+      "themes": ["Evolution of Sports"],
+      "entity": ["Jamie Patel", "Elevate eSports", "The GSL Finals"],
+      "context": "Jamie Patel dominates international tournaments, leading to the rise of eSports."
+    },
+    {
+      "index": "A3",
+      "label": "The Clash of Titans",
+      "time_period": ["2021-01-01", "2022-06-06"],
+      "themes": ["Youth & Potential", "Evolution of Sports"],
+      "entity": [
+        "Coach Mariana Garcia",
+        "Jamie Patel",
+        "Hillcrest Sports Day",
+        "The GSL Finals",
+        "Stadium One",
+        "Victory Park",
+        "Sports Integrity Commission"
+      ],
+      "context": "The most awaited sports events of the year, Hillcrest Sports Day and The GSL Finals, take place at Stadium One and Victory Park respectively, showcasing the clash between traditional sports and eSports."
+    }
+  ],
+  "edges": [
+    {
+      "start_node": "A1",
+      "end_node": "B2",
+      "labels": "Transition from eSports to traditional sports"
+    },
+    {
+      "start_node": "A1",
+      "end_node": "C2",
+      "labels": "Transition from local grounds to global eSports arenas"
+    },
+    {
+      "start_node": "B2",
+      "end_node": "A3",
+      "labels": "Integration of traditional sports and eSports"
+    },
+    {
+      "start_node": "C2",
+      "end_node": "A3",
+      "labels": "Integration of traditional sports and eSports"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import random
 import json
 import pygraphviz as pgv
 import json
+import datetime
 
 
 # ignore warnings
@@ -12,9 +13,13 @@ warnings.filterwarnings("ignore")
 with open("narrtaive_structure.json", "r") as file:
     structure_instructions_list = json.load(file)
 
+with open("simple_narrative_structure.json", "r") as file:
+    simple_structure_instructions_list = json.load(file)
+
 # Load data from 'narrative_context.json'
 with open("narrative_context.json", "r") as file:
     context_data = json.load(file)
+
 
 # Get the list of sections
 section_list = list(context_data.keys())
@@ -51,6 +56,17 @@ def plot_graph(graph_json, output_file="output.png", direction="LR"):
 
 
 def retrieve_section_data(section_name, data, seed=None):
+    """
+    Retrieve specified section data with random selections.
+
+    Parameters:
+        section_name (str): The name of the section to retrieve data from.
+        data (dict): The data dictionary containing section data.
+        seed (int, optional): The seed for the random number generator.
+
+    Returns:
+        dict: A dictionary containing randomly selected entities and themes.
+    """
     # Set the seed
     random.seed(seed)
 
@@ -221,6 +237,76 @@ def generate_graph(section_name, structure_name, seed=None):
     save_graph_json(graph_json, f"{out_graphs_path}.json")
 
     return graph
+
+
+def generate_time_periods(start_date, end_date, num_periods):
+    start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+    total_days = (end - start).days
+    average_duration = total_days // num_periods
+    periods = [
+        start + datetime.timedelta(days=i * average_duration)
+        for i in range(num_periods)
+    ]
+    return [
+        (
+            str(period.date()),
+            str((period + datetime.timedelta(days=average_duration - 1)).date()),
+        )
+        for period in periods
+    ]
+
+
+def align_theme_entity_with_multiple_prev(narrative_obj, context):
+    themes = context["Themes"].copy()
+    entities = [ent for category in context["Entities"].values() for ent in category]
+    times = context["Time"]
+
+    prefixes = set(node[0] for node in narrative_obj["nodes"])
+    theme_allocation = {}
+    for prefix in prefixes:
+        theme_allocation[prefix] = themes.pop(random.randrange(len(themes)))
+
+    if len(times) == 2:
+        num_periods = max([int(n[-1]) for n in narrative_obj["nodes"]])
+        periods = generate_time_periods(times[0], times[1], num_periods)
+    else:
+        periods = times
+
+    parent_mapping = {}
+    for edge in narrative_obj["edges"]:
+        if edge["to"] not in parent_mapping:
+            parent_mapping[edge["to"]] = []
+        parent_mapping[edge["to"]].append(edge["from"])
+
+    alignment = {}
+    for node in narrative_obj["nodes"]:
+        alignment[node] = {
+            "Theme": theme_allocation[node[0]]["name"],
+            "Entity": random.choice(entities)["name"],
+            "Time": periods[int(node[-1]) - 1],
+            "prev": parent_mapping.get(node, []),
+        }
+
+    return alignment
+
+
+def traverse_each_path(aligned_narrative):
+    sorted_nodes = sorted(
+        aligned_narrative.keys(), key=lambda node: aligned_narrative[node]["Time"]
+    )
+    last_yielded_time = None
+
+    for node in sorted_nodes:
+        current_time = aligned_narrative[node]["Time"]
+        if current_time == last_yielded_time:
+            continue
+        nodes_at_current_time = [
+            n for n in sorted_nodes if aligned_narrative[n]["Time"] == current_time
+        ]
+        prev_info = {n: aligned_narrative[n]["prev"] for n in nodes_at_current_time}
+        last_yielded_time = current_time
+        yield nodes_at_current_time, prev_info
 
 
 # Generate graphs

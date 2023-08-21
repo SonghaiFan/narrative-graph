@@ -16,18 +16,23 @@ load_dotenv(find_dotenv())
 
 
 class Node(BaseModel):
-    index: int = Field(description="Index of the node.")
+    index: str = Field(
+        description="Index of the node.Consists of a capital letter representing the theme and a number representing the chronological order (e.g. A1,B2)"
+    )
     label: str = Field(labels="Title of chapter.")
     time_period: List[date] = Field(
         description="Time period of the chapter (start date, end date)."
     )
     themes: List[str] = Field(description="Themes related within chapter.")
     entity: List[str] = Field(description="Entity mentioned within chapter.")
+    context: str = Field(
+        description="Context of chapter. Simple summary of the context of chapter."
+    )
 
 
 class Edge(BaseModel):
-    start_node: int = Field(description="Index of start node.")
-    end_node: int = Field(description="Index of end node.")
+    start_node: str = Field(description="Index of start node.")
+    end_node: str = Field(description="Index of end node.")
     labels: str = Field(labels="Keyword Explain the connections (edges) between nodes.")
 
 
