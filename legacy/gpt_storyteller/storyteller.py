@@ -69,26 +69,27 @@ if __name__ == "__main__":
     # generate_story_files("Science & Health", "Fork", "Simple", 42)
 
     keys_narrative_context = [
-        "Politics",
-        # "Sports",
+        # "Politics",
+        "Sports",
         # "Science & Health",
         # "Economics",
         # "Culture",
     ]
 
     narrative_structure = [
-        "SimpleLinear",
-        "SimpleFork",
-        "SimpleWideMerge",
-        "SimpleWideBranch",
-        "SimpleSharpMerge",
-        "SimpleSharpBranch",
-        "Linear",
-        "Divergence",
-        "Convergence",
-        "Diamond",
-        "Hanger",
-        "Parallelogram",
+        # "SimpleLinear",
+        # "SimpleFork",
+        # "SimpleWideMerge",
+        # "SimpleWideBranch",
+        # "SimpleSharpMerge",
+        # "SimpleSharpBranch",
+        # "Linear",
+        # "Divergence",
+        # "Convergence",
+        # "Diamond",
+        # "Hanger",
+        # "Parallelogram",
+        "ComplexCombined"
     ]
 
     # For the simple narrative structures

@@ -195,9 +195,9 @@ def process_story_files(stories_path, structure_data, graphs_path):
             output_graph_file = os.path.join(graphs_path, f"{base_name}.png")
             output_json_file = os.path.join(graphs_path, f"{base_name}.json")
 
-            # plot_graph_no_sub(graph_data, output_graph_file, direction="TB")
+            plot_graph_no_sub(graph_data, output_graph_file, direction="TB")
             # plot_graph_theme_sub(graph_data, output_graph_file, direction="TB")
-            plot_graph_time_sub(graph_data, output_graph_file, direction="TB")
+            # plot_graph_time_sub(graph_data, output_graph_file, direction="TB")
 
             save_graph_json(graph_data, output_json_file)
 

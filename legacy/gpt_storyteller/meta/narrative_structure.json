@@ -139,5 +139,20 @@
       { "from": "A1", "to": "B2" },
       { "from": "B2", "to": "B3" }
     ]
+  },
+  {
+    "name": "ComplexCombined",
+    "description": "A combination of SimpleFork, SimpleWideMerge, and SimpleSharpBranch.",
+    "structure": "A1 -> A2 -> B3 -> D4 -> D5; C3 -> D4 -> E5",
+    "instructions": "Contains 7 nodes and 6 edges in total.",
+    "nodes": ["A1", "A2", "B3", "C3", "D4", "D5", "E5"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "B3" },
+      { "from": "B3", "to": "D4" },
+      { "from": "C3", "to": "D4" },
+      { "from": "D4", "to": "D5" },
+      { "from": "D4", "to": "E5" }
+    ]
   }
 ]

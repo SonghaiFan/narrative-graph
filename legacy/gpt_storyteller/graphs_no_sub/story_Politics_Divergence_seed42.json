@@ -76,12 +76,12 @@
         {
             "start_node": 2,
             "end_node": 3,
-            "labels": "The Bridgeside Pact Signing, The Grand Assembly Inauguration"
+            "labels": "The Grand Assembly Inauguration, The Bridgeside Pact Signing"
         },
         {
             "start_node": 2,
             "end_node": 4,
-            "labels": "The Bridgeside Pact Signing, The Grand Assembly Inauguration"
+            "labels": "The Grand Assembly Inauguration, The Bridgeside Pact Signing"
         }
     ]
 }
