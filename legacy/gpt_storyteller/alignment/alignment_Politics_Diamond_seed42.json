@@ -1,1 +1,48 @@
-{"A1": {"Theme": "Corruption & Transparency", "Entity": ["The Bridgeside Pact Signing", "Chancellor Eric Weber", "Gregory Collins", "Rashida Al-Amin"], "Time": ["2020-03-04", "2020-12-13"], "Prev": [], "Description": "Corruption & Transparency: The fight against political corruption and the demand for transparent governance.\nRashida Al-Amin: An activist rallying against corruption and lobbying in politics.\nGregory Collins: A charismatic young senator with a vision for a new political era.\nThe Bridgeside Pact Signing: An international agreement set to shape trade.\nChancellor Eric Weber: A foreign diplomat looking to foster ties with other nations."}, "B2": {"Theme": "Democratic Renewal", "Entity": ["The Bridgeside Pact Signing", "The Grand Assembly Inauguration"], "Time": ["2020-12-13", "2021-09-23"], "Prev": ["A1"], "Description": "Democratic Renewal: The rebirth and redefinition of democracy in the modern age.\nThe Grand Assembly Inauguration: Marking the start of a new political term.\nThe Bridgeside Pact Signing: An international agreement set to shape trade."}, "C2": {"Theme": "Media Influence", "Entity": ["Chancellor Eric Weber", "The Bridgeside Pact Signing", "Gregory Collins", "Capital City", "The Grand Assembly Inauguration"], "Time": ["2020-12-13", "2021-09-23"], "Prev": ["A1"], "Description": "Media Influence: How the media shapes public perception and political outcomes.\nGregory Collins: A charismatic young senator with a vision for a new political era.\nCapital City: The political epicenter, home to major government institutions.\nThe Grand Assembly Inauguration: Marking the start of a new political term.\nThe Bridgeside Pact Signing: An international agreement set to shape trade.\nChancellor Eric Weber: A foreign diplomat looking to foster ties with other nations."}, "A3": {"Theme": "Corruption & Transparency", "Entity": ["Clear Politics Initiative", "Rashida Al-Amin", "The Grand Assembly Inauguration"], "Time": ["2021-09-23", "2022-07-05"], "Prev": ["B2", "C2"], "Description": "Corruption & Transparency: The fight against political corruption and the demand for transparent governance.\nRashida Al-Amin: An activist rallying against corruption and lobbying in politics.\nClear Politics Initiative: An NGO campaigning for transparent governance.\nThe Grand Assembly Inauguration: Marking the start of a new political term."}}
+{
+  "A1": {
+    "Theme": "Corruption & Transparency",
+    "Entity": [
+      "The Bridgeside Pact Signing",
+      "Chancellor Eric Weber",
+      "Gregory Collins",
+      "Rashida Al-Amin"
+    ],
+    "Time": ["2020-03-04", "2020-12-13"],
+    "Prev": [],
+    "Description": "Corruption & Transparency: The fight against political corruption and the demand for transparent governance.\nRashida Al-Amin: An activist rallying against corruption and lobbying in politics.\nGregory Collins: A charismatic young senator with a vision for a new political era.\nThe Bridgeside Pact Signing: An international agreement set to shape trade.\nChancellor Eric Weber: A foreign diplomat looking to foster ties with other nations."
+  },
+  "B2": {
+    "Theme": "Democratic Renewal",
+    "Entity": [
+      "The Bridgeside Pact Signing",
+      "The Grand Assembly Inauguration"
+    ],
+    "Time": ["2020-12-13", "2021-09-23"],
+    "Prev": ["A1"],
+    "Description": "Democratic Renewal: The rebirth and redefinition of democracy in the modern age.\nThe Grand Assembly Inauguration: Marking the start of a new political term.\nThe Bridgeside Pact Signing: An international agreement set to shape trade."
+  },
+  "C2": {
+    "Theme": "Media Influence",
+    "Entity": [
+      "Chancellor Eric Weber",
+      "The Bridgeside Pact Signing",
+      "Gregory Collins",
+      "Capital City",
+      "The Grand Assembly Inauguration"
+    ],
+    "Time": ["2020-12-13", "2021-09-23"],
+    "Prev": ["A1"],
+    "Description": "Media Influence: How the media shapes public perception and political outcomes.\nGregory Collins: A charismatic young senator with a vision for a new political era.\nCapital City: The political epicenter, home to major government institutions.\nThe Grand Assembly Inauguration: Marking the start of a new political term.\nThe Bridgeside Pact Signing: An international agreement set to shape trade.\nChancellor Eric Weber: A foreign diplomat looking to foster ties with other nations."
+  },
+  "A3": {
+    "Theme": "Corruption & Transparency",
+    "Entity": [
+      "Clear Politics Initiative",
+      "Rashida Al-Amin",
+      "The Grand Assembly Inauguration"
+    ],
+    "Time": ["2021-09-23", "2022-07-05"],
+    "Prev": ["B2", "C2"],
+    "Description": "Corruption & Transparency: The fight against political corruption and the demand for transparent governance.\nRashida Al-Amin: An activist rallying against corruption and lobbying in politics.\nClear Politics Initiative: An NGO campaigning for transparent governance.\nThe Grand Assembly Inauguration: Marking the start of a new political term."
+  }
+}
