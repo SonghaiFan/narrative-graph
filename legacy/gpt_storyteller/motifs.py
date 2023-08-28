@@ -34,30 +34,61 @@ def find_narrative_motifs(m, n, X):
 
 
 def calculate_metrics(motif, m, n):
-    """Calculate the defined metrics for a given motif."""
-    metrics = {
-        "time_coverage": np.max(np.where(np.any(motif, axis=0))[0])
+    """Calculate the defined metrics for a given motif.
+    Time Coverage: Measures the range of time the narrative covers. A higher value indicates a longer coverage.
+    Theme Complexity: Indicates how many different themes are engaged in a narrative. A higher value suggests a more complex theme engagement.
+    Theme Persistence: Measures how long a theme persists over time on average. A higher value means a theme persists longer.
+    Transitions: Counts the number of edges that cross different rows (themes). A higher value indicates more transitions.
+    Density: Measures how "packed" the narrative is. A value closer to 1 suggests a denser narrative.
+    Centralization: Checks the distribution of the narrative across themes. A lower value means the narrative is more evenly spread out.
+
+    """
+
+    # Time Coverage
+    time_coverage = (
+        np.max(np.where(np.any(motif, axis=0))[0])
         - np.min(np.where(np.any(motif, axis=0))[0])
-        + 1,
-        "theme_complexity": np.sum(np.sum(motif, axis=1) > 0),
-        "theme_persistence": np.mean(
-            [max(map(len, "".join(map(str, row)).split("0"))) for row in motif]
-        ),
-        "transitions": sum(
-            motif[j, i] == 1 and motif[j, i + 1] == 0
-            for i in range(n - 1)
-            for j in range(m)
-        ),
-        "density": np.sum(motif) / (m * n),
-        "centralization": np.var(np.sum(motif, axis=1)),
+        + 1
+    )
+
+    # Theme Complexity
+    theme_complexity = np.sum(np.sum(motif, axis=1) > 0)
+
+    # Theme Persistence
+    theme_persistence = np.mean(
+        [max(map(len, "".join(map(str, row)).split("0"))) for row in motif]
+    )
+
+    # Transitions
+    transitions = 0
+    for c in range(n - 1):  # we skip the last column
+        for r in range(m):
+            if motif[r][c] == 1:
+                # Count all the 1s in the next column except the current row
+                transitions += sum(motif[:, c + 1]) - motif[r][c + 1]
+
+    # Density
+    density = np.sum(motif) / (m * n)
+
+    # Centralization
+    centralization = np.var(np.sum(motif, axis=1))
+
+    metrics = {
+        "time_coverage": time_coverage,
+        "theme_complexity": theme_complexity,
+        "theme_persistence": theme_persistence,
+        "transitions": transitions,
+        # "density": density,
+        "centralization": centralization,
     }
+
     return metrics
 
 
 def plot_motifs_with_metrics(configurations, metrics_df, m, n):
     """Plot the narrative motifs with metrics as captions."""
     num_configs = len(configurations)
-    cols = 4
+    cols = int(np.ceil(np.sqrt(num_configs)))
     rows = (num_configs + cols - 1) // cols
     colors = plt.cm.viridis(np.linspace(0, 1, m))
     labels = [chr(65 + i) for i in range(m)]
@@ -114,7 +145,7 @@ def plot_motifs_with_metrics(configurations, metrics_df, m, n):
                         for col in metrics_df.columns
                     ]
                 )
-                ax.set_title(metrics_text, fontsize=8, y=-0.15)
+                ax.set_title(metrics_text, fontsize=12, y=-0.15)
             else:
                 ax.axis("off")
 
@@ -128,7 +159,7 @@ if __name__ == "__main__":
     # m is the number of themes
     # n is the number of time frames
     # X is the number of nodes
-    m, n, X = 3, 2, 4
+    m, n, X = 3, 3, 3
     configurations = find_narrative_motifs(m, n, X)
     motif_metrics = [calculate_metrics(motif, m, n) for motif in configurations]
     df_metrics = pd.DataFrame(motif_metrics)
