@@ -91,12 +91,12 @@ if __name__ == "__main__":
     ]
 
     the_narrative_structure = [
-        "SimpleLinear",
+        # "SimpleLinear",
         # "SimpleFork",
         # "SimpleWideMerge",
         # "SimpleWideBranch",
         # "SimpleSharpMerge",
-        # "SimpleSharpBranch",
+        "SimpleSharpBranch",
         # "Linear",
         # "Divergence",
         # "Convergence",

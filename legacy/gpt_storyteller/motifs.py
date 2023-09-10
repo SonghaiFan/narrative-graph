@@ -11,9 +11,9 @@ def valid_configuration_general(matrix, m, n, X):
     col_sums = np.sum(matrix, axis=0)
     if np.sum(col_sums > 0) < 2:
         return False
-    for i in range(n - 1):
-        if col_sums[i] == 0 and col_sums[i + 1] != 0:
-            return False
+    # for i in range(n - 1):
+    #     if col_sums[i] == 0 and col_sums[i + 1] != 0:
+    #         return False
     return True
 
 
@@ -78,7 +78,7 @@ def calculate_metrics(motif, m, n):
         "theme_complexity": theme_complexity,
         "theme_persistence": theme_persistence,
         "transitions": transitions,
-        # "density": density,
+        "density": density,
         "centralization": centralization,
     }
 
@@ -161,6 +161,7 @@ if __name__ == "__main__":
     # X is the number of nodes
     m, n, X = 3, 3, 3
     configurations = find_narrative_motifs(m, n, X)
-    motif_metrics = [calculate_metrics(motif, m, n) for motif in configurations]
-    df_metrics = pd.DataFrame(motif_metrics)
+    # motif_metrics = [calculate_metrics(motif, m, n) for motif in configurations]
+    # df_metrics = pd.DataFrame([motif_metrics])
+    df_metrics = pd.DataFrame([])
     plot_motifs_with_metrics(configurations, df_metrics, m, n)

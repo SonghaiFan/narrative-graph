@@ -1,0 +1,63 @@
+{
+    "nodes": [
+        {
+            "index": 1,
+            "label": "A1: Solar Treaty Fuels New Era of Space Exploration",
+            "time_period": [
+                "2021-02-05",
+                "2021-11-30"
+            ],
+            "themes": [
+                "Space Exploration",
+                "Solar Treaty"
+            ],
+            "entity": [
+                "Solar Treaty"
+            ]
+        },
+        {
+            "index": 2,
+            "label": "A2: Solar-Powered Space Exploration",
+            "time_period": [
+                "2021-11-30",
+                "2022-09-24"
+            ],
+            "themes": [
+                "Space Exploration"
+            ],
+            "entity": [
+                "Westonia",
+                "Oceana Coalition",
+                "Solar Treaty",
+                "Translandia"
+            ]
+        },
+        {
+            "index": 3,
+            "label": "A3: Westonia's Leap into Space",
+            "time_period": [
+                "2022-09-24",
+                "2023-07-21"
+            ],
+            "themes": [
+                "Space Exploration"
+            ],
+            "entity": [
+                "Solar Treaty",
+                "Westonia"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "start_node": 1,
+            "end_node": 2,
+            "labels": "Solar Treaty"
+        },
+        {
+            "start_node": 2,
+            "end_node": 3,
+            "labels": "Solar Treaty, Westonia"
+        }
+    ]
+}

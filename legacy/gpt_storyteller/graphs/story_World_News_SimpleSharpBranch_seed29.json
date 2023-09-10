@@ -1,0 +1,66 @@
+{
+    "nodes": [
+        {
+            "index": 1,
+            "label": "A1: Mount Tarnova Eruption",
+            "time_period": [
+                "2021-02-05",
+                "2022-04-29"
+            ],
+            "themes": [
+                "Space Exploration",
+                "Solar Treaty"
+            ],
+            "entity": [
+                "Paxterra Conference",
+                "Mount Tarnova",
+                "Translandia",
+                "Solar Treaty"
+            ]
+        },
+        {
+            "index": 2,
+            "label": "A2: Space Exploration and Global Sustainability",
+            "time_period": [
+                "2022-04-29",
+                "2023-07-21"
+            ],
+            "themes": [
+                "Space Exploration"
+            ],
+            "entity": [
+                "Oceana Coalition",
+                "Paxterra Conference",
+                "Westonia"
+            ]
+        },
+        {
+            "index": 3,
+            "label": "B2: Solar Treaty Gains Momentum",
+            "time_period": [
+                "2022-04-29",
+                "2023-07-21"
+            ],
+            "themes": [
+                "Energy Shift"
+            ],
+            "entity": [
+                "Paxterra Conference",
+                "Oceana Coalition",
+                "Solar Treaty"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "start_node": 1,
+            "end_node": 2,
+            "labels": "Paxterra Conference"
+        },
+        {
+            "start_node": 1,
+            "end_node": 3,
+            "labels": "Paxterra Conference, Solar Treaty"
+        }
+    ]
+}
