@@ -4,3 +4,6 @@ archive/*
 __pycache__/*
 LangChain-for-LLM-Application-Development-main/*
 .DS_Store
+logs/*
+alignment/*
+*/arc/*

@@ -11,9 +11,9 @@ def valid_configuration_general(matrix, m, n, X):
     col_sums = np.sum(matrix, axis=0)
     if np.sum(col_sums > 0) < 2:
         return False
-    # for i in range(n - 1):
-    #     if col_sums[i] == 0 and col_sums[i + 1] != 0:
-    #         return False
+    for i in range(n - 1):
+        if col_sums[i] == 0 and col_sums[i + 1] != 0:
+            return False
     return True
 
 

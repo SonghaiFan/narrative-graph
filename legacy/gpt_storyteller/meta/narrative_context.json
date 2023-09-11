@@ -1,480 +1,469 @@
 {
-    "Politics": {
-        "Entities": {
-            "People": [
-                {
-                    "name": "Gregory Collins",
-                    "description": "A charismatic young senator with a vision for a new political era."
-                },
-                {
-                    "name": "Martina Vales",
-                    "description": "A veteran journalist with insider knowledge of the political arena."
-                },
-                {
-                    "name": "Chancellor Eric Weber",
-                    "description": "A foreign diplomat looking to foster ties with other nations."
-                },
-                {
-                    "name": "Rashida Al-Amin",
-                    "description": "An activist rallying against corruption and lobbying in politics."
-                }
-            ],
-            "Places": [
-                {
-                    "name": "Capital City",
-                    "description": "The political epicenter, home to major government institutions."
-                },
-                {
-                    "name": "Liberty Square",
-                    "description": "A popular site for political rallies and demonstrations."
-                },
-                {
-                    "name": "Bridgeside",
-                    "description": "A border town affected by international trade agreements."
-                },
-                {
-                    "name": "The Grand Assembly Hall",
-                    "description": "Where major political decisions are made."
-                }
-            ],
-            "Organizations": [
-                {
-                    "name": "The Reformist Party",
-                    "description": "A newly formed political party promising change."
-                },
-                {
-                    "name": "The Patriot Press",
-                    "description": "A media house often criticized for biased reporting."
-                },
-                {
-                    "name": "International Alliance Forum",
-                    "description": "A global entity focusing on diplomatic ties."
-                },
-                {
-                    "name": "Clear Politics Initiative",
-                    "description": "An NGO campaigning for transparent governance."
-                }
-            ],
-            "Events": [
-                {
-                    "name": "The Capital City Debate",
-                    "description": "A televised event where key political figures square off."
-                },
-                {
-                    "name": "The Bridgeside Pact Signing",
-                    "description": "An international agreement set to shape trade."
-                },
-                {
-                    "name": "The Liberty Rally",
-                    "description": "Organized by activists demanding political reforms."
-                },
-                {
-                    "name": "The Grand Assembly Inauguration",
-                    "description": "Marking the start of a new political term."
-                }
-            ]
-        },
-        "Themes": [
-            {
-                "name": "Democratic Renewal",
-                "description": "The rebirth and redefinition of democracy in the modern age."
-            },
-            {
-                "name": "Media Influence",
-                "description": "How the media shapes public perception and political outcomes."
-            },
-            {
-                "name": "International Diplomacy",
-                "description": "The dynamics and intricacies of global relations."
-            },
-            {
-                "name": "Grassroots Movements",
-                "description": "The rise and impact of people-led political movements."
-            },
-            {
-                "name": "Corruption & Transparency",
-                "description": "The fight against political corruption and the demand for transparent governance."
-            }
-        ],
-        "Time": [
-            "2020-3-4",
-            "2022-7-5"
-        ]
-    },
-    "Sports": {
-        "Entities": {
-            "People": [
-                {
-                    "name": "Liam Torres",
-                    "description": "A rising soccer star recently transferred to a top club."
-                },
-                {
-                    "name": "Coach Mariana Garcia",
-                    "description": "A legendary basketball coach with a controversial past."
-                },
-                {
-                    "name": "Jamie Patel",
-                    "description": "An eSports champion dominating international tournaments."
-                },
-                {
-                    "name": "Alexa Meyer",
-                    "description": "A journalist dedicated to unveiling the darker side of sports."
-                }
-            ],
-            "Places": [
-                {
-                    "name": "Stadium One",
-                    "description": "A world-renowned sports arena."
-                },
-                {
-                    "name": "The Gaming Den",
-                    "description": "A popular eSports venue attracting global attention."
-                },
-                {
-                    "name": "Hillcrest Academy",
-                    "description": "A school known for producing top-tier athletes."
-                },
-                {
-                    "name": "Victory Park",
-                    "description": "A recreational area where local athletes train."
-                }
-            ],
-            "Organizations": [
-                {
-                    "name": "Global Sports League (GSL)",
-                    "description": "Governing international sports tournaments."
-                },
-                {
-                    "name": "Elevate eSports",
-                    "description": "A company managing major eSports events and teams."
-                },
-                {
-                    "name": "Sports Integrity Commission",
-                    "description": "Focusing on fair play and anti-doping."
-                },
-                {
-                    "name": "Team Thunder",
-                    "description": "A popular basketball team with a massive fanbase."
-                }
-            ],
-            "Events": [
-                {
-                    "name": "The GSL Finals",
-                    "description": "The most awaited sports event of the year."
-                },
-                {
-                    "name": "eSports Mania",
-                    "description": "A major tournament with top-tier gamers."
-                },
-                {
-                    "name": "Hillcrest Sports Day",
-                    "description": "Showcasing budding talent from the academy."
-                },
-                {
-                    "name": "Victory Marathon",
-                    "description": "A race attracting participants worldwide."
-                }
-            ]
-        },
-        "Themes": [
-            {
-                "name": "Athletic Triumph & Tragedy",
-                "description": "The highs and lows athletes face in their careers."
-            },
-            {
-                "name": "Evolution of Sports",
-                "description": "The rise of eSports and its place alongside traditional sports."
-            },
-            {
-                "name": "Ethics in Sports",
-                "description": "Doping, fair play, and the moral choices athletes make."
-            },
-            {
-                "name": "Commercialization",
-                "description": "The business side of sports, from sponsorships to broadcasting rights."
-            },
-            {
-                "name": "Youth & Potential",
-                "description": "The journey of budding athletes from local grounds to global arenas."
-            }
-        ],
-        "Time": [
-            "2020-1-1",
-            "2022-6-6"
-        ]
-    },
-    "Science & Health": {
-        "Entities": {
-            "People": [
-                {
-                    "name": "Dr. Nina Wallace",
-                    "description": "Leading a revolutionary study on gene editing."
-                },
-                {
-                    "name": "Elijah Moon",
-                    "description": "A health journalist debunking popular health myths."
-                },
-                {
-                    "name": "Professor Ivan Chen",
-                    "description": "A pioneer in space exploration technologies."
-                },
-                {
-                    "name": "Hannah Reid",
-                    "description": "An advocate for mental health awareness and support."
-                }
-            ],
-            "Places": [
-                {
-                    "name": "Helix Labs",
-                    "description": "At the forefront of genetic research and innovation."
-                },
-                {
-                    "name": "Lunar Base Alpha",
-                    "description": "A newly established research station on the moon."
-                },
-                {
-                    "name": "Wellness Center",
-                    "description": "Offering alternative therapies and treatments."
-                },
-                {
-                    "name": "The Natural History Museum",
-                    "description": "Showcasing scientific discoveries and history."
-                }
-            ],
-            "Organizations": [
-                {
-                    "name": "Space Frontier Corp.",
-                    "description": "Launching missions to explore deep space."
-                },
-                {
-                    "name": "Global Health Initiative",
-                    "description": "Promoting health and well-being worldwide."
-                },
-                {
-                    "name": "Science Communicators Network",
-                    "description": "Educating the public about the latest scientific advancements."
-                },
-                {
-                    "name": "Mental Health United",
-                    "description": "Offering support and resources for mental well-being."
-                }
-            ],
-            "Events": [
-                {
-                    "name": "Helix Symposium",
-                    "description": "Gathering top minds in genetics and biotechnology."
-                },
-                {
-                    "name": "Lunar Mission Launch",
-                    "description": "An event marking mankind's leap into space exploration."
-                },
-                {
-                    "name": "Global Health Summit",
-                    "description": "Addressing the world's pressing health challenges."
-                },
-                {
-                    "name": "Science Fair Extravaganza",
-                    "description": "A festival celebrating innovations and discoveries."
-                }
-            ]
-        },
-        "Themes": [
-            {
-                "name": "Frontiers of Knowledge",
-                "description": "Breakthroughs and discoveries that redefine our understanding."
-            },
-            {
-                "name": "Space & Humanity",
-                "description": "The human aspiration to explore and inhabit space."
-            },
-            {
-                "name": "Holistic Health",
-                "description": "Integrating traditional and modern approaches to well-being."
-            },
-            {
-                "name": "Mental Health Awareness",
-                "description": "Breaking stigmas and advocating for mental health support."
-            },
-            {
-                "name": "Bioethics",
-                "description": "The moral implications of advancements like gene editing and biotechnology."
-            }
-        ],
-        "Time": [
-            "2019-1-1",
-            "2022-3-5"
-        ]
-    },
-    "Economics": {
-        "Entities": {
-            "People": [
-                {
-                    "name": "Sophia Grant",
-                    "description": "A billionaire entrepreneur with interests in various sectors."
-                },
-                {
-                    "name": "Leo Fernandes",
-                    "description": "A critic of global capitalism and author of bestselling economic theories."
-                },
-                {
-                    "name": "Cassandra Hayes",
-                    "description": "CEO of a startup disrupting traditional market dynamics."
-                },
-                {
-                    "name": "Markus Schultz",
-                    "description": "An economist studying the effects of digital currencies."
-                }
-            ],
-            "Places": [
-                {
-                    "name": "Financial District",
-                    "description": "The heart of economic activity and home to major corporations."
-                },
-                {
-                    "name": "Tech Haven",
-                    "description": "A hub for startups and technological innovations."
-                },
-                {
-                    "name": "Market Street",
-                    "description": "Reflecting the everyday economy, from street vendors to retailers."
-                },
-                {
-                    "name": "The Gold Exchange",
-                    "description": "A traditional trading floor dealing with precious metals."
-                }
-            ],
-            "Organizations": [
-                {
-                    "name": "World Economic Council",
-                    "description": "Setting global economic policies and standards."
-                },
-                {
-                    "name": "StartUp Visionary",
-                    "description": "An incubator fostering innovative business ideas."
-                },
-                {
-                    "name": "Currency Coalition",
-                    "description": "Advocating for the adoption of digital currencies."
-                },
-                {
-                    "name": "Trade & Prosperity Forum",
-                    "description": "Discussing trade agreements and international commerce."
-                }
-            ],
-            "Events": [
-                {
-                    "name": "Economic Leaders Summit",
-                    "description": "A gathering of influential economic thinkers and leaders."
-                },
-                {
-                    "name": "Tech Haven Showcase",
-                    "description": "Where startups pitch groundbreaking ideas."
-                },
-                {
-                    "name": "Currency Expo",
-                    "description": "Exploring the future of money and finance."
-                },
-                {
-                    "name": "Market Street Festival",
-                    "description": "Celebrating local businesses and crafts."
-                }
-            ]
-        },
-        "Themes": [
-            {
-                "name": "Inequality & Wealth Distribution",
-                "description": "Addressing disparities in wealth and opportunities."
-            },
-            {
-                "name": "Digital Transformation",
-                "description": "The rise of digital currencies and online marketplaces."
-            },
-            {
-                "name": "Entrepreneurial Spirit",
-                "description": "The journey from startups to industry disruptors."
-            },
-            {
-                "name": "Globalization vs. Localization",
-                "description": "Balancing international trade with local interests."
-            },
-            {
-                "name": "Sustainable Economies",
-                "description": "Promoting green business models and sustainable practices."
-            }
-        ],
-        "Time": [
-            "2018-5-2",
-            "2021-12-6"
-        ]
-    },
-    "Culture": {
-        "Entities": {
-            "People": [
-                {
-                    "name": "Tariq Mahmoud",
-                    "description": "A filmmaker highlighting underrepresented stories."
-                },
-                {
-                    "name": "Aria Lopez",
-                    "description": "A celebrated musician known for blending traditional and modern sounds."
-                }
-            ],
-            "Places": [
-                {
-                    "name": "Cineworld Studios",
-                    "description": "A leading film production hub."
-                },
-                {
-                    "name": "Heritage Park",
-                    "description": "Preserving traditions and hosting cultural festivals."
-                }
-            ],
-            "Organizations": [
-                {
-                    "name": "Street Art Collective",
-                    "description": "Supporting and showcasing urban art forms."
-                },
-                {
-                    "name": "Historical Society",
-                    "description": "Documenting and preserving cultural heritages."
-                }
-            ],
-            "Events": [
-                {
-                    "name": "Heritage Days",
-                    "description": "Offering a glimpse into traditional arts and crafts."
-                },
-                {
-                    "name": "World Music Fest",
-                    "description": "Showcasing global music genres and artists."
-                }
-            ]
-        },
-        "Themes": [
-            {
-                "name": "Tradition Meets Modernity",
-                "description": "How traditional arts evolve in the modern age."
-            },
-            {
-                "name": "Cultural Identity",
-                "description": "The exploration and assertion of cultural roots and identities."
-            },
-            {
-                "name": "Art as Resistance",
-                "description": "Using art forms to make political and social statements."
-            },
-            {
-                "name": "Film & Representation",
-                "description": "Showcasing diverse and underrepresented narratives in cinema."
-            },
-            {
-                "name": "Cultural Exchange & Fusion",
-                "description": "Celebrating the blend of cultures in music, art, and daily life."
-            }
-        ],
-        "Time": [
-            "2009-1-1",
-            "2020-12-30"
-        ]
-    }
+  "World_News": {
+    "Time": ["2021-2-5", "2023-7-21"],
+    "Entities": [
+      {
+        "name": "Globex Federation",
+        "type": "organisation",
+        "description": "A newly established intercontinental alliance promoting sustainable trade practices."
+      },
+      {
+        "name": "Westonia",
+        "type": "places",
+        "description": "An emerging nation in Central Asia known for its rich mineral resources."
+      },
+      {
+        "name": "Paxterra Conference",
+        "type": "event",
+        "description": "A global gathering to discuss peace initiatives and international cooperation."
+      },
+      {
+        "name": "Lana DeCosta",
+        "type": "people",
+        "description": "An influential diplomat brokering peace deals in conflict zones."
+      },
+      {
+        "name": "Mount Tarnova",
+        "type": "places",
+        "description": "A significant volcanic site where recent activities have raised global concern."
+      },
+      {
+        "name": "Oceana Coalition",
+        "type": "organisation",
+        "description": "An alliance of Pacific islands addressing rising sea levels."
+      },
+      {
+        "name": "Solar Treaty",
+        "type": "event",
+        "description": "An international agreement to accelerate the adoption of solar energy."
+      },
+      {
+        "name": "Rafiq Al Sayed",
+        "type": "people",
+        "description": "A renowned global activist fighting for refugee rights."
+      },
+      {
+        "name": "Translandia",
+        "type": "places",
+        "description": "A strategic isthmus experiencing geopolitical tensions."
+      },
+      {
+        "name": "Global Digital Forum",
+        "type": "event",
+        "description": "An event where nations discuss cyber-security and digital ethics."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Digital Diplomacy",
+        "description": "The use of digital platforms for international relations."
+      },
+      {
+        "name": "Environmental Security",
+        "description": "Addressing environmental threats as security challenges."
+      },
+      {
+        "name": "Energy Shift",
+        "description": "Transitioning from fossil fuels to sustainable energy sources."
+      },
+      {
+        "name": "Migration Patterns",
+        "description": "Monitoring global movements due to conflicts and climate changes."
+      },
+      {
+        "name": "Space Exploration",
+        "description": "The challenges and opportunities of exploring outer space."
+      }
+    ]
+  },
+  "Politics": {
+    "Time": ["2020-6-15", "2023-4-10"],
+    "Entities": [
+      {
+        "name": "Lucia Fernandes",
+        "type": "people",
+        "description": "A charismatic leader from South America advocating for environmental reforms."
+      },
+      {
+        "name": "Civic Unity Party",
+        "type": "organisation",
+        "description": "A rising political party in Europe focusing on urban development and social welfare."
+      },
+      {
+        "name": "EuraReferendum",
+        "type": "event",
+        "description": "A vote in several European countries on adopting a unified digital currency."
+      },
+      {
+        "name": "Northland",
+        "type": "places",
+        "description": "A fictional nation known for its strict surveillance policies."
+      },
+      {
+        "name": "Sarah Thomson",
+        "type": "people",
+        "description": "An up-and-coming politician advocating for universal healthcare."
+      },
+      {
+        "name": "Freedom First Movement",
+        "type": "organisation",
+        "description": "A political movement that champions individual freedoms and liberties."
+      },
+      {
+        "name": "Global Governance Talks",
+        "type": "event",
+        "description": "An annual event discussing the possibility of a unified global governance system."
+      },
+      {
+        "name": "Demetrio Vasquez",
+        "type": "people",
+        "description": "A controversial leader known for his populist policies."
+      },
+      {
+        "name": "Solara City",
+        "type": "places",
+        "description": "A city-state known for its advanced democratic processes."
+      },
+      {
+        "name": "Peaceful Transition Summit",
+        "type": "event",
+        "description": "A summit discussing peaceful power transitions in volatile regions."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Digital Governance",
+        "description": "Using digital tools for efficient government administration."
+      },
+      {
+        "name": "Populism Rise",
+        "description": "The increasing popularity of leaders and movements that appeal to general populaces, often at the expense of minority groups."
+      },
+      {
+        "name": "Global Alliances",
+        "description": "The formation and impact of international coalitions and partnerships."
+      },
+      {
+        "name": "Urban Planning and Infrastructure",
+        "description": "The importance of planning and infrastructure in rapidly urbanizing areas."
+      },
+      {
+        "name": "Electoral Reforms",
+        "description": "Changes proposed or made to electoral systems to enhance democracy."
+      }
+    ]
+  },
+  "Business_and_Economy": {
+    "Time": ["2019-10-1", "2022-12-20"],
+    "Entities": [
+      {
+        "name": "NexaTech Enterprises",
+        "type": "organisation",
+        "description": "A multinational conglomerate specializing in renewable energy solutions and smart devices."
+      },
+      {
+        "name": "Econopolis",
+        "type": "places",
+        "description": "A business hub in Southeast Asia renowned for its innovative startups."
+      },
+      {
+        "name": "Bridgestone Acquisition",
+        "type": "event",
+        "description": "A landmark business deal that altered global market dynamics."
+      },
+      {
+        "name": "Elara Financials",
+        "type": "organisation",
+        "description": "A leading bank credited with innovative fintech solutions."
+      },
+      {
+        "name": "Mara Rivera",
+        "type": "people",
+        "description": "A thought leader in sustainable business practices."
+      },
+      {
+        "name": "Silvershore Markets",
+        "type": "places",
+        "description": "An emerging trading center in the Southern Hemisphere."
+      },
+      {
+        "name": "Quantex Expo",
+        "type": "event",
+        "description": "An annual exhibition showcasing future technologies in finance."
+      },
+      {
+        "name": "Ronald Fletcher",
+        "type": "people",
+        "description": "A celebrated economist known for his theories on digital currencies."
+      },
+      {
+        "name": "LunarTech Inc.",
+        "type": "organisation",
+        "description": "A startup working on mining rare minerals from the moon."
+      },
+      {
+        "name": "Global Trade Reforms Meet",
+        "type": "event",
+        "description": "A meeting discussing new age reforms in international trade."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Quantum Commerce",
+        "description": "Integration of quantum computing in trade and finance."
+      },
+      {
+        "name": "Sustainable Businesses",
+        "description": "Shift towards environmentally conscious business models."
+      },
+      {
+        "name": "Fintech Innovations",
+        "description": "Technological advancements in the financial sector."
+      },
+      {
+        "name": "Space Economy",
+        "description": "Economic opportunities related to space exploration and utilization."
+      },
+      {
+        "name": "Economic Nationalism",
+        "description": "Countries prioritizing domestic businesses over international trade."
+      }
+    ]
+  },
+
+  "Science_and_Technology": {
+    "Time": ["2021-5-8", "2023-7-22"],
+    "Entities": [
+      {
+        "name": "Orion Labs",
+        "type": "organisation",
+        "description": "A leading facility researching deep space technologies."
+      },
+      {
+        "name": "Nanobot Revolution",
+        "type": "event",
+        "description": "An event showcasing nanotechnology's potential in real-time."
+      },
+      {
+        "name": "Dr. Lina Kurov",
+        "type": "people",
+        "description": "A pioneer in biotechnological research."
+      },
+      {
+        "name": "Techville University",
+        "type": "places",
+        "description": "A prestigious institution leading in AI research."
+      },
+      {
+        "name": "QuantumNet Launch",
+        "type": "event",
+        "description": "The unveiling of the first quantum-based internet."
+      },
+      {
+        "name": "NeuraTech Corp.",
+        "type": "organisation",
+        "description": "A company leading the neurotechnology frontier."
+      },
+      {
+        "name": "Mars Habitat Project",
+        "type": "event",
+        "description": "A project aiming to create sustainable habitats on Mars."
+      },
+      {
+        "name": "SolarX Symposium",
+        "type": "event",
+        "description": "A conference discussing advances in solar energy capture."
+      },
+      {
+        "name": "Atlas Ocean Exploration",
+        "type": "organisation",
+        "description": "An organization focused on deep sea exploration and conservation."
+      },
+      {
+        "name": "Vera Flynn",
+        "type": "people",
+        "description": "A visionary in sustainable technologies."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Bio-Integration",
+        "description": "Combining organic and synthetic materials to enhance capabilities."
+      },
+      {
+        "name": "Space Colonization",
+        "description": "The challenges and potentials of human habitation beyond Earth."
+      },
+      {
+        "name": "Deep Sea Mysteries",
+        "description": "Exploring and understanding the uncharted depths of our oceans."
+      },
+      {
+        "name": "Quantum Leap",
+        "description": "The rapid advancements and implications of quantum technologies."
+      },
+      {
+        "name": "Green Tech Evolution",
+        "description": "Technological solutions for environmental sustainability."
+      }
+    ]
+  },
+
+  "Culture_and_Entertainment": {
+    "Time": ["2019-2-14", "2023-5-30"],
+    "Entities": [
+      {
+        "name": "Elena Voz",
+        "type": "people",
+        "description": "A rising actress known for her unique cinematic choices."
+      },
+      {
+        "name": "Global Film Festival Gala",
+        "type": "event",
+        "description": "An event celebrating world cinema."
+      },
+      {
+        "name": "Harmony Arts Center",
+        "type": "places",
+        "description": "A cultural hub promoting global art forms."
+      },
+      {
+        "name": "Jupiter Sounds",
+        "type": "organisation",
+        "description": "A record label known for promoting indie artists."
+      },
+      {
+        "name": "Nathan Brooks",
+        "type": "people",
+        "description": "A bestselling author of futuristic novels."
+      },
+      {
+        "name": "Virtual World Expo",
+        "type": "event",
+        "description": "A showcase of the latest in virtual reality entertainment."
+      },
+      {
+        "name": "Sapphire Dance Troupe",
+        "type": "organisation",
+        "description": "A group revolutionizing contemporary dance forms."
+      },
+      {
+        "name": "Frost Literature Fest",
+        "type": "event",
+        "description": "A winter event celebrating literary talents from around the world."
+      },
+      {
+        "name": "Crystal Theatre",
+        "type": "places",
+        "description": "A famous venue known for avant-garde performances."
+      },
+      {
+        "name": "Kai Lannister",
+        "type": "people",
+        "description": "A celebrated music producer and judge on 'Talent Worldwide'."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Virtual Reality Theatres",
+        "description": "The rise of immersive cinema experiences using VR."
+      },
+      {
+        "name": "Digital Art Revolution",
+        "description": "The transformative power of digital tools in art creation and exhibition."
+      },
+      {
+        "name": "Cultural Fusion",
+        "description": "Integrating diverse cultural elements to produce unique entertainment forms."
+      },
+      {
+        "name": "Cinema Renaissance",
+        "description": "The resurgence of cinema with experimental storytelling."
+      },
+      {
+        "name": "Music and Technology",
+        "description": "The blend of technology in creating and experiencing music."
+      }
+    ]
+  },
+  "Mish_Mash": {
+    "Time": ["2021-2-5", "2023-7-21"],
+    "Entities": [
+      {
+        "name": "Redwood University",
+        "type": "organization",
+        "description": "A prestigious institution known for its cutting-edge research in tech and education."
+      },
+      {
+        "name": "Lunar Lake Retreat",
+        "type": "places",
+        "description": "A serene lakeside location known for hosting international conferences, workshops, and retreats on technology, culture, and education."
+      },
+      {
+        "name": "NexTech Enterprises",
+        "type": "organization",
+        "description": "A rapidly rising startup at the forefront of technological innovation and product development."
+      },
+      {
+        "name": "Isabella Grant",
+        "type": "people",
+        "description": "A determined investigative journalist with a knack for uncovering deep-rooted conspiracies."
+      },
+      {
+        "name": "Simon Angus",
+        "type": "people",
+        "description": "A multifaceted individual, once a celebrated athlete and now a thriving entrepreneur in the tech world."
+      },
+      {
+        "name": "Helen Purchase",
+        "type": "people",
+        "description": "A leading agricultural scientist recognized for her work in sustainable farming techniques."
+      },
+      {
+        "name": "Tim Dwyer",
+        "type": "people",
+        "description": "A renowned antique book dealer with a reputation for discovering rare and valuable manuscripts."
+      },
+      {
+        "name": "Ying Yang",
+        "type": "people",
+        "description": "A critically acclaimed film director, known for delving into intriguing and often mysterious narratives in cinema."
+      },
+      {
+        "name": "Songhai Fan",
+        "type": "people",
+        "description": "A prominent tech reviewer respected for his unbiased and thorough assessments of emerging products."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Politics",
+        "description": "The drama and power play shaping nations."
+      },
+      {
+        "name": "Education",
+        "description": "Evolutions in learning and the quest for knowledge."
+      },
+      {
+        "name": "Techniques",
+        "description": "The latest methods and practices reshaping industries."
+      },
+      {
+        "name": "Business",
+        "description": "The pursuit of profits, innovations, and ethical dilemmas."
+      },
+      {
+        "name": "Culture",
+        "description": "The rich tapestry of traditions, arts, and beliefs."
+      },
+      {
+        "name": "Entertainment",
+        "description": "The world of glitz, glamour, and riveting stories."
+      },
+      {
+        "name": "Sports",
+        "description": "Triumphs, defeats, and the spirit of the game."
+      }
+    ]
+  }
 }

@@ -2,13 +2,20 @@ import json
 import os
 import sys
 from typing import Optional
+import random
 
 # from narrative_alignmenter import get_alignment
 from narrative_alignmenter2 import get_alignment
 from narrative_deducer import create_story
 
 
-def generate_story_files(section: str, narrative_structure: str, seed: int):
+def generate_story_files(
+    section: str, narrative_structure: str, seed: Optional[int] = None
+):
+    # if there is seed given, use random seed
+    if seed is None:
+        seed = random.randint(0, 1000)
+
     # Define folders
     alignment_folder = "alignment"
     stories_folder = "stories"
@@ -83,30 +90,27 @@ def generate_story_files(section: str, narrative_structure: str, seed: int):
 # Example usage:
 if __name__ == "__main__":
     the_keys_narrative_context = [
-        "World_News",
+        # "World_News",
         # "Politics",
         # "Business_and_Economy",
         # "Science_and_Technology",
-        # "Culture_and_Entertainment"
+        # "Culture_and_Entertainment",
+        "Mish_Mash",
     ]
 
     the_narrative_structure = [
-        # "SimpleLinear",
-        # "SimpleFork",
-        # "SimpleWideMerge",
-        # "SimpleWideBranch",
-        # "SimpleSharpMerge",
-        "SimpleSharpBranch",
-        # "Linear",
-        # "Divergence",
-        # "Convergence",
-        # "Diamond",
-        # "Hanger",
-        # "Parallelogram",
-        # "ComplexCombined"
+        "Linear",
+        "Arch",
+        "Ladder",
+        "LongFork",
+        "ShortFork",
+        "WideMerge",
+        "WideBranch",
+        "SharpMerge",
+        "SharpBranch",
     ]
 
     # For the simple narrative structures
     for section in the_keys_narrative_context:
         for structure in the_narrative_structure:
-            generate_story_files(section, structure, 29)
+            generate_story_files(section, structure)

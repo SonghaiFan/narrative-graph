@@ -11,7 +11,7 @@ narrative_structure = [item["name"] for item in structure_instructions_list]
 print("narrative_structure", narrative_structure)
 
 # Load data from 'narrative_context.json'
-with open("meta/narrative_context2.json", "r") as file:
+with open("meta/narrative_context.json", "r") as file:
     narrative_context = json.load(file)
 
 print("narrative_context", narrative_context)
@@ -74,7 +74,7 @@ def align_theme_entity(narrative_obj, context_obj, seed=None):
     times = context_obj["Time"].copy()
 
     # Sample entities
-    E = random.sample(entities_data, 7)
+    E = random.sample(entities_data, 4)
 
     # Identify unique prefixes in the narrative structure
     prefixes = set(node[0] for node in narrative_obj["nodes"])
@@ -131,7 +131,7 @@ def align_theme_entity(narrative_obj, context_obj, seed=None):
             "Entity": list(set(entities_for_node)),
             "Time": periods[int(node[-1]) - 1],
             "Prev": parent_mapping.get(node, []),
-            "Description": f"{theme_obj['name']}: {theme_obj['description']}"
+            "Description": f"This is a news article mainly about {theme_obj['name']} in which the entities involved are respectively:  {theme_obj['description']}"
             + "\n"
             + "\n".join(
                 [
@@ -140,6 +140,7 @@ def align_theme_entity(narrative_obj, context_obj, seed=None):
                     if e["name"] in entities_for_node
                 ]
             ),
+            "StuctureInstruction": f"The narrative structure is {narrative_obj['name']}, where {narrative_obj['description']} (eg. {narrative_obj['structure']}) The current chapter node is {node}, which is the {node[-1]}th chapter node in the narrative structure.",
         }
 
     return alignment
@@ -181,7 +182,7 @@ def get_alignment(
 
 if __name__ == "__main__":
     # random select topic and structure
-    TOPIC = random.choice(keys_narrative_context)
+    TOPIC = "Mish_Mash"  # random.choice(keys_narrative_context)
     NARRATIVE_STRUCTURE = random.choice(narrative_structure)
 
     print("=" * 50)

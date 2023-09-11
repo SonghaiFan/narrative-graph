@@ -1,6 +1,6 @@
 [
   {
-    "name": "SimpleLinear",
+    "name": "Linear",
     "description": "Three chapters progress in sequence, consistently following Theme A.",
     "structure": "A1 -> A2 -> A3",
     "instructions": "Contains ONLY 3 nodes and 2 edges in total.",
@@ -11,7 +11,29 @@
     ]
   },
   {
-    "name": "SimpleFork",
+    "name": "Arch",
+    "description": "The narrative begins with Theme A, then shifts to Theme B, and finally returns to Theme A.",
+    "structure": "A1 -> B2 -> A3",
+    "instructions": "Contains ONLY 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B2", "A3"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "A3" }
+    ]
+  },
+  {
+    "name": "Ladder",
+    "description": "The narrative begins with Theme A, then shifts to Theme B, and finally shifts to Theme C.",
+    "structure": "A1 -> B2 -> C3",
+    "instructions": "Contains ONLY 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B2", "C3"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "C3" }
+    ]
+  },
+  {
+    "name": "LongFork",
     "description": "The narrative follows Theme A for two chapters, then diverges to Theme B in the third chapter.",
     "structure": "A1 -> A2 -> B3",
     "instructions": "Contains 3 nodes and 2 edges in total.",
@@ -22,7 +44,18 @@
     ]
   },
   {
-    "name": "SimpleWideMerge",
+    "name": "ShortFork",
+    "description": "The narrative follows Theme A for one chapter, then diverges to Theme B in the second chapter.",
+    "structure": "A1 -> B2 -> B3",
+    "instructions": "Contains 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B2", "B3"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "B3" }
+    ]
+  },
+  {
+    "name": "WideMerge",
     "description": "Two initial chapters, each from Themes A and C, converge into a shared Theme B in the subsequent chapter.",
     "structure": "A1 -> B2; C1 -> B2",
     "instructions": "Contains 3 nodes and 2 edges in total.",
@@ -33,7 +66,7 @@
     ]
   },
   {
-    "name": "SimpleWideBranch",
+    "name": "WideBranch",
     "description": "From Theme B, the narrative branches out to both Themes A and C in the following chapters.",
     "structure": "B1 -> A2; B1 -> C2",
     "instructions": "Contains 3 nodes and 2 edges in total.",
@@ -44,7 +77,7 @@
     ]
   },
   {
-    "name": "SimpleSharpMerge",
+    "name": "SharpMerge",
     "description": "A chapter from Theme A and another from Theme B converge into a single chapter under Theme B.",
     "structure": "A1 -> B2; B1 -> B2",
     "instructions": "Contains 3 nodes and 2 edges in total.",
@@ -55,7 +88,7 @@
     ]
   },
   {
-    "name": "SimpleSharpBranch",
+    "name": "SharpBranch",
     "description": "A chapter under Theme A diverges into two chapters, one continuing Theme A and another shifting to Theme B.",
     "structure": "A1 -> A2; A1 -> B2",
     "instructions": "Contains 3 nodes and 2 edges in total.",
@@ -63,96 +96,6 @@
     "edges": [
       { "from": "A1", "to": "A2" },
       { "from": "A1", "to": "B2" }
-    ]
-  },
-  {
-    "name": "Linear",
-    "description": "Four chapters progress sequentially, all adhering to Theme A.",
-    "structure": "A1 -> A2 -> A3 -> A4",
-    "instructions": "Contains ONLY 4 nodes and 3 edges in total.",
-    "nodes": ["A1", "A2", "A3", "A4"],
-    "edges": [
-      { "from": "A1", "to": "A2" },
-      { "from": "A2", "to": "A3" },
-      { "from": "A3", "to": "A4" }
-    ]
-  },
-  {
-    "name": "Divergence",
-    "description": "Begins with Theme A and continues for two chapters. It then diverges, with one path retaining Theme A and the other shifting to Theme B.",
-    "structure": "A1 -> A2 -> A3; A1 -> A2 -> B3",
-    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
-    "nodes": ["A1", "A2", "A3", "B3"],
-    "edges": [
-      { "from": "A1", "to": "A2" },
-      { "from": "A2", "to": "A3" },
-      { "from": "A2", "to": "B3" }
-    ]
-  },
-  {
-    "name": "Convergence",
-    "description": "Starts with two chapters: one from Theme A and another from Theme B. Both converge to follow Theme A for the subsequent chapters.",
-    "structure": "A1 -> A2 -> A3; B1 -> A2 -> A3",
-    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
-    "nodes": ["A1", "A2", "A3", "B1"],
-    "edges": [
-      { "from": "A1", "to": "A2" },
-      { "from": "A2", "to": "A3" },
-      { "from": "B1", "to": "A2" }
-    ]
-  },
-  {
-    "name": "Diamond",
-    "description": "Begins and concludes with Theme A. In between, it branches into two paths: one following Theme B and the other Theme C.",
-    "structure": "A1 -> B2 -> A3; A1 -> C2 -> A3",
-    "instructions": "Contains ONLY 5 nodes and 4 edges in total.",
-    "nodes": ["A1", "B2", "A3", "C2"],
-    "edges": [
-      { "from": "A1", "to": "B2" },
-      { "from": "B2", "to": "A3" },
-      { "from": "A1", "to": "C2" },
-      { "from": "C2", "to": "A3" }
-    ]
-  },
-  {
-    "name": "Hanger",
-    "description": "Starts with Theme A and diverges into two paths. One continues with Theme A, while the other explores Theme B, both eventually converging back to Theme A.",
-    "structure": "A1 -> A2 -> A3; A1 -> B2 -> A3",
-    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
-    "nodes": ["A1", "A2", "A3", "B2"],
-    "edges": [
-      { "from": "A1", "to": "A2" },
-      { "from": "A2", "to": "A3" },
-      { "from": "A1", "to": "B2" },
-      { "from": "B2", "to": "A3" }
-    ]
-  },
-  {
-    "name": "Parallelogram",
-    "description": "Starts with Theme A and branches into two paths. One remains with Theme A and concludes with Theme B, while the other directly shifts to Theme B and stays with it.",
-    "structure": "A1 -> A2 -> B3; A1 -> B2 -> B3",
-    "instructions": "Contains ONLY 4 nodes and 4 edges in total.",
-    "nodes": ["A1", "A2", "B2", "B3"],
-    "edges": [
-      { "from": "A1", "to": "A2" },
-      { "from": "A2", "to": "B3" },
-      { "from": "A1", "to": "B2" },
-      { "from": "B2", "to": "B3" }
-    ]
-  },
-  {
-    "name": "ComplexCombined",
-    "description": "A combination of SimpleFork, SimpleWideMerge, and SimpleSharpBranch.",
-    "structure": "A1 -> A2 -> B3 -> D4 -> D5; C3 -> D4 -> E5",
-    "instructions": "Contains 7 nodes and 6 edges in total.",
-    "nodes": ["A1", "A2", "B3", "C3", "D4", "D5", "E5"],
-    "edges": [
-      { "from": "A1", "to": "A2" },
-      { "from": "A2", "to": "B3" },
-      { "from": "B3", "to": "D4" },
-      { "from": "C3", "to": "D4" },
-      { "from": "D4", "to": "D5" },
-      { "from": "D4", "to": "E5" }
     ]
   }
 ]

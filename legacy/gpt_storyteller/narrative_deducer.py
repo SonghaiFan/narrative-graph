@@ -38,6 +38,7 @@ def make_chapter(
     entity: List[str],
     time_period: List[str],
     description: str,
+    narrative_structure: str,
     prev_content: str,
     model_name: str = "gpt-4",
     temperature: int = 0,
@@ -54,15 +55,21 @@ def make_chapter(
 
     # Create a prompt template
     prompt_template = f"""
-    You are a senior reporter at the New York Times and you are writing a fictional news story that continues from a previous story. Your writing style is concise and crisp, without rhetoric or superfluous narration. The continuation chapter needs to be closely related to the previous chapter while focusing on the following entities and themes:
-
+    You are a senior reporter for The New York Times, your task is to write a fictional news report that continues from a previous one. 
+    - Your writing style is concise and clear, without the use of rhetorical techniques. 
+    - The continuation chapter needs to be closely related to the previous one (intriguing and logically connected in narration),
+    - The theme of the story must be strikingly prominent, you can not make up new themes except the only one given below.
+    - All entities given below must be included in the story.
+    
     ID: {id}
     Time Period: {time_period_str}
     Themes: {theme}
     Entity: {', '.join(entity)}
 
-    Describtion: {description}
-    Previous content: {prev_content_str}
+    Narrative Sturcture: {narrative_structure}
+
+    Context: {description}
+    Previous stories: {prev_content_str}
 
     {chapter_parser.get_format_instructions()}
     """
@@ -104,7 +111,9 @@ def create_story(alignment):
             entity=details["Entity"],
             time_period=details["Time"],
             description=details["Description"],
+            narrative_structure=details["StuctureInstruction"],
             prev_content=prev_content,
+            temperature=0.5,
         )
 
         new_chapter_dict = new_chapter.dict()
