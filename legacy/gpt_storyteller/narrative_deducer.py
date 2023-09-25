@@ -18,19 +18,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-# class Chapter(BaseModel):
-#     title: str = Field(description="Title of the chapter.")
-#     time_period: List[str] = Field(
-#         description="Time period of the chapter (start date, end date), in format YYYY-MM-DD."
-#     )
-#     themes: List[str] = Field(description="Themes related within chapter.")
-#     entity: List[str] = Field(description="Entity mentioned within chapter.")
-#     content: str = Field(description="Content of the chapter.")
-
-
-# class Story(BaseModel):
-#     chapters: List[Chapter] = Field(description="List of chapters.")
-
 
 def make_chapter(
     id: str,
@@ -61,7 +48,7 @@ def make_chapter(
     - The theme of the story must be strikingly prominent, you can not make up new themes except the only one given below.
     - All entities given below must be included in the story.
     
-    ID: {id}
+    Chapter ID: {id}
     Time Period: {time_period_str}
     Themes: {theme}
     Entity: {', '.join(entity)}

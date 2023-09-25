@@ -35,14 +35,16 @@ class Graph(BaseModel):
 
 
 class Chapter(BaseModel):
-    id: str = Field(description="ID of the chapter.")
+    id: str = Field(description="ID of the chapter .")
     title: str = Field(description="Headlines for news story chapters")
     time_period: List[str] = Field(
         description="Time period of the chapter (start date, end date), in format YYYY-MM-DD."
     )
     themes: List[str] = Field(description="Themes related within chapter.")
     entity: List[str] = Field(description="Entity mentioned within chapter.")
-    content: str = Field(description="Content of the chapter.")
+    content: str = Field(
+        description="Content of the chapter(In format as news article lead paragraph)."
+    )
 
 
 class Story(BaseModel):

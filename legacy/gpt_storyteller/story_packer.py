@@ -45,21 +45,21 @@ combined_stories = story_packer(directory_path)
 with open("stories/combined_stories.json", "w") as file:
     json.dump(combined_stories, file)
 
-# move all the files in stories, log and alignment to arc folder within each of them
-# Specify directories to be processed
-directories = ["stories", "logs", "alignment"]
+# # move all the files in stories, log and alignment to arc folder within each of them
+# # Specify directories to be processed
+# directories = ["stories", "logs", "alignment"]
 
-# Iterate over each directory
-for directory in directories:
-    # Make sure the target 'arc' directory exists
-    os.makedirs(os.path.join(directory, "arc"), exist_ok=True)
+# # Iterate over each directory
+# for directory in directories:
+#     # Make sure the target 'arc' directory exists
+#     os.makedirs(os.path.join(directory, "arc"), exist_ok=True)
 
-    # Iterate over each file in the directory
-    for file_name in os.listdir(directory):
-        # Ensure you're working with files, not directories
-        if os.path.isfile(os.path.join(directory, file_name)):
-            # Rename (i.e., move) the file
-            os.rename(
-                os.path.join(directory, file_name),
-                os.path.join(directory, "arc", file_name),
-            )
+#     # Iterate over each file in the directory
+#     for file_name in os.listdir(directory):
+#         # Ensure you're working with files, not directories
+#         if os.path.isfile(os.path.join(directory, file_name)):
+#             # Rename (i.e., move) the file
+#             os.rename(
+#                 os.path.join(directory, file_name),
+#                 os.path.join(directory, "arc", file_name),
+#             )
