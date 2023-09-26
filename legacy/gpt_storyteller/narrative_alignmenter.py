@@ -63,18 +63,18 @@ def process_nodes_in_order(narrative_obj):
     return processed_nodes
 
 
-def align_theme_entity(narrative_obj, context, seed=None):
+def align_theme_entity(narrative_obj, context_obj, seed=None):
     # Set seed for reproducibility
     if seed:
         random.seed(seed)
 
-    themes = context["Themes"].copy()
-    entities_data = context["Entities"]
-    times = context["Time"]
+    # Collect themes and entities from context_obj based on categories
+    themes = context_obj["Themes"].copy()
+    entities_data = context_obj["Entities"].copy()
+    times = context_obj["Time"].copy()
 
-    # Collect all entities into a list E and sample it
-    E = [ent for category in entities_data.values() for ent in category]
-    E = random.sample(E, 7)
+    # Sample entities
+    E = random.sample(entities_data, 4)
 
     # Identify unique prefixes in the narrative structure
     prefixes = set(node[0] for node in narrative_obj["nodes"])
@@ -100,7 +100,6 @@ def align_theme_entity(narrative_obj, context, seed=None):
 
     # Assign entities, themes, and parent nodes
     alignment = {}
-
     ordered_nodes = process_nodes_in_order(narrative_obj)
 
     for node in ordered_nodes:
@@ -132,15 +131,7 @@ def align_theme_entity(narrative_obj, context, seed=None):
             "Entity": list(set(entities_for_node)),
             "Time": periods[int(node[-1]) - 1],
             "Prev": parent_mapping.get(node, []),
-            "Description": f"{theme_obj['name']}: {theme_obj['description']}"
-            + "\n"
-            + "\n".join(
-                [
-                    f"{e['name']}: {e['description']}"
-                    for e in E
-                    if e["name"] in entities_for_node
-                ]
-            ),
+            "StuctureInstruction": f"The narrative structure is {narrative_obj['name']}, where {narrative_obj['description']} (eg. {narrative_obj['structure']}) The current chapter node is {node}, which is the {node[-1]}th chapter node in the narrative structure.",
         }
 
     return alignment
@@ -165,10 +156,16 @@ def get_alignment(
 
     print("Selected structure_instruction:", structure_instruction)
 
-    # The align_theme_entity function expects 'narrative_obj' and 'context' as its parameters.
+    # Check if the given topic exists in the narrative context
+    if topic not in narrative_context:
+        print(f"No context found for the topic: {topic}.")
+        return None
 
+    # The align_theme_entity function expects 'narrative_obj' and 'context' as its parameters.
     alignment_results = align_theme_entity(
-        narrative_obj=structure_instruction, context=narrative_context[topic], seed=seed
+        narrative_obj=structure_instruction,
+        context_obj=narrative_context[topic],
+        seed=seed,
     )
 
     return alignment_results
@@ -176,7 +173,7 @@ def get_alignment(
 
 if __name__ == "__main__":
     # random select topic and structure
-    TOPIC = random.choice(keys_narrative_context)
+    TOPIC = "Mish_Mash"  # random.choice(keys_narrative_context)
     NARRATIVE_STRUCTURE = random.choice(narrative_structure)
 
     print("=" * 50)
@@ -188,7 +185,7 @@ if __name__ == "__main__":
     alignment_results = get_alignment(
         topic=TOPIC,
         structure=NARRATIVE_STRUCTURE,
-        # seed=42,
+        seed=42,
     )
 
     print("Generated alignment_results:", alignment_results)

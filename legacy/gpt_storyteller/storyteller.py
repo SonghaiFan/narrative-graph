@@ -5,7 +5,7 @@ from typing import Optional
 import random
 
 # from narrative_alignmenter import get_alignment
-from narrative_alignmenter2 import get_alignment
+from narrative_alignmenter import get_alignment
 from narrative_deducer import create_story
 
 
@@ -92,10 +92,10 @@ if __name__ == "__main__":
     the_keys_narrative_context = [
         # "World_News",
         # "Politics",
-        "Business_and_Economy",
+        # "Business_and_Economy",
         # "Science_and_Technology",
         # "Culture_and_Entertainment",
-        # "Mish_Mash",
+        "Mish_Mash",
     ]
 
     the_narrative_structure = [

@@ -24,7 +24,6 @@ def make_chapter(
     theme: str,
     entity: List[str],
     time_period: List[str],
-    description: str,
     narrative_structure: str,
     prev_content: str,
     model_name: str = "gpt-4",
@@ -43,20 +42,20 @@ def make_chapter(
     # Create a prompt template
     prompt_template = f"""
     You are a senior reporter for The New York Times, your task is to write a fictional news report that continues from a previous one. 
-    - Your writing style is concise and clear, without the use of rhetorical techniques. 
+    - Your writing style is concise and clear, without the use of rhetorical techniques. Avoid explicitly referencing the narrative structure and themes; instead, integrate it subtly within the story. The story should be written in a style suitable for CEFR Level A1 and each chapter approximately take 3 minutes to read.
     - The continuation chapter needs to be closely related to the previous one (intriguing and logically connected in narration),
-    - The theme of the story must be strikingly prominent, you can not make up new themes except the only one given below.
+    - The theme of the story must be strikingly prominent and distinct.
     - All entities given below must be included in the story.
-    
-    Chapter ID: {id}
-    Time Period: {time_period_str}
-    Themes: {theme}
-    Entity: {', '.join(entity)}
 
     Narrative Sturcture: {narrative_structure}
 
-    Context: {description}
-    Previous stories: {prev_content_str}
+    The node label uniquely identifies each chapter by combining a letter indicating the theme ("A" for Theme A) and a number indicating the timeframe sequence (1 for first, 2 for second, etc.)
+    - Each node for one chapter, a chapter is a news roundup collection digest.
+    - The theme of the chapter must be strikingly prominent, ONLY one for each chapter.
+    - node connected by edge should have at least one common entity 
+    - node label by same character should have same theme
+
+    Previous context: {prev_content_str}
 
     {chapter_parser.get_format_instructions()}
     """
@@ -97,7 +96,6 @@ def create_story(alignment):
             theme=details["Theme"],
             entity=details["Entity"],
             time_period=details["Time"],
-            description=details["Description"],
             narrative_structure=details["StuctureInstruction"],
             prev_content=prev_content,
             temperature=0.5,
