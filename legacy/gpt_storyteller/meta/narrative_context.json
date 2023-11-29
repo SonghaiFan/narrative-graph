@@ -386,83 +386,93 @@
       }
     ]
   },
-  "Mish_Mash": {
-    "Time": ["2021-2-5", "2023-7-21"],
+  "Muddle_Puddle": {
+    "Time": ["2022-5-10", "2023-12-15"],
     "Entities": [
       {
-        "name": "Redwood University",
+        "name": "Greenwood College",
         "type": "organization",
-        "description": "A prestigious institution known for its cutting-edge research in tech and education."
+        "description": "A well-known school famous for its work in science and learning."
       },
       {
-        "name": "Lunar Lake Retreat",
+        "name": "Sunny Meadows Camp",
         "type": "places",
-        "description": "A serene lakeside location known for hosting international conferences, workshops, and retreats on technology, culture, and education."
+        "description": "A peaceful place in the countryside that holds big meetings about science, art, and learning."
       },
       {
-        "name": "NexTech Enterprises",
+        "name": "FutureTech Solutions",
         "type": "organization",
-        "description": "A rapidly rising startup at the forefront of technological innovation and product development."
+        "description": "A new company that’s making cool tech stuff and new products."
       },
       {
-        "name": "Isabella Grant",
+        "name": "Lucy Smart",
         "type": "people",
-        "description": "A determined investigative journalist with a knack for uncovering deep-rooted conspiracies."
+        "description": "A smart reporter who finds out about secret plans."
       },
       {
-        "name": "Simon Angus",
+        "name": "Dr. Alex Wise",
         "type": "people",
-        "description": "A multifaceted individual, once a celebrated athlete and now a thriving entrepreneur in the tech world."
+        "description": "A teacher who thinks of new and fun ways to learn."
       },
       {
-        "name": "Helen Purchase",
+        "name": "Emma Swift",
         "type": "people",
-        "description": "A leading agricultural scientist recognized for her work in sustainable farming techniques."
+        "description": "A young boss known for being smart in business and tech."
       },
       {
-        "name": "Tim Dwyer",
+        "name": "Mike Strong",
         "type": "people",
-        "description": "A renowned antique book dealer with a reputation for discovering rare and valuable manuscripts."
+        "description": "Once a famous sports star, now a successful business person in tech."
       },
       {
-        "name": "Ying Yang",
+        "name": "Sara Green",
         "type": "people",
-        "description": "A critically acclaimed film director, known for delving into intriguing and often mysterious narratives in cinema."
+        "description": "A scientist who knows a lot about farming and growing plants."
       },
       {
-        "name": "Songhai Fan",
+        "name": "Bob Oldbook",
         "type": "people",
-        "description": "A prominent tech reviewer respected for his unbiased and thorough assessments of emerging products."
+        "description": "A person who finds and sells old and important books."
+      },
+      {
+        "name": "Lily Story",
+        "type": "people",
+        "description": "A movie maker who tells interesting and mysterious stories."
+      },
+      {
+        "name": "Techie Tom",
+        "type": "people",
+        "description": "A well-known person who talks about and reviews new tech stuff."
       }
     ],
     "Themes": [
       {
         "name": "Politics",
-        "description": "The drama and power play shaping nations."
+        "description": "Lucy Smart finds a secret paper that talks about a plan between countries."
       },
       {
         "name": "Education",
-        "description": "Evolutions in learning and the quest for knowledge."
+        "description": "A school named Hilltop Learning has a cool way of teaching, and Greenwood College is interested."
       },
       {
         "name": "Techniques",
-        "description": "The latest methods and practices reshaping industries."
+        "description": "FutureTech Solutions is making new tech that could change a lot, but big companies are not happy."
       },
       {
         "name": "Business",
-        "description": "The pursuit of profits, innovations, and ethical dilemmas."
+        "description": "FutureTech Solutions is growing fast and other big tech companies are competing with them."
       },
       {
         "name": "Culture",
-        "description": "The rich tapestry of traditions, arts, and beliefs."
+        "description": "With all the new tech, people are trying to remember old traditions and mix them with the new."
       },
       {
         "name": "Entertainment",
-        "description": "The world of glitz, glamour, and riveting stories."
+        "description": "New tech is changing movies and games, making them more fun and different."
       },
       {
         "name": "Sports",
-        "description": "Triumphs, defeats, and the spirit of the game."
+        "description": "New tech from FutureTech Solutions is being used in sports for training and making fans happy."
       }
     ]
   }

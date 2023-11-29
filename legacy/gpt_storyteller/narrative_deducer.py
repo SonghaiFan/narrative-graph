@@ -42,18 +42,19 @@ def make_chapter(
     # Create a prompt template
     prompt_template = f"""
     You are a senior reporter for The New York Times, your task is to write a fictional news report that continues from a previous one. 
-    - Your writing style is concise and clear, without the use of rhetorical techniques. Avoid explicitly referencing the narrative structure and themes; instead, integrate it subtly within the story. The story should be written in a style suitable for CEFR Level A1 and each chapter approximately take 3 minutes to read.
+    - Your writing style is concise and clear, without the use of rhetorical techniques, in plain english. 
+    - Avoid explicitly referencing the structure and themes; instead, integrate it subtly within the story.
+    - The story should be written in a style suitable for CEFR Level A1 and each chapter approximately take 1 minutes to read (100 words).
     - The continuation chapter needs to be closely related to the previous one (intriguing and logically connected in narration),
-    - The theme of the story must be strikingly prominent and distinct.
+    - The theme of the story must be strikingly prominent, you can not make up new themes except the only one given below.
     - All entities given below must be included in the story.
+    
+    Chapter ID: {id}
+    Time Period: {time_period_str}
+    Themes: {theme}
+    Entity: {', '.join(entity)}
 
     Narrative Sturcture: {narrative_structure}
-
-    The node label uniquely identifies each chapter by combining a letter indicating the theme ("A" for Theme A) and a number indicating the timeframe sequence (1 for first, 2 for second, etc.)
-    - Each node for one chapter, a chapter is a news roundup collection digest.
-    - The theme of the chapter must be strikingly prominent, ONLY one for each chapter.
-    - node connected by edge should have at least one common entity 
-    - node label by same character should have same theme
 
     Previous context: {prev_content_str}
 

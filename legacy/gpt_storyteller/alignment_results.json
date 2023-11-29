@@ -1,1 +1,28 @@
-{"A1": {"Theme": "Techniques", "Entity": ["Songhai Fan"], "Time": ["2021-02-05", "2021-11-30"], "Prev": [], "Description": "This is a news article mainly about Techniques in which the entities involved are respectively:  Innovative technologies spearheaded by NexTech Enterprises promise to shape the future, but face challenges from larger industries.\nSonghai Fan: A prominent tech reviewer respected for his unbiased and thorough assessments of emerging products.", "StuctureInstruction": "The narrative structure is ShortFork, where The narrative follows Theme A for one chapter, then diverges to Theme B in the second chapter. (eg. A1 -> B2 -> B3) The current chapter node is A1, which is the 1th chapter node in the narrative structure."}, "B2": {"Theme": "Entertainment", "Entity": ["Songhai Fan"], "Time": ["2021-11-30", "2022-09-24"], "Prev": ["A1"], "Description": "This is a news article mainly about Entertainment in which the entities involved are respectively:  The global tech advancements spill over into the entertainment industry, creating new forms of media and storytelling.\nSonghai Fan: A prominent tech reviewer respected for his unbiased and thorough assessments of emerging products.", "StuctureInstruction": "The narrative structure is ShortFork, where The narrative follows Theme A for one chapter, then diverges to Theme B in the second chapter. (eg. A1 -> B2 -> B3) The current chapter node is B2, which is the 2th chapter node in the narrative structure."}, "B3": {"Theme": "Entertainment", "Entity": ["Redwood University", "Songhai Fan"], "Time": ["2022-09-24", "2023-07-21"], "Prev": ["B2"], "Description": "This is a news article mainly about Entertainment in which the entities involved are respectively:  The global tech advancements spill over into the entertainment industry, creating new forms of media and storytelling.\nSonghai Fan: A prominent tech reviewer respected for his unbiased and thorough assessments of emerging products.\nRedwood University: A prestigious institution known for its cutting-edge research in tech and education.", "StuctureInstruction": "The narrative structure is ShortFork, where The narrative follows Theme A for one chapter, then diverges to Theme B in the second chapter. (eg. A1 -> B2 -> B3) The current chapter node is B3, which is the 3th chapter node in the narrative structure."}}
+{
+  "A1": {
+    "Theme": "Education",
+    "Entity": ["Sunny Meadows Camp"],
+    "Time": ["2022-05-10", "2022-11-20"],
+    "Prev": [],
+    "StuctureInstruction": "The narrative structure is Linear, where Three chapters progress in sequence, consistently following Theme A. (eg. A1 -> A2 -> A3) The current chapter node is A1, which is the 1th chapter node in the narrative structure."
+  },
+  "A2": {
+    "Theme": "Education",
+    "Entity": ["Sunny Meadows Camp", "Techie Tom", "Greenwood College"],
+    "Time": ["2022-11-20", "2023-06-02"],
+    "Prev": ["A1"],
+    "StuctureInstruction": "The narrative structure is Linear, where Three chapters progress in sequence, consistently following Theme A. (eg. A1 -> A2 -> A3) The current chapter node is A2, which is the 2th chapter node in the narrative structure."
+  },
+  "A3": {
+    "Theme": "Education",
+    "Entity": [
+      "Dr. Alex Wise",
+      "Sunny Meadows Camp",
+      "Techie Tom",
+      "Greenwood College"
+    ],
+    "Time": ["2023-06-02", "2023-12-15"],
+    "Prev": ["A2"],
+    "StuctureInstruction": "The narrative structure is Linear, where Three chapters progress in sequence, consistently following Theme A. (eg. A1 -> A2 -> A3) The current chapter node is A3, which is the 3th chapter node in the narrative structure."
+  }
+}

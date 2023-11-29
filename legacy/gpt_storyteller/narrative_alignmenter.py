@@ -173,8 +173,8 @@ def get_alignment(
 
 if __name__ == "__main__":
     # random select topic and structure
-    TOPIC = "Mish_Mash"  # random.choice(keys_narrative_context)
-    NARRATIVE_STRUCTURE = random.choice(narrative_structure)
+    TOPIC = "Muddle_Puddle"  # random.choice(keys_narrative_context)
+    NARRATIVE_STRUCTURE = "Linear"  # random.choice(narrative_structure)
 
     print("=" * 50)
 
