@@ -161,7 +161,6 @@ if __name__ == "__main__":
     # X is the number of nodes
     m, n, X = 3, 3, 3
     configurations = find_narrative_motifs(m, n, X)
-    # motif_metrics = [calculate_metrics(motif, m, n) for motif in configurations]
-    # df_metrics = pd.DataFrame([motif_metrics])
-    df_metrics = pd.DataFrame([])
+    motif_metrics = [calculate_metrics(motif, m, n) for motif in configurations]
+    df_metrics = pd.DataFrame([motif_metrics])
     plot_motifs_with_metrics(configurations, df_metrics, m, n)

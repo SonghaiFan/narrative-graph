@@ -33,7 +33,7 @@
     ]
   },
   {
-    "name": "LongFork",
+    "name": "LateTurn",
     "description": "The narrative follows Theme A for two chapters, then diverges to Theme B in the third chapter.",
     "structure": "A1 -> A2 -> B3",
     "instructions": "Contains 3 nodes and 2 edges in total.",
@@ -44,7 +44,7 @@
     ]
   },
   {
-    "name": "ShortFork",
+    "name": "EarlyTurn",
     "description": "The narrative follows Theme A for one chapter, then diverges to Theme B in the second chapter.",
     "structure": "A1 -> B2 -> B3",
     "instructions": "Contains 3 nodes and 2 edges in total.",
