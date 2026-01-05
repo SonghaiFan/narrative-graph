@@ -1,21 +1,56 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react';
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
+import klay from 'cytoscape-klay';
+import elk from 'cytoscape-elk';
 import { useGraphContext } from '../context/GraphContext';
 import { getTrackColor, NODE_DIAMETER } from '../constants';
 import { GraphInspector } from './GraphInspector';
+import { computeCytoscapeEdges } from '../utils/graphUtils';
 
 cytoscape.use(dagre);
+cytoscape.use(klay);
+cytoscape.use(elk);
 
 // Configuration for DAG Layout
-const DAG_LAYOUT_CONFIG = {
-    name: 'dagre',
-    rankDir: 'LR', // Left to Right
-    nodeSep: 50,
-    rankSep: 100,
-    padding: 20,
-    animate: true,
+type LayoutEngine = 'dagre' | 'klay' | 'elk';
+const LAYOUT_ENGINE: LayoutEngine = 'klay';
+
+const LAYOUT_CONFIGS: Record<LayoutEngine, any> = {
+    dagre: {
+        name: 'dagre',
+        rankDir: 'LR', // Left to Right
+        nodeSep: 50,
+        rankSep: 100,
+        padding: 20,
+        animate: false,
+    },
+    klay: {
+        name: 'klay',
+        animate: false,
+        nodeDimensionsIncludeLabels: true,
+        padding: 20,
+        klay: {
+            direction: 'RIGHT',
+            spacing: 10,
+            thoroughness: 7,
+            fixedAlignment: 'BALANCED',
+        }
+    },
+    elk: {
+        name: 'elk',
+        animate: false,
+        padding: 20,
+        elk: {
+            'algorithm': 'layered',
+            'direction': 'RIGHT',
+            'spacing.nodeNode': 50,
+            'spacing.componentComponent': 50,
+        }
+    }
 };
+
+const DAG_LAYOUT_CONFIG = LAYOUT_CONFIGS[LAYOUT_ENGINE];
 
 export const DAGView: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -43,67 +78,7 @@ export const DAGView: React.FC = () => {
 
     // Compute edges for DAG view
     const dagEdges = useMemo(() => {
-        const edges: any[] = [];
-        const edgeIds = new Set<string>();
-
-        const addEdge = (uId: string, vId: string, type: 'track' | 'attribute') => {
-            const id = `dag-edge-${uId}-${vId}`;
-            if (!edgeIds.has(id)) {
-                edgeIds.add(id);
-                edges.push({
-                    data: {
-                        id,
-                        source: uId,
-                        target: vId,
-                        type
-                    },
-                });
-            }
-        };
-
-        // 1. Track Connections: Connect nodes in the same track sequentially
-        const nodesByTrack: Record<number, typeof graph.nodes> = {};
-        graph.nodes.forEach(n => {
-            if (!nodesByTrack[n.track]) nodesByTrack[n.track] = [];
-            nodesByTrack[n.track].push(n);
-        });
-
-        Object.values(nodesByTrack).forEach(trackNodes => {
-            trackNodes.sort((a, b) => a.time - b.time);
-            for (let i = 0; i < trackNodes.length - 1; i++) {
-                addEdge(trackNodes[i].id, trackNodes[i + 1].id, 'track');
-            }
-        });
-
-        // 2. Attribute Connections: Connect nodes in adjacent time steps (T -> T+1) if they share attributes
-        const nodesByTime: Record<number, typeof graph.nodes> = {};
-        graph.nodes.forEach(n => {
-            if (!nodesByTime[n.time]) nodesByTime[n.time] = [];
-            nodesByTime[n.time].push(n);
-        });
-
-        const times = Object.keys(nodesByTime).map(Number).sort((a, b) => a - b);
-
-        for (let i = 0; i < times.length; i++) {
-            const t = times[i];
-            if (!nodesByTime[t + 1]) continue;
-
-            const currentNodes = nodesByTime[t];
-            const nextNodes = nodesByTime[t + 1];
-
-            currentNodes.forEach(u => {
-                nextNodes.forEach(v => {
-                    const uAttrs = u.attributes[linkingAttribute] || [];
-                    const vAttrs = v.attributes[linkingAttribute] || [];
-                    const isConnected = uAttrs.some(val => vAttrs.includes(val));
-
-                    if (isConnected) {
-                        addEdge(u.id, v.id, 'attribute');
-                    }
-                });
-            });
-        }
-        return edges;
+        return computeCytoscapeEdges(graph.nodes, linkingAttribute, 'dag-edge');
     }, [graph.nodes, linkingAttribute]);
 
     useEffect(() => {
@@ -229,7 +204,7 @@ export const DAGView: React.FC = () => {
         return () => {
             cy.destroy();
         };
-    }, [graph.nodes, dagEdges]); // Re-run when nodes or computed edges change
+    }, [graph.nodes, dagEdges, rowLabelMap, activeAttribute, nodeLabels]); // Re-run when nodes, edges, or styling data change
 
     // Inspector Logic
     const activeNode = selectedNodeId || hoveredNodeId

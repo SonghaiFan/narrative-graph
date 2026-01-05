@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react';
 import cytoscape from 'cytoscape';
-// @ts-ignore
 import cola from 'cytoscape-cola';
 import { useGraphContext } from '../context/GraphContext';
 import { getTrackColor, NODE_DIAMETER } from '../constants';
 import { GraphInspector } from './GraphInspector';
+import { computeCytoscapeEdges } from '../utils/graphUtils';
 
 cytoscape.use(cola);
 
@@ -14,27 +14,27 @@ const FORCE_LAYOUT_CONFIG = {
         componentSpacing: 40,
         nodeRepulsion: 4096,
         edgeLength: {
-            track: 64,
-            attribute: 128
+            track: 12,
+            attribute: 24
         },
         nestingFactor: 1.2,
-        gravity: 0.5,
-        flowSeparation: 200
+        gravity: 10,
+        flowSeparation: 100
     },
     cose: {
         componentSpacing: 60,
-        nodeRepulsion: 10000,
+        nodeRepulsion: 100,
         edgeLength: {
             track: 100,
             attribute: 200
         },
-        edgeElasticity: 32,
-        nestingFactor: 1.2,
+        edgeElasticity: 150,
+        nestingFactor: 5,
         gravity: 0.1,
         numIter: 1000,
         initialTemp: 1000,
-        coolingFactor: 0.99,
-        minTemp: 1.0
+        coolingFactor: 0.9,
+        minTemp: 1.0,
     }
 };
 
@@ -68,67 +68,7 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
 
     // Compute edges for Force view (same logic as DAG)
     const forceEdges = useMemo(() => {
-        const edges: any[] = [];
-        const edgeIds = new Set<string>();
-
-        const addEdge = (uId: string, vId: string, type: 'track' | 'attribute') => {
-            const id = `force-edge-${uId}-${vId}`;
-            if (!edgeIds.has(id)) {
-                edgeIds.add(id);
-                edges.push({
-                    data: {
-                        id,
-                        source: uId,
-                        target: vId,
-                        type
-                    },
-                });
-            }
-        };
-
-        // 1. Track Connections: Connect nodes in the same track sequentially
-        const nodesByTrack: Record<number, typeof graph.nodes> = {};
-        graph.nodes.forEach(n => {
-            if (!nodesByTrack[n.track]) nodesByTrack[n.track] = [];
-            nodesByTrack[n.track].push(n);
-        });
-
-        Object.values(nodesByTrack).forEach(trackNodes => {
-            trackNodes.sort((a, b) => a.time - b.time);
-            for (let i = 0; i < trackNodes.length - 1; i++) {
-                addEdge(trackNodes[i].id, trackNodes[i + 1].id, 'track');
-            }
-        });
-
-        // 2. Attribute Connections: Connect nodes in adjacent time steps (T -> T+1) if they share attributes
-        const nodesByTime: Record<number, typeof graph.nodes> = {};
-        graph.nodes.forEach(n => {
-            if (!nodesByTime[n.time]) nodesByTime[n.time] = [];
-            nodesByTime[n.time].push(n);
-        });
-
-        const times = Object.keys(nodesByTime).map(Number).sort((a, b) => a - b);
-
-        for (let i = 0; i < times.length; i++) {
-            const t = times[i];
-            if (!nodesByTime[t + 1]) continue;
-
-            const currentNodes = nodesByTime[t];
-            const nextNodes = nodesByTime[t + 1];
-
-            currentNodes.forEach(u => {
-                nextNodes.forEach(v => {
-                    const uAttrs = u.attributes[linkingAttribute] || [];
-                    const vAttrs = v.attributes[linkingAttribute] || [];
-                    const isConnected = uAttrs.some(val => vAttrs.includes(val));
-
-                    if (isConnected) {
-                        addEdge(u.id, v.id, 'attribute');
-                    }
-                });
-            });
-        }
-        return edges;
+        return computeCytoscapeEdges(graph.nodes, linkingAttribute, 'force-edge');
     }, [graph.nodes, linkingAttribute]);
 
     useEffect(() => {
