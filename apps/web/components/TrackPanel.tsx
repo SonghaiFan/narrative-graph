@@ -9,13 +9,13 @@ import { TEMPORAL_KEYS } from '../constants';
 import { toPng, toSvg } from 'html-to-image';
 
 interface TrackPanelProps {
-  onImport: (file: File) => void;
+    onImport: (file: File) => void;
 }
 
 interface SortableTrackItemProps {
     label: string;
-    isHidden: boolean; 
-    onToggle: (l: string) => void; 
+    isHidden: boolean;
+    onToggle: (l: string) => void;
     onDelete: (l: string) => void;
 }
 
@@ -31,13 +31,13 @@ const SortableTrackItem: React.FC<SortableTrackItemProps> = ({ label, isHidden, 
 
     // Wrapper to stop propagation prevents parent DnD context from hijacking the event
     const handlePointerDown = (e: React.PointerEvent) => {
-        e.stopPropagation(); 
+        e.stopPropagation();
         listeners?.onPointerDown?.(e);
     };
 
     return (
-        <div 
-            ref={setNodeRef} 
+        <div
+            ref={setNodeRef}
             style={style}
             className={`
                 flex items-center justify-between p-2 rounded-lg border mb-2 select-none touch-none
@@ -46,30 +46,30 @@ const SortableTrackItem: React.FC<SortableTrackItemProps> = ({ label, isHidden, 
             `}
         >
             <div className="flex items-center gap-2 overflow-hidden flex-1">
-                 <div 
-                    {...attributes} 
-                    {...listeners} 
+                <div
+                    {...attributes}
+                    {...listeners}
                     onPointerDown={handlePointerDown}
                     className="cursor-grab hover:text-slate-600 text-slate-300 flex-shrink-0 p-1 hover:bg-slate-100 rounded transition-colors active:cursor-grabbing outline-none"
-                 >
+                >
                     <GripVertical className="w-4 h-4" />
-                 </div>
-                 <span 
+                </div>
+                <span
                     onClick={() => onToggle(label)}
                     className={`text-sm font-medium truncate cursor-pointer flex-1 ${isHidden ? 'line-through decoration-slate-300' : 'text-slate-700'}`}
-                 >
+                >
                     {label}
-                 </span>
+                </span>
             </div>
             <div className="flex items-center gap-1">
-                <button 
+                <button
                     onClick={(e) => { e.stopPropagation(); onToggle(label); }}
                     className={`p-1 rounded-full hover:bg-slate-100 ${isHidden ? 'text-slate-400' : 'text-blue-500'}`}
                     title={isHidden ? "Show Track" : "Hide Track"}
                 >
                     {isHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                 </button>
-                <button 
+                <button
                     onClick={(e) => { e.stopPropagation(); onDelete(label); }}
                     className="p-1 rounded-full hover:bg-red-50 text-slate-300 hover:text-red-500 transition-colors"
                     title="Delete Track"
@@ -82,19 +82,19 @@ const SortableTrackItem: React.FC<SortableTrackItemProps> = ({ label, isHidden, 
 };
 
 export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
-    const { 
-        activeAttribute, 
-        setActiveAttribute, 
-        availableAttributes, 
-        addAttribute, 
-        deleteAttribute, 
-        linkingAttribute, 
-        setLinkingAttribute, 
-        rowLabelMap, 
-        hiddenLabels, 
-        toggleTrackVisibility, 
-        deleteTrack, 
-        reorderTracks, 
+    const {
+        activeAttribute,
+        setActiveAttribute,
+        availableAttributes,
+        addAttribute,
+        deleteAttribute,
+        linkingAttribute,
+        setLinkingAttribute,
+        rowLabelMap,
+        hiddenLabels,
+        toggleTrackVisibility,
+        deleteTrack,
+        reorderTracks,
         clearGraph,
         graph,
         gridConfig
@@ -121,7 +121,7 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
         if (over && active.id !== over.id) {
             const oldIndex = uniqueLabels.indexOf(active.id as string);
             const newIndex = uniqueLabels.indexOf(over.id as string);
-            
+
             if (oldIndex !== -1 && newIndex !== -1) {
                 const newOrder = arrayMove(uniqueLabels, oldIndex, newIndex);
                 reorderTracks(newOrder);
@@ -151,17 +151,17 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
     };
 
     const handleExportImage = async (format: 'png' | 'svg') => {
-        const node = document.getElementById('narrative-graph-card');
+        const node = document.getElementById('narrative-export-root') || document.getElementById('narrative-graph-card');
         if (!node) {
             alert("Could not find graph element to export.");
             return;
         }
-        
+
         try {
-            const dataUrl = format === 'png' 
-                ? await toPng(node, { backgroundColor: '#ffffff', pixelRatio: 2 }) 
+            const dataUrl = format === 'png'
+                ? await toPng(node, { backgroundColor: '#ffffff', pixelRatio: 2 })
                 : await toSvg(node, { backgroundColor: '#ffffff' });
-                
+
             const link = document.createElement('a');
             link.download = `narrative-graph.${format}`;
             link.href = dataUrl;
@@ -174,9 +174,9 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
 
     return (
         <div className="w-80 bg-white border-r border-slate-200 h-full flex flex-col shadow-xl z-20 shrink-0">
-             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
 
-             <div className="px-5 py-5 border-b border-slate-200 bg-white">
+            <div className="px-5 py-5 border-b border-slate-200 bg-white">
                 <div className="flex items-center gap-2 mb-1">
                     <Settings2 className="w-4 h-4 text-slate-800" />
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Configuration</span>
@@ -222,17 +222,17 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
                         No tracks defined. Add nodes to create tracks.
                     </div>
                 ) : (
-                    <DndContext 
-                        sensors={sensors} 
-                        collisionDetection={closestCenter} 
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
                         onDragEnd={handleDragEnd}
                     >
                         <SortableContext items={uniqueLabels} strategy={verticalListSortingStrategy}>
                             {uniqueLabels.map(label => (
-                                <SortableTrackItem 
-                                    key={label} 
-                                    label={label} 
-                                    isHidden={hiddenLabels.includes(label)} 
+                                <SortableTrackItem
+                                    key={label}
+                                    label={label}
+                                    isHidden={hiddenLabels.includes(label)}
                                     onToggle={toggleTrackVisibility}
                                     onDelete={deleteTrack}
                                 />
@@ -241,7 +241,7 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
                     </DndContext>
                 )}
             </div>
-            
+
             <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col gap-3">
                 <div className="grid grid-cols-2 gap-2">
                     <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">

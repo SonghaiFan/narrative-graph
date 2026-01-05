@@ -265,212 +265,244 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
       }}
     >
       <div ref={scrollContainerRef} className="flex-1 overflow-auto relative">
-        <div className="min-h-full min-w-fit px-12 pb-12 pt-16 flex items-center justify-center bg-slate-50/50">
-          <div
-            ref={graphCardRef}
-            className="relative shadow-sm bg-white rounded-xl border border-slate-200 mb-12 transition-all duration-300 ease-out"
-            style={{ width: totalWidth, height: Math.max(totalHeight, 100) }} // Ensure min height if 0 rows
-          >
-            {/* Empty State Prompt */}
-            {gridConfig.rows === 0 && (
-              <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-sm font-medium">
-                No tracks visible. Add or unhide tracks to continue.
+        <div className="min-h-full min-w-fit px-12 pb-12 pt-16 flex flex-col items-center justify-center bg-slate-50/50">
+          <div id="narrative-export-root" className="flex flex-col items-center p-4">
+            {/* Legend Bar */}
+            <div className="mb-6 flex items-center gap-6 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-full shadow-sm px-6 py-2 z-50">
+              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mr-2">
+                Legend
               </div>
-            )}
-
-            {/* Layer 0: Track Backgrounds - Render based on Visible Labels */}
-            {visibleRowLabels.map((label, h) => (
-              <div
-                key={`track-bg-${h}`}
-                className="absolute rounded-full"
-                style={{
-                  left: dynamicLabelWidth,
-                  width: gridConfig.cols * CELL_WIDTH + RIGHT_MARGIN - 20,
-                  top: h * CELL_HEIGHT + 10,
-                  height: CELL_HEIGHT - 20,
-                  zIndex: 0,
-                  backgroundColor: "#FAFAFA",
-                  border: "1px dashed #E2E8F0",
-                }}
-              />
-            ))}
-
-            {/* Layer 0.5: Dot Grid (Dot Paper effect) */}
-            <div className="absolute inset-0 pointer-events-none z-0">
-              <svg width={totalWidth} height={Math.max(totalHeight, 100)}>
-                {Array.from({ length: gridConfig.rows }).map((_, h) =>
-                  Array.from({ length: gridConfig.cols }).map((_, t) => (
-                    <circle
-                      key={`dot-${t}-${h}`}
-                      cx={dynamicLabelWidth + t * CELL_WIDTH + CELL_WIDTH / 2}
-                      cy={h * CELL_HEIGHT + CELL_HEIGHT / 2}
-                      r={2}
-                      fill="#CBD5E1"
-                    />
-                  ))
-                )}
-              </svg>
+              <div className="flex items-center gap-6 text-[11px] text-slate-600">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-900" />
+                  <div className="flex items-center gap-1">
+                    <span className="font-semibold text-slate-800">Organising (α):</span>
+                    <span>Tracks ordered by <span className="font-semibold text-slate-800">{activeAttribute}</span></span>
+                  </div>
+                </div>
+                <div className="h-4 w-px bg-slate-200" />
+                <div className="flex items-center gap-2">
+                  <div className="relative w-7 h-3">
+                    <div className="absolute left-0 top-1.5 right-0 h-0.5 bg-slate-700 rounded" />
+                    <div className="absolute right-0 top-[2px] border-l-[7px] border-l-slate-700 border-y-[5px] border-y-transparent" />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-semibold text-slate-800">Linking (β):</span>
+                    <span>Edges connect shared <span className="font-semibold text-slate-800">{linkingAttribute}</span></span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Layer 1: Lattice */}
-            {isDragging && gridConfig.rows > 0 && (
-              <div className="absolute inset-0 pointer-events-none z-10 opacity-60">
-                <GridLattice
-                  rows={gridConfig.rows}
-                  cols={gridConfig.cols}
-                  cellWidth={CELL_WIDTH}
-                  cellHeight={CELL_HEIGHT}
-                  labelWidth={dynamicLabelWidth}
+            <div
+              ref={graphCardRef}
+              id="narrative-graph-card"
+              className="relative shadow-sm bg-white rounded-xl border border-slate-200 transition-all duration-300 ease-out"
+              style={{ width: totalWidth, height: Math.max(totalHeight, 100) }} // Ensure min height if 0 rows
+            >
+
+              {/* Empty State Prompt */}
+              {gridConfig.rows === 0 && (
+                <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-sm font-medium">
+                  No tracks visible. Add or unhide tracks to continue.
+                </div>
+              )}
+
+              {/* Layer 0: Track Backgrounds - Render based on Visible Labels */}
+              {visibleRowLabels.map((label, h) => (
+                <div
+                  key={`track-bg-${h}`}
+                  className="absolute rounded-full"
+                  style={{
+                    left: dynamicLabelWidth,
+                    width: gridConfig.cols * CELL_WIDTH + RIGHT_MARGIN - 20,
+                    top: h * CELL_HEIGHT + 10,
+                    height: CELL_HEIGHT - 20,
+                    zIndex: 0,
+                    backgroundColor: "#FAFAFA",
+                    border: "1px dashed #E2E8F0",
+                  }}
+                />
+              ))}
+
+              {/* Layer 0.5: Dot Grid (Dot Paper effect) */}
+              <div className="absolute inset-0 pointer-events-none z-0">
+                <svg width={totalWidth} height={Math.max(totalHeight, 100)}>
+                  {Array.from({ length: gridConfig.rows }).map((_, h) =>
+                    Array.from({ length: gridConfig.cols }).map((_, t) => (
+                      <circle
+                        key={`dot-${t}-${h}`}
+                        cx={dynamicLabelWidth + t * CELL_WIDTH + CELL_WIDTH / 2}
+                        cy={h * CELL_HEIGHT + CELL_HEIGHT / 2}
+                        r={2}
+                        fill="#CBD5E1"
+                      />
+                    ))
+                  )}
+                </svg>
+              </div>
+
+              {/* Layer 1: Lattice */}
+              {isDragging && gridConfig.rows > 0 && (
+                <div className="absolute inset-0 pointer-events-none z-10 opacity-60">
+                  <GridLattice
+                    rows={gridConfig.rows}
+                    cols={gridConfig.cols}
+                    cellWidth={CELL_WIDTH}
+                    cellHeight={CELL_HEIGHT}
+                    labelWidth={dynamicLabelWidth}
+                  />
+                </div>
+              )}
+
+              {/* Layer 2: Edges */}
+              <div className="absolute inset-0 z-20 pointer-events-none">
+                <EdgeLayer
+                  edges={renderedEdges}
+                  width={totalWidth}
+                  height={totalHeight}
+                  offsetX={dynamicLabelWidth}
+                  offsetY={0}
+                  interactive={true}
+                  onEdgeClick={(id, e) => {
+                    setSelectedEdgeId(id);
+                    setSelectedNodeId(null);
+                  }}
                 />
               </div>
-            )}
 
-            {/* Layer 2: Edges */}
-            <div className="absolute inset-0 z-20 pointer-events-none">
-              <EdgeLayer
-                edges={renderedEdges}
-                width={totalWidth}
-                height={totalHeight}
-                offsetX={dynamicLabelWidth}
-                offsetY={0}
-                interactive={true}
-                onEdgeClick={(id, e) => {
-                  setSelectedEdgeId(id);
-                  setSelectedNodeId(null);
-                }}
-              />
-            </div>
+              {/* Layer 3: Ghost/Preview */}
+              {gridConfig.rows > 0 && (
+                <GhostLayer
+                  graph={graph}
+                  draggedMotif={draggedMotif}
+                  draggedNode={draggedNode}
+                  hoverCell={activeHoverCell}
+                  gridRows={gridConfig.rows}
+                  gridCols={gridConfig.cols}
+                  offsetX={dynamicLabelWidth}
+                />
+              )}
 
-            {/* Layer 3: Ghost/Preview */}
-            {gridConfig.rows > 0 && (
-              <GhostLayer
-                graph={graph}
-                draggedMotif={draggedMotif}
-                draggedNode={draggedNode}
-                hoverCell={activeHoverCell}
-                gridRows={gridConfig.rows}
-                gridCols={gridConfig.cols}
-                offsetX={dynamicLabelWidth}
-              />
-            )}
-
-            {/* Layer 4: Real Nodes */}
-            <div className="absolute inset-0 z-40 pointer-events-none">
-              {Array.from(nodesByCell.entries()).map(([key, group]) => {
-                if (group.length === 0) return null;
-                const primaryNode = group[0];
-                return (
-                  <NarrativeNodeItem
-                    key={key}
-                    node={primaryNode}
-                    count={group.length}
-                    label={nodeLabels.get(primaryNode.id)}
-                    isSelected={group.some((n) => n.id === selectedNodeId)}
-                    isHovered={group.some((n) => n.id === hoveredNodeId)}
-                    color={
-                      TRACK_PALETTE[primaryNode.track % TRACK_PALETTE.length]
-                    }
-                    offsetX={dynamicLabelWidth}
-                    offsetY={0}
-                    onClick={() => {
-                      setSelectedNodeId(primaryNode.id);
-                      setSelectedEdgeId(null);
-                    }}
-                    onHover={(state) =>
-                      setHoveredNodeId(state ? primaryNode.id : null)
-                    }
-                  />
-                );
-              })}
-            </div>
-
-            {/* Layer 5: Interaction Grid - Synced to Visible Labels */}
-            {visibleRowLabels.map((label, h) => (
-              <div
-                key={`row-${h}`}
-                className="flex items-center relative z-10"
-                style={{ height: CELL_HEIGHT }}
-              >
-                {/* Row Label Input */}
-                <div
-                  style={{ width: dynamicLabelWidth }}
-                  className="shrink-0 pr-6 pl-6 flex items-center justify-end h-full pointer-events-auto"
-                >
-                  <input
-                    type="text"
-                    value={label}
-                    onChange={(e) => updateRowLabel(h, e.target.value)}
-                    placeholder={`Track ${h + 1}`}
-                    className="text-right font-bold text-slate-600 bg-transparent border-b-2 border-transparent hover:border-slate-200 focus:border-blue-500 focus:outline-none w-full px-1 py-1 transition-all placeholder:text-slate-300 placeholder:font-normal text-sm"
-                  />
-                </div>
-
-                {/* Cell Grid */}
-                <div className="flex">
-                  {Array.from({ length: gridConfig.cols }).map((_, t) => (
-                    <div
-                      key={`${t}-${h}`}
-                      style={{ width: CELL_WIDTH, height: CELL_HEIGHT }}
-                      className="relative"
-                    >
-                      <DroppableCell
-                        t={t}
-                        h={h}
-                        onClick={() => addManualNode(t, h)}
-                        onHover={(isHovering) => {
-                          if (isHovering) setInternalHoverCell({ t, h });
-                          else if (
-                            internalHoverCell?.t === t &&
-                            internalHoverCell?.h === h
-                          )
-                            setInternalHoverCell(null);
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-
-            {/* --- Time Axis --- */}
-            <div
-              className="absolute top-full left-0 pointer-events-none"
-              style={{
-                marginLeft: dynamicLabelWidth,
-                width: gridConfig.cols * CELL_WIDTH,
-                marginTop: "10px",
-              }}
-            >
-              <div className="flex">
-                {Array.from({ length: gridConfig.cols }).map((_, t) => {
-                  const nodesInCol = graph.nodes.filter((n) => n.time === t);
-                  const timePeriod = nodesInCol
-                    .map((n) => n.attributes["Time Period"]?.[0])
-                    .find(Boolean);
-                  const date = nodesInCol
-                    .map((n) => n.attributes["Date"]?.[0])
-                    .find(Boolean);
-                  const label = timePeriod || date || `t${t}`;
-
+              {/* Layer 4: Real Nodes */}
+              <div className="absolute inset-0 z-40 pointer-events-none">
+                {Array.from(nodesByCell.entries()).map(([key, group]) => {
+                  if (group.length === 0) return null;
+                  const primaryNode = group[0];
                   return (
-                    <div
-                      key={`time-${t}`}
-                      style={{ width: CELL_WIDTH }}
-                      className="flex flex-col items-center"
-                    >
-                      <div className="h-2 w-px bg-slate-300 mb-2"></div>
-                      <span
-                        className="text-[10px] font-mono font-bold text-slate-400 text-center w-full px-1 truncate block"
-                        title={label}
-                      >
-                        {label}
-                      </span>
-                    </div>
+                    <NarrativeNodeItem
+                      key={key}
+                      node={primaryNode}
+                      count={group.length}
+                      label={nodeLabels.get(primaryNode.id)}
+                      isSelected={group.some((n) => n.id === selectedNodeId)}
+                      isHovered={group.some((n) => n.id === hoveredNodeId)}
+                      color={
+                        TRACK_PALETTE[primaryNode.track % TRACK_PALETTE.length]
+                      }
+                      offsetX={dynamicLabelWidth}
+                      offsetY={0}
+                      onClick={() => {
+                        setSelectedNodeId(primaryNode.id);
+                        setSelectedEdgeId(null);
+                      }}
+                      onHover={(state) =>
+                        setHoveredNodeId(state ? primaryNode.id : null)
+                      }
+                    />
                   );
                 })}
               </div>
-              <div className="text-center font-bold text-slate-300 uppercase tracking-[0.2em] text-[10px] mt-4">
-                Time (T)
+
+              {/* Layer 5: Interaction Grid - Synced to Visible Labels */}
+              {visibleRowLabels.map((label, h) => (
+                <div
+                  key={`row-${h}`}
+                  className="flex items-center relative z-10"
+                  style={{ height: CELL_HEIGHT }}
+                >
+                  {/* Row Label Input */}
+                  <div
+                    style={{ width: dynamicLabelWidth }}
+                    className="shrink-0 pr-6 pl-6 flex items-center justify-end h-full pointer-events-auto"
+                  >
+                    <input
+                      type="text"
+                      value={label}
+                      onChange={(e) => updateRowLabel(h, e.target.value)}
+                      placeholder={`Track ${h + 1}`}
+                      className="text-right font-bold text-slate-600 bg-transparent border-b-2 border-transparent hover:border-slate-200 focus:border-blue-500 focus:outline-none w-full px-1 py-1 transition-all placeholder:text-slate-300 placeholder:font-normal text-sm"
+                    />
+                  </div>
+
+                  {/* Cell Grid */}
+                  <div className="flex">
+                    {Array.from({ length: gridConfig.cols }).map((_, t) => (
+                      <div
+                        key={`${t}-${h}`}
+                        style={{ width: CELL_WIDTH, height: CELL_HEIGHT }}
+                        className="relative"
+                      >
+                        <DroppableCell
+                          t={t}
+                          h={h}
+                          onClick={() => addManualNode(t, h)}
+                          onHover={(isHovering) => {
+                            if (isHovering) setInternalHoverCell({ t, h });
+                            else if (
+                              internalHoverCell?.t === t &&
+                              internalHoverCell?.h === h
+                            )
+                              setInternalHoverCell(null);
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+            </div>
+            {/* --- Time Axis --- */}
+            <div
+              className="pointer-events-none"
+              style={{
+                width: totalWidth,
+                marginTop: "10px",
+              }}
+            >
+              <div style={{ marginLeft: dynamicLabelWidth, width: gridConfig.cols * CELL_WIDTH }}>
+                <div className="flex">
+                  {Array.from({ length: gridConfig.cols }).map((_, t) => {
+                    const nodesInCol = graph.nodes.filter((n) => n.time === t);
+                    const timePeriod = nodesInCol
+                      .map((n) => n.attributes["Time Period"]?.[0])
+                      .find(Boolean);
+                    const date = nodesInCol
+                      .map((n) => n.attributes["Date"]?.[0])
+                      .find(Boolean);
+                    const label = timePeriod || date || `t${t}`;
+
+                    return (
+                      <div
+                        key={`time-${t}`}
+                        style={{ width: CELL_WIDTH }}
+                        className="flex flex-col items-center"
+                      >
+                        <div className="h-2 w-px bg-slate-300 mb-2"></div>
+                        <span
+                          className="text-[10px] font-mono font-bold text-slate-400 text-center w-full px-1 truncate block"
+                          title={label}
+                        >
+                          {label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="text-center font-bold text-slate-300 uppercase tracking-[0.2em] text-[10px] mt-4">
+                  Time (T)
+                </div>
               </div>
             </div>
           </div>
@@ -496,9 +528,9 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
           onDeleteNode={
             inspectorType === "node"
               ? (id) => {
-                  deleteNode(id);
-                  setSelectedNodeId(null);
-                }
+                deleteNode(id);
+                setSelectedNodeId(null);
+              }
               : undefined
           }
           activeAttribute={activeAttribute}

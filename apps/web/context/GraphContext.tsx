@@ -144,17 +144,38 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     // 4. Alpha Rule Effect (Track Assignment)
     useEffect(() => {
+        // Track priority follows the ordering set in the TrackPanel (rowLabelMap)
+        const priorityOrder = rowLabelMap[activeAttribute] || [];
+        const priorityLookup = new Map<string, number>();
+        priorityOrder.forEach((label, idx) => {
+            if (label) priorityLookup.set(label, idx);
+        });
+
+        const visibleIndexLookup = new Map<string, number>();
+        visibleRowLabels.forEach((label, idx) => {
+            if (label) visibleIndexLookup.set(label, idx);
+        });
+
         setGraph(prev => {
             let changed = false;
             const newNodes = prev.nodes.map(node => {
                 const vals = node.attributes[activeAttribute] || [];
+                let bestLabel: string | null = null;
+                let bestPriority = Infinity;
                 let newTrack = -1;
 
-                if (vals.length > 0) {
-                   // Priority: Find the FIRST track in visibleRowLabels that matches ANY value in vals.
-                   // This enforces sidebar order priority.
-                   const priorityMatchIndex = visibleRowLabels.findIndex(label => label && vals.includes(label));
-                   if (priorityMatchIndex !== -1) newTrack = priorityMatchIndex;
+                // Pick the attribute value with the highest priority based on track order
+                vals.forEach(val => {
+                    const p = priorityLookup.has(val) ? priorityLookup.get(val)! : Infinity;
+                    if (p < bestPriority) {
+                        bestPriority = p;
+                        bestLabel = val;
+                    }
+                });
+
+                // Map the chosen label to the current visible track index
+                if (bestLabel !== null && visibleIndexLookup.has(bestLabel)) {
+                    newTrack = visibleIndexLookup.get(bestLabel)!;
                 }
                 
                 if (node.track !== newTrack) changed = true;
@@ -164,7 +185,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             if (!changed) return prev;
             return { ...prev, nodes: newNodes };
         });
-    }, [visibleRowLabels, activeAttribute]);
+    }, [visibleRowLabels, activeAttribute, rowLabelMap]);
 
 
     // --- ACTIONS ---
