@@ -164,17 +164,17 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
             padding: 30,
             boundingBox: undefined,
             nodeDimensionsIncludeLabels: false,
-            randomize: true, // Randomize for organic layout
-            componentSpacing: 100,
-            nodeRepulsion: (node: any) => 200000, // Much stronger repulsion
+            randomize: false, // Use initial positions
+            componentSpacing: 60,
+            nodeRepulsion: (node: any) => 10000,
             nodeOverlap: 4,
             idealEdgeLength: (edge: any) => {
                 // Make track edges (structural) shorter/tighter, attribute edges longer
-                return edge.data('type') === 'track' ? 200 : 400;
+                return edge.data('type') === 'track' ? 100 : 200;
             },
             edgeElasticity: (edge: any) => 32,
             nestingFactor: 1.2,
-            gravity: 0.1, // Reduced gravity to allow spreading
+            gravity: 0.1,
             numIter: 1000,
             initialTemp: 1000,
             coolingFactor: 0.99,
