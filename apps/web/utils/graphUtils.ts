@@ -101,7 +101,7 @@ export const collapseNodesForVisuals = (
     // We attach 'count' and 'stackIds' to the object so they can be read during Cytoscape element creation
     return {
       ...primary,
-      label: stack.length > 1 ? stack.length.toString() : (primary.label || ''),
+      label: stack.length > 1 ? stack.length.toString() : primary.label || "",
       _stackCount: stack.length,
       _stackIds: stack.map((n) => n.id),
     };

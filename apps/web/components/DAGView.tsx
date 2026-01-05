@@ -94,7 +94,7 @@ export const DAGView: React.FC = () => {
             const trackLabel = rowLabelMap[activeAttribute]?.[node.track] || '';
             const nodeColor = getTrackColor(trackLabel);
             // Use the label from the collapsed node (which might be the count)
-            const label = node.label; 
+            const label = node.label;
             const count = node._stackCount || 1;
             // Scale size: Base + 10px per extra node, capped at 2x size
             const size = Math.min(NODE_DIAMETER * 2, NODE_DIAMETER + (count - 1) * 10);
