@@ -26,6 +26,11 @@ export const DAGView: React.FC = () => {
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
     const [inspectorCoords, setInspectorCoords] = useState({ x: 0, y: 0 });
 
+    // Compute node labels (v1, v2, etc.) based on persistent property
+    const nodeLabels = useMemo(() => {
+        return new Map(graph.nodes.map((n) => [n.id, n.label || '']));
+    }, [graph.nodes]);
+
     // Compute edges for DAG view
     const dagEdges = useMemo(() => {
         const edges: any[] = [];
@@ -98,11 +103,12 @@ export const DAGView: React.FC = () => {
         const cyNodes = graph.nodes.map((node) => {
             const trackLabel = rowLabelMap[activeAttribute]?.[node.track] || '';
             const nodeColor = getTrackColor(trackLabel);
+            const label = nodeLabels.get(node.id) || '';
 
             return {
                 data: {
                     id: node.id,
-                    label: node.content || '',
+                    label: label,
                     color: nodeColor,
                     // Store original node data for potential tooltip/styling
                     ...node,
@@ -129,7 +135,13 @@ export const DAGView: React.FC = () => {
                         'background-color': 'data(color)',
                         'border-width': 3,
                         'border-color': '#000000',
-                        'label': '', // Empty label as requested
+                        'label': 'data(label)',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'text-wrap': 'wrap',
+                        'text-max-width': '100px',
+                        'font-size': '10px',
+                        'font-weight': 'bold',
                         'width': NODE_DIAMETER,
                         'height': NODE_DIAMETER,
                         'shape': 'ellipse',

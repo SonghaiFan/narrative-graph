@@ -15,7 +15,7 @@
     ],
     "moduleResolution": "bundler",
     "isolatedModules": true,
-    "moduleDetection": "force",
+    "moduleDetection": "cose",
     "allowJs": true,
     "jsx": "react-jsx",
     "paths": {

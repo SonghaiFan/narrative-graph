@@ -1,6 +1,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { NarrativeNode, Source } from "../types";
 
+if (!process.env.API_KEY) {
+  console.error(
+    "API_KEY is missing. Please set GEMINI_API_KEY in your .env file."
+  );
+}
+
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 // We use an intermediate type for AI generation to avoid dynamic key issues in Schema definition

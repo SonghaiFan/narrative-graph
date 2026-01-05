@@ -138,12 +138,64 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return edges;
     }, []);
 
-    // 3. Update Graph Edges Effect
+    // 3. Update Graph Edges Effect & Persistent Labels
     useEffect(() => {
-        setGraph(prev => ({
-            ...prev,
-            edges: computeEdges(prev.nodes, linkingAttribute, gridCols)
-        }));
+        setGraph(prev => {
+            // Sort nodes to ensure deterministic labeling
+            const sortedNodes = [...prev.nodes].sort((a, b) => {
+                if (a.time !== b.time) return a.time - b.time;
+                return a.track - b.track;
+            });
+
+            // Assign labels if missing or incorrect order
+            const labeledNodes = sortedNodes.map((n, i) => ({
+                ...n,
+                label: `v${i + 1}`
+            }));
+
+            // Check if labels actually changed to avoid infinite loop
+            const hasChanged = labeledNodes.some((n, i) => n.label !== prev.nodes.find(pn => pn.id === n.id)?.label);
+
+            // If labels didn't change, just update edges. If they did, update nodes too.
+            // However, updating nodes triggers this effect again. 
+            // We need to be careful. 
+            // Actually, let's just compute edges based on current nodes, 
+            // and if we need to update labels, we do it in a separate effect or here if we are careful.
+
+            // Let's try to update labels ONLY if the set of nodes (ids) or their positions changed.
+            // But this effect runs on graph.nodes change.
+
+            // To avoid loop: Only update if the computed labels are different from current state.
+            const currentLabels = new Map(prev.nodes.map(n => [n.id, n.label]));
+            const newLabels = new Map(labeledNodes.map(n => [n.id, n.label]));
+
+            let nodesToUse = prev.nodes;
+            let labelsChanged = false;
+
+            for (const [id, label] of newLabels) {
+                if (currentLabels.get(id) !== label) {
+                    labelsChanged = true;
+                    break;
+                }
+            }
+
+            if (labelsChanged) {
+                nodesToUse = labeledNodes;
+            }
+
+            const newEdges = computeEdges(nodesToUse, linkingAttribute, gridCols);
+
+            // Only update state if something actually changed
+            if (labelsChanged || JSON.stringify(newEdges) !== JSON.stringify(prev.edges)) {
+                return {
+                    ...prev,
+                    nodes: nodesToUse,
+                    edges: newEdges
+                };
+            }
+
+            return prev;
+        });
     }, [linkingAttribute, computeEdges, graph.nodes, gridCols]);
 
     // 4. Alpha Rule Effect (Track Assignment)

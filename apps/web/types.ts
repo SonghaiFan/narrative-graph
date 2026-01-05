@@ -1,6 +1,6 @@
-
 export interface NarrativeNode {
   id: string;
+  label?: string; // Persistent label (e.g., v1, v2)
   time: number; // The T axis (column)
   track: number; // The H axis (row)
   motifSource?: string; // Which motif created this, purely for metadata
@@ -26,19 +26,19 @@ export interface NarrativeGraph {
 }
 
 export interface MotifNodeTemplate {
-  relTime: number; 
-  relTrack: number; 
+  relTime: number;
+  relTrack: number;
 }
 
 export interface MotifEdgeTemplate {
-  sourceIndex: number; 
-  targetIndex: number; 
+  sourceIndex: number;
+  targetIndex: number;
 }
 
 export interface Motif {
   id: string;
   name: string;
-  category: 'Sequential' | 'Non-Sequential';
+  category: "Sequential" | "Non-Sequential";
   description: string;
   nodes: MotifNodeTemplate[];
   edges: MotifEdgeTemplate[];

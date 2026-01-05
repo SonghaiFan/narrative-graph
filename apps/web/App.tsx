@@ -22,7 +22,9 @@ import { EdgeLayer } from './components/GraphVisual';
 import { NarrativeNodeItem } from './components/NarrativeNodeItem';
 import { AIGeneratorModal } from './components/AIGeneratorModal';
 import { DAGView } from './components/DAGView';
+import { ForceView } from './components/ForceView';
 import { GraphProvider, useGraphContext } from './context/GraphContext';
+import { generateGraphFromPrompt } from './services/ai';
 
 const AppContent: React.FC = () => {
   const {
@@ -39,7 +41,7 @@ const AppContent: React.FC = () => {
 
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'dag'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'dag' | 'cola' | 'cose'>('grid');
 
   // --- DnD State ---
   // DnD state remains in App/UI layer as it's transient
@@ -108,9 +110,9 @@ const AppContent: React.FC = () => {
 
       setGraphData(nodes, sources);
       setIsAIModalOpen(false);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Failed to generate graph. Please check your API key or try a different prompt.");
+      alert(`Failed to generate graph: ${e.message || e}. Please check your API key or try a different prompt.`);
     } finally {
       setIsGeneratingAI(false);
     }
@@ -197,6 +199,18 @@ const AppContent: React.FC = () => {
               >
                 DAG
               </button>
+              <button
+                onClick={() => setViewMode('cola')}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'cola' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Cola
+              </button>
+              <button
+                onClick={() => setViewMode('cose')}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'cose' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Cose
+              </button>
             </div>
 
             <div className="w-px h-6 bg-slate-100"></div>
@@ -246,8 +260,12 @@ const AppContent: React.FC = () => {
                 draggedMotif={draggedMotif}
                 draggedNode={draggedNode}
               />
-            ) : (
+            ) : viewMode === 'dag' ? (
               <DAGView />
+            ) : viewMode === 'cola' ? (
+              <ForceView layoutType="cola" />
+            ) : (
+              <ForceView layoutType="cose" />
             )}
           </div>
 

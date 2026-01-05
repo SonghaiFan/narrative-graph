@@ -177,12 +177,9 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
   }, [visibleNodes]);
 
   const nodeLabels = useMemo(() => {
-    const sorted = [...visibleNodes].sort((a, b) => {
-      if (a.time !== b.time) return a.time - b.time;
-      return a.track - b.track;
-    });
-    return new Map(sorted.map((n, i) => [n.id, `v${i + 1}`]));
-  }, [visibleNodes]);
+    // Use the persistent label from the node itself
+    return new Map(graph.nodes.map((n) => [n.id, n.label || '']));
+  }, [graph.nodes]);
 
   const renderedEdges: RenderedEdge[] = useMemo(() => {
     return graph.edges

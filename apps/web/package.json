@@ -16,6 +16,7 @@
     "@types/cytoscape": "^3.21.9",
     "@types/cytoscape-dagre": "^2.3.4",
     "cytoscape": "^3.33.1",
+    "cytoscape-cola": "^2.5.1",
     "cytoscape-dagre": "^2.5.0",
     "html-to-image": "1.11.11",
     "lucide-react": "^0.562.0",
