@@ -9,6 +9,33 @@ export interface CytoscapeEdge {
   };
 }
 
+export const getStackLabel = (nodes: NarrativeNode[]): string => {
+  const labels = nodes.map((n) => n.label || "").filter((l) => l !== "");
+  if (labels.length === 0) return "";
+  if (labels.length === 1) return labels[0];
+
+  // Try to find a common non-numeric prefix (e.g. "v" in "v1", "v2")
+  const firstLabel = labels[0];
+  const match = firstLabel.match(/^(\D+)/);
+  const prefix = match ? match[1] : "";
+
+  let usePrefix = false;
+  if (prefix) {
+    usePrefix = labels.every((l) => l.startsWith(prefix));
+  }
+
+  if (usePrefix) {
+    const suffixes = labels.map((l) => l.substring(prefix.length));
+    if (labels.length === 2) {
+      return `${prefix}${suffixes.join(",")}`;
+    }
+    return `${prefix}${suffixes.slice(0, 2).join(",")},..`;
+  }
+
+  if (labels.length === 2) return labels.join(",");
+  return `${labels.slice(0, 2).join(",")},..`;
+};
+
 /**
  * Computes edges for Cytoscape views (DAG, Force, etc.)
  * 1. Attribute Connections (Solid): Strictly T -> T+1 if they share attributes.
@@ -101,7 +128,7 @@ export const collapseNodesForVisuals = (
     // We attach 'count' and 'stackIds' to the object so they can be read during Cytoscape element creation
     return {
       ...primary,
-      label: stack.length > 1 ? stack.length.toString() : primary.label || "",
+      label: getStackLabel(stack),
       _stackCount: stack.length,
       _stackIds: stack.map((n) => n.id),
     };

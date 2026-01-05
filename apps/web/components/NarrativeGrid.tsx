@@ -20,6 +20,7 @@ import { NarrativeNodeItem } from "./NarrativeNodeItem";
 import { GhostLayer } from "./GhostLayer";
 import { GraphInspector } from "./GraphInspector";
 import { useGraphContext } from "../context/GraphContext";
+import { getStackLabel } from "../utils/graphUtils";
 
 interface NarrativeGridProps {
   hoverCell: { t: number; h: number } | null;
@@ -392,7 +393,7 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                       key={key}
                       node={primaryNode}
                       count={group.length}
-                      label={nodeLabels.get(primaryNode.id)}
+                      label={getStackLabel(group)}
                       isSelected={group.some((n) => n.id === selectedNodeId)}
                       isHovered={group.some((n) => n.id === hoveredNodeId)}
                       color={getTrackColor(visibleRowLabels[primaryNode.track])}

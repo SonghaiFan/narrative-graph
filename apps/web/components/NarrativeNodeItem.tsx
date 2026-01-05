@@ -45,19 +45,19 @@ export const NarrativeNodeItem: React.FC<NarrativeNodeItemProps> = ({
 
   // Interaction State Logic
   const interactiveClass = (isOverlay || isGhost) ? "pointer-events-none" : "pointer-events-auto cursor-grab active:cursor-grabbing";
-  
+
   // Z-Index handling: Bring selected/hovered to front
   const zIndex = isGhost ? 20 : (isSelected || isHovered ? 50 : 30);
-  
+
   // Transform handling
   let transformStr = "translate(-50%, -50%)";
   if (isGhost) transformStr += " scale(0.9)";
-  
+
   const baseClasses = `absolute rounded-full flex items-center justify-center transition-all duration-200 ${interactiveClass}`;
 
   // Style Construction
   let bgStyle = color;
-  
+
   // Strict styling rules based on request: 3px solid black border
   const borderStyle = isGhost ? "2px dashed #000000" : "3px solid #000000";
   let opacity = 1;
@@ -66,14 +66,14 @@ export const NarrativeNodeItem: React.FC<NarrativeNodeItemProps> = ({
   // Instead of changing border color, we add a ring/glow effect to preserve the black border
   let ringClass = "";
   if (!isGhost && (isSelected || isHovered)) {
-      ringClass = "ring-4 ring-black/20 ring-offset-2";
+    ringClass = "ring-4 ring-black/20 ring-offset-2";
   }
 
   if (isGhost) {
-      bgStyle = "#ffffff"; 
-      opacity = 0.6;
+    bgStyle = "#ffffff";
+    opacity = 0.6;
   } else if (isDragging) {
-      opacity = 0.4;
+    opacity = 0.4;
   }
 
   // Calculate visible stack depth based on count
@@ -88,16 +88,16 @@ export const NarrativeNodeItem: React.FC<NarrativeNodeItemProps> = ({
         height: NODE_DIAMETER,
         left: left,
         top: top,
-        transform: transformStr, 
+        transform: transformStr,
         touchAction: 'none',
         zIndex: zIndex
       }}
       className={`${baseClasses} ${ringClass}`}
       onClick={(e) => {
-          if (!isGhost && !isOverlay) {
-            e.stopPropagation(); 
-            onClick(e);
-          }
+        if (!isGhost && !isOverlay) {
+          e.stopPropagation();
+          onClick(e);
+        }
       }}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
@@ -106,41 +106,33 @@ export const NarrativeNodeItem: React.FC<NarrativeNodeItemProps> = ({
     >
       {/* Dynamic Stack Effect: Renders proportional layers based on count */}
       {!isGhost && stackDepth > 0 && Array.from({ length: stackDepth }).map((_, i) => (
-          <div 
-            key={i}
-            className="absolute inset-0 rounded-full border-2 border-black bg-white"
-            style={{ 
-                zIndex: -1 - i, // Stack them backwards
-                // Shift Right-Up progressively. Using 3px steps.
-                transform: `translate(${3 * (i + 1)}px, -${3 * (i + 1)}px)` 
-            }}
-          />
+        <div
+          key={i}
+          className="absolute inset-0 rounded-full border-2 border-black bg-white"
+          style={{
+            zIndex: -1 - i, // Stack them backwards
+            // Shift Right-Up progressively. Using 3px steps.
+            transform: `translate(${3 * (i + 1)}px, -${3 * (i + 1)}px)`
+          }}
+        />
       ))}
 
       {/* Main Visual Circle */}
-      <div 
-          className="w-full h-full rounded-full box-border flex items-center justify-center transition-colors duration-200 relative overflow-hidden"
-          style={{
-              backgroundColor: bgStyle,
-              border: borderStyle,
-              opacity: opacity,
-              boxShadow: 'none'
-          }}
+      <div
+        className="w-full h-full rounded-full box-border flex items-center justify-center transition-colors duration-200 relative overflow-hidden"
+        style={{
+          backgroundColor: bgStyle,
+          border: borderStyle,
+          opacity: opacity,
+          boxShadow: 'none'
+        }}
       >
-          {/* Label Logic: Only show real labels, no "+" for ghosts */}
-          {!isGhost && (
-              count > 1 ? (
-                  <span className="text-white text-xs font-black select-none leading-none drop-shadow-md">
-                      {count}
-                  </span>
-              ) : (
-                  label && (
-                      <span className="text-black/80 text-[10px] font-black select-none leading-none">
-                          {label}
-                      </span>
-                  )
-              )
-          )}
+        {/* Label Logic: Always show label if present, using consistent styling */}
+        {!isGhost && label && (
+          <span className="text-black/80 text-[10px] font-black select-none leading-none text-center px-1">
+            {label}
+          </span>
+        )}
       </div>
     </div>
   );
