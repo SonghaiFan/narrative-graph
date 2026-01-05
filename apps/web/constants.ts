@@ -11,13 +11,7 @@ export const RIGHT_MARGIN = 120;
 export const DEFAULT_ROWS_COUNT = 3;
 export const DEFAULT_COLS_COUNT = 5;
 
-export const DEFAULT_ATTRIBUTES = [
-  "Topic",
-  "Entity",
-  "Sentiment",
-  "Date",
-  "Time Period",
-];
+export const DEFAULT_ATTRIBUTES = ["Topic", "Entity", "Sentiment"];
 export const INITIAL_AXIS = "Topic";
 export const INITIAL_LINKING = "Entity";
 

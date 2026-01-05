@@ -48,12 +48,16 @@ export const generateGraphFromPrompt = async (
        - MAXIMUM ${gridRows} unique values for 'Topic'.
        - REUSE these values frequently.
     
-    2. 'Time Period' (COMPULSORY):
+    ${
+      useSearch
+        ? `2. 'Time Period' (COMPULSORY for Real News):
        - You MUST include a 'Time Period' attribute for every node.
        - Divide the timeline into exactly ${gridCols} distinct periods (e.g., "Jan 2024", "Feb 2024", "Mar 2024" OR "2020", "2021", "2022").
        - All nodes in column 0 MUST have the 1st period value.
        - All nodes in column 1 MUST have the 2nd period value.
-       - And so on, up to column ${gridCols - 1}.
+       - And so on, up to column ${gridCols - 1}.`
+        : ""
+    }
 
     GRID CONSTRAINTS:
     - Columns (Time): Strictly 0 to ${gridCols - 1}.
@@ -63,7 +67,11 @@ export const generateGraphFromPrompt = async (
     
     1. TIME BINNING (Columns):
        - Assign events to columns 0 through ${gridCols - 1}.
-       - Ensure the 'Time Period' attribute matches the column index.
+       ${
+         useSearch
+           ? "- Ensure the 'Time Period' attribute matches the column index."
+           : ""
+       }
     
     2. TRACK BINNING (Rows):
        - Identify exactly ${gridRows} primary themes/entities (Track 0 to ${
@@ -77,13 +85,13 @@ export const generateGraphFromPrompt = async (
        - Keep it concise (under 20 words).
     
     4. ATTRIBUTES & LINKING (MANDATORY):
-       - 'attributes' object MUST contain: 'Entity', 'Topic', and 'Time Period'.
-       - ${
+       - 'attributes' object MUST contain: 'Entity' and 'Topic'.
+       ${
          useSearch
-           ? "Include a 'Date' attribute with the real date."
-           : "Include a 'Date' attribute with a fictional but consistent date."
+           ? "- Include 'Time Period' and 'Date' attributes (use real dates found via search)."
+           : ""
        }
-       - TO FORCE INTERACTIONS: When an event involves multiple tracks (e.g., a joint venture, a debate, a merger), include the identifiers of BOTH tracks in the attributes.
+       
     
     Output strictly compliant JSON.
   `;
