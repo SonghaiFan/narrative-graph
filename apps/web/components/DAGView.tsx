@@ -6,7 +6,7 @@ import elk from 'cytoscape-elk';
 import { useGraphContext } from '../context/GraphContext';
 import { getTrackColor, NODE_DIAMETER } from '../constants';
 import { GraphInspector } from './GraphInspector';
-import { computeCytoscapeEdges } from '../utils/graphUtils';
+import { computeCytoscapeEdges, collapseNodesForVisuals } from '../utils/graphUtils';
 
 cytoscape.use(dagre);
 cytoscape.use(klay);
@@ -76,25 +76,36 @@ export const DAGView: React.FC = () => {
         return new Map(graph.nodes.map((n) => [n.id, n.label || '']));
     }, [graph.nodes]);
 
-    // Compute edges for DAG view
-    const dagEdges = useMemo(() => {
-        return computeCytoscapeEdges(graph.nodes, graph.edges, 'dag-edge');
+    // Pre-process graph to handle stacked nodes
+    const { visualNodes, visualEdges } = useMemo(() => {
+        return collapseNodesForVisuals(graph.nodes, graph.edges);
     }, [graph.nodes, graph.edges]);
+
+    // Compute edges for DAG view using the collapsed graph
+    const dagEdges = useMemo(() => {
+        return computeCytoscapeEdges(visualNodes, visualEdges, 'dag-edge');
+    }, [visualNodes, visualEdges]);
 
     useEffect(() => {
         if (!containerRef.current) return;
 
         // Transform nodes for Cytoscape
-        const cyNodes = graph.nodes.map((node) => {
+        const cyNodes = visualNodes.map((node: any) => {
             const trackLabel = rowLabelMap[activeAttribute]?.[node.track] || '';
             const nodeColor = getTrackColor(trackLabel);
-            const label = nodeLabels.get(node.id) || '';
+            // Use the label from the collapsed node (which might be the count)
+            const label = node.label; 
+            const count = node._stackCount || 1;
+            // Scale size: Base + 10px per extra node, capped at 2x size
+            const size = Math.min(NODE_DIAMETER * 2, NODE_DIAMETER + (count - 1) * 10);
 
             return {
                 data: {
                     id: node.id,
                     label: label,
                     color: nodeColor,
+                    count: count,
+                    size: size,
                     // Store original node data for potential tooltip/styling
                     ...node,
                 },
@@ -132,8 +143,8 @@ export const DAGView: React.FC = () => {
                         'text-max-width': '100px',
                         'font-size': '10px',
                         'font-weight': 'bold',
-                        'width': NODE_DIAMETER,
-                        'height': NODE_DIAMETER,
+                        'width': 'data(size)',
+                        'height': 'data(size)',
                         'shape': 'ellipse',
                         'z-index': 10, // Ensure nodes are on top
                     },

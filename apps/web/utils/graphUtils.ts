@@ -72,3 +72,62 @@ export const computeCytoscapeEdges = (
 
   return edges;
 };
+
+/**
+ * Pre-processes nodes to group them by position (Time, Track), creating "Stacked" nodes.
+ * Returns a set of unique visual nodes and remapped edges.
+ */
+export const collapseNodesForVisuals = (
+  nodes: NarrativeNode[],
+  edges: NarrativeEdge[]
+) => {
+  const nodesByPos = new Map<string, NarrativeNode[]>();
+  const idMap = new Map<string, string>();
+
+  // 1. Group nodes by position (Time, Track)
+  nodes.forEach((n) => {
+    const key = `${n.time}-${n.track}`;
+    if (!nodesByPos.has(key)) nodesByPos.set(key, []);
+    nodesByPos.get(key)!.push(n);
+  });
+
+  // 2. Create representative nodes
+  const visualNodes = Array.from(nodesByPos.values()).map((stack) => {
+    const primary = stack[0];
+    // Map all original IDs to the primary ID
+    stack.forEach((n) => idMap.set(n.id, primary.id));
+
+    // Return a node object that includes stack metadata
+    // We attach 'count' and 'stackIds' to the object so they can be read during Cytoscape element creation
+    return {
+      ...primary,
+      label: stack.length > 1 ? stack.length.toString() : (primary.label || ''),
+      _stackCount: stack.length,
+      _stackIds: stack.map((n) => n.id),
+    };
+  });
+
+  // 3. Remap edges
+  const visualEdges: NarrativeEdge[] = [];
+  const seenEdges = new Set<string>();
+
+  edges.forEach((e) => {
+    const sourceId = idMap.get(e.sourceId);
+    const targetId = idMap.get(e.targetId);
+
+    // Filter out self-loops (edges within the same stack)
+    if (sourceId && targetId && sourceId !== targetId) {
+      const edgeKey = `${sourceId}-${targetId}`;
+      if (!seenEdges.has(edgeKey)) {
+        seenEdges.add(edgeKey);
+        visualEdges.push({
+          id: e.id, // Keep original ID of the first edge found
+          sourceId,
+          targetId,
+        });
+      }
+    }
+  });
+
+  return { visualNodes, visualEdges };
+};
