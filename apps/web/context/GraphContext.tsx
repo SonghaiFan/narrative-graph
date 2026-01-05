@@ -117,6 +117,10 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
             currentNodes.forEach(u => {
                 nextNodes.forEach(v => {
+                    // Edge only formed between adjacent tracks (including same track)
+                    const isAdjacentTrack = Math.abs(u.track - v.track) <= 1;
+                    if (!isAdjacentTrack) return;
+
                     const uAttrs = u.attributes[linkingAttr] || [];
                     const vAttrs = v.attributes[linkingAttr] || [];
                     const isConnected = uAttrs.some(val => vAttrs.includes(val));

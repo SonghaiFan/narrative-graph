@@ -91,6 +91,7 @@ export const generateGraphFromPrompt = async (
            ? "- Include 'Time Period' and 'Date' attributes (use real dates found via search)."
            : ""
        }
+        - multiple values for 'Entity' is allowed and encouraged to create links.
        
     
     Output strictly compliant JSON.
