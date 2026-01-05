@@ -21,7 +21,7 @@ import { ChartNetwork, Columns, Rows, Plus, Minus, Sparkles } from 'lucide-react
 import { EdgeLayer } from './components/GraphVisual';
 import { NarrativeNodeItem } from './components/NarrativeNodeItem';
 import { AIGeneratorModal } from './components/AIGeneratorModal';
-import { generateGraphFromPrompt } from './services/ai';
+import { DAGView } from './components/DAGView';
 import { GraphProvider, useGraphContext } from './context/GraphContext';
 
 const AppContent: React.FC = () => {
@@ -39,6 +39,7 @@ const AppContent: React.FC = () => {
 
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'dag'>('grid');
 
   // --- DnD State ---
   // DnD state remains in App/UI layer as it's transient
@@ -182,6 +183,24 @@ const AppContent: React.FC = () => {
 
             <div className="w-px h-6 bg-slate-100"></div>
 
+            {/* View Toggle */}
+            <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'grid' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('dag')}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'dag' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                DAG
+              </button>
+            </div>
+
+            <div className="w-px h-6 bg-slate-100"></div>
+
             <div className="flex items-center gap-4 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
               <div className="flex items-center gap-2">
                 <Columns className="w-3.5 h-3.5 text-slate-400" />
@@ -221,11 +240,15 @@ const AppContent: React.FC = () => {
 
           {/* Center: Grid Workspace */}
           <div className="flex-1 flex flex-col min-w-0 bg-slate-100/50">
-            <NarrativeGrid
-              hoverCell={hoverCell}
-              draggedMotif={draggedMotif}
-              draggedNode={draggedNode}
-            />
+            {viewMode === 'grid' ? (
+              <NarrativeGrid
+                hoverCell={hoverCell}
+                draggedMotif={draggedMotif}
+                draggedNode={draggedNode}
+              />
+            ) : (
+              <DAGView />
+            )}
           </div>
 
           {/* Right: Story Sidebar */}
