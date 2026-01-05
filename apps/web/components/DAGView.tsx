@@ -243,7 +243,7 @@ export const DAGView: React.FC = () => {
         : null;
 
     return (
-        <div className="w-full h-full bg-slate-50 border border-slate-200 rounded-lg overflow-hidden flex flex-col relative">
+        <div id="dag-view-root" className="w-full h-full bg-slate-50 border border-slate-200 rounded-lg overflow-hidden flex flex-col relative">
             <div className="p-4 border-b border-slate-200 bg-white flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-slate-800">DAG View</h2>
                 <div className="text-sm text-slate-500">

@@ -155,7 +155,11 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
     };
 
     const handleExportImage = async (format: 'png' | 'svg') => {
-        const node = document.getElementById('narrative-export-root') || document.getElementById('narrative-graph-card');
+        const node = document.getElementById('narrative-export-root') ||
+            document.getElementById('narrative-graph-card') ||
+            document.getElementById('dag-view-root') ||
+            document.getElementById('force-view-root');
+
         if (!node) {
             alert("Could not find graph element to export.");
             return;
