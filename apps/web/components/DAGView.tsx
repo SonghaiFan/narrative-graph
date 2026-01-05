@@ -32,7 +32,7 @@ const LAYOUT_CONFIGS: Record<LayoutEngine, any> = {
         padding: 20,
         klay: {
             direction: 'RIGHT',
-            spacing: 10,
+            spacing: 20,
             thoroughness: 7,
             fixedAlignment: 'BALANCED',
         }
@@ -78,8 +78,8 @@ export const DAGView: React.FC = () => {
 
     // Compute edges for DAG view
     const dagEdges = useMemo(() => {
-        return computeCytoscapeEdges(graph.nodes, linkingAttribute, 'dag-edge');
-    }, [graph.nodes, linkingAttribute]);
+        return computeCytoscapeEdges(graph.nodes, graph.edges, 'dag-edge');
+    }, [graph.nodes, graph.edges]);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -101,10 +101,22 @@ export const DAGView: React.FC = () => {
             };
         });
 
+        // Create a map of node colors for edges
+        const nodeColorMap = new Map(cyNodes.map(n => [n.data.id, n.data.color]));
+
+        // Transform edges to include color
+        const cyEdges = dagEdges.map(edge => ({
+            ...edge,
+            data: {
+                ...edge.data,
+                color: nodeColorMap.get(edge.data.source) || '#000000'
+            }
+        }));
+
         // Initialize Cytoscape
         const cy = cytoscape({
             container: containerRef.current,
-            elements: [...cyNodes, ...dagEdges],
+            elements: [...cyNodes, ...cyEdges],
             layout: DAG_LAYOUT_CONFIG as any,
             style: [
                 {
@@ -123,6 +135,7 @@ export const DAGView: React.FC = () => {
                         'width': NODE_DIAMETER,
                         'height': NODE_DIAMETER,
                         'shape': 'ellipse',
+                        'z-index': 10, // Ensure nodes are on top
                     },
                 },
                 {
@@ -131,24 +144,31 @@ export const DAGView: React.FC = () => {
                         'width': 2,
                         'curve-style': 'bezier',
                         'target-arrow-shape': 'triangle',
+                        'z-index': 1, // Edges below nodes
                     },
                 },
                 {
-                    selector: 'edge[type="track"]',
+                    selector: 'edge[type="implicit"]',
                     style: {
-                        'width': 2,
-                        'line-color': '#cbd5e1', // slate-300 (subtle track flow)
-                        'target-arrow-color': '#cbd5e1',
-                        'line-style': 'dashed',
+                        'width': NODE_DIAMETER, // Same size as node
+                        'line-color': 'data(color)', // Same color as source node
+                        'opacity': 0.5, // Half transparent
+                        'target-arrow-shape': 'none', // No arrow
+                        'line-style': 'solid',
+                        'curve-style': 'haystack', // Connects from center to center
+                        'z-index': 0, // Bottom layer
                     },
                 },
                 {
                     selector: 'edge[type="attribute"]',
                     style: {
-                        'width': 2,
-                        'line-color': '#000000', // Black (matching grid edges)
+                        'width': 3,
+                        'line-color': '#000000', // Black
                         'target-arrow-color': '#000000',
+                        'target-arrow-shape': 'triangle',
                         'line-style': 'solid',
+                        'curve-style': 'bezier',
+                        'z-index': 2, // Top layer
                     },
                 },
             ],

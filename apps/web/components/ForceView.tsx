@@ -11,38 +11,17 @@ cytoscape.use(cola);
 // Configuration for Force Layouts
 const FORCE_LAYOUT_CONFIG = {
     cola: {
-        componentSpacing: 40,
-        nodeRepulsion: 4096,
+        animate: false,
+        fit: true,
+        flow: { axis: 'x', minSeparation: 30 },
         edgeLength: {
-            track: 12,
-            attribute: 24
-        },
-        nestingFactor: 1.2,
-        gravity: 10,
-        flowSeparation: 100
-    },
-    cose: {
-        componentSpacing: 60,
-        nodeRepulsion: 100,
-        edgeLength: {
-            track: 100,
-            attribute: 200
-        },
-        edgeElasticity: 150,
-        nestingFactor: 5,
-        gravity: 0.1,
-        numIter: 1000,
-        initialTemp: 1000,
-        coolingFactor: 0.9,
-        minTemp: 1.0,
+            track: 50,
+            attribute: 20
+        }
     }
 };
 
-interface ForceViewProps {
-    layoutType?: 'cola' | 'cose';
-}
-
-export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => {
+export const ForceView: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const {
         graph,
@@ -68,8 +47,8 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
 
     // Compute edges for Force view (same logic as DAG)
     const forceEdges = useMemo(() => {
-        return computeCytoscapeEdges(graph.nodes, linkingAttribute, 'force-edge');
-    }, [graph.nodes, linkingAttribute]);
+        return computeCytoscapeEdges(graph.nodes, graph.edges, 'force-edge');
+    }, [graph.nodes, graph.edges]);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -96,69 +75,32 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
             };
         });
 
-        const layoutConfig = layoutType === 'cola' ? {
-            name: 'cola', // Cola layout for constraints
-            animate: true,
-            refresh: 1,
-            maxSimulationTime: 4000,
-            ungrabifyWhileSimulating: false,
-            fit: true,
-            padding: 30,
-            boundingBox: undefined,
-            nodeDimensionsIncludeLabels: false,
-            randomize: false, // Use initial positions
-            componentSpacing: FORCE_LAYOUT_CONFIG.cola.componentSpacing,
-            nodeRepulsion: FORCE_LAYOUT_CONFIG.cola.nodeRepulsion,
-            nodeOverlap: 4,
+        // Create a map of node colors for edges
+        const nodeColorMap = new Map(cyNodes.map(n => [n.data.id, n.data.color]));
+
+        // Transform edges to include color
+        const cyEdges = forceEdges.map(edge => ({
+            ...edge,
+            data: {
+                ...edge.data,
+                color: nodeColorMap.get(edge.data.source) || '#000000'
+            }
+        }));
+
+        const layoutConfig = {
+            name: 'cola',
+            ...FORCE_LAYOUT_CONFIG.cola,
             edgeLength: (edge: any) => {
-                // Make track edges (structural) shorter/tighter, attribute edges longer
-                return edge.data('type') === 'track'
+                return edge.data('type') === 'implicit'
                     ? FORCE_LAYOUT_CONFIG.cola.edgeLength.track
                     : FORCE_LAYOUT_CONFIG.cola.edgeLength.attribute;
             },
-            nestingFactor: FORCE_LAYOUT_CONFIG.cola.nestingFactor,
-            gravity: FORCE_LAYOUT_CONFIG.cola.gravity,
-            numIter: 1000,
-            initialTemp: 1000,
-            coolingFactor: 0.99,
-            minTemp: 1.0,
-            // Cola specific constraints
-            flow: { axis: 'x', minSeparation: FORCE_LAYOUT_CONFIG.cola.flowSeparation }, // Enforce left-to-right flow based on edges
-            // Align nodes with same time index to same X coordinate (soft constraint)
-            alignment: (node: any) => {
-                return { x: node.data('time'), y: 0 };
-            }
-        } : {
-            name: 'cose', // Force-directed layout
-            animate: true,
-            refresh: 20,
-            fit: true,
-            padding: 30,
-            boundingBox: undefined,
-            nodeDimensionsIncludeLabels: false,
-            randomize: false, // Use initial positions
-            componentSpacing: FORCE_LAYOUT_CONFIG.cose.componentSpacing,
-            nodeRepulsion: (node: any) => FORCE_LAYOUT_CONFIG.cose.nodeRepulsion,
-            nodeOverlap: 4,
-            idealEdgeLength: (edge: any) => {
-                // Make track edges (structural) shorter/tighter, attribute edges longer
-                return edge.data('type') === 'track'
-                    ? FORCE_LAYOUT_CONFIG.cose.edgeLength.track
-                    : FORCE_LAYOUT_CONFIG.cose.edgeLength.attribute;
-            },
-            edgeElasticity: (edge: any) => FORCE_LAYOUT_CONFIG.cose.edgeElasticity,
-            nestingFactor: FORCE_LAYOUT_CONFIG.cose.nestingFactor,
-            gravity: FORCE_LAYOUT_CONFIG.cose.gravity,
-            numIter: FORCE_LAYOUT_CONFIG.cose.numIter,
-            initialTemp: FORCE_LAYOUT_CONFIG.cose.initialTemp,
-            coolingFactor: FORCE_LAYOUT_CONFIG.cose.coolingFactor,
-            minTemp: FORCE_LAYOUT_CONFIG.cose.minTemp
         };
 
         // Initialize Cytoscape
         const cy = cytoscape({
             container: containerRef.current,
-            elements: [...cyNodes, ...forceEdges],
+            elements: [...cyNodes, ...cyEdges],
             layout: layoutConfig as any,
             style: [
                 {
@@ -177,6 +119,7 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
                         'width': NODE_DIAMETER,
                         'height': NODE_DIAMETER,
                         'shape': 'ellipse',
+                        'z-index': 10, // Ensure nodes are on top
                     },
                 },
                 {
@@ -188,21 +131,27 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
                     },
                 },
                 {
-                    selector: 'edge[type="track"]',
+                    selector: 'edge[type="implicit"]',
                     style: {
-                        'width': 2,
-                        'line-color': '#cbd5e1', // slate-300
-                        'target-arrow-color': '#cbd5e1',
-                        'line-style': 'dashed',
+                        'width': NODE_DIAMETER, // Same size as node
+                        'line-color': 'data(color)', // Same color as source node
+                        'opacity': 0.5, // Half transparent
+                        'target-arrow-shape': 'none', // No arrow
+                        'line-style': 'solid',
+                        'curve-style': 'haystack', // Connects from center to center
+                        'z-index': 0, // Bottom layer
                     },
                 },
                 {
                     selector: 'edge[type="attribute"]',
                     style: {
-                        'width': 2,
+                        'width': 3,
                         'line-color': '#000000', // Black
                         'target-arrow-color': '#000000',
+                        'target-arrow-shape': 'triangle',
                         'line-style': 'solid',
+                        'curve-style': 'bezier',
+                        'z-index': 2, // Top layer
                     },
                 },
             ],
@@ -258,7 +207,7 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
         return () => {
             cy.destroy();
         };
-    }, [graph.nodes, forceEdges, layoutType, activeAttribute, rowLabelMap, nodeLabels]);
+    }, [graph.nodes, forceEdges, activeAttribute, rowLabelMap, nodeLabels]);
 
     // Inspector Logic
     const activeNode = selectedNodeId || hoveredNodeId

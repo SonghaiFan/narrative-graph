@@ -41,7 +41,7 @@ const AppContent: React.FC = () => {
 
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'dag' | 'cola' | 'cose'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'dag' | 'cola'>('grid');
 
   // --- DnD State ---
   // DnD state remains in App/UI layer as it's transient
@@ -205,12 +205,6 @@ const AppContent: React.FC = () => {
               >
                 Cola
               </button>
-              <button
-                onClick={() => setViewMode('cose')}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'cosew' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                Cose
-              </button>
             </div>
 
             <div className="w-px h-6 bg-slate-100"></div>
@@ -262,10 +256,8 @@ const AppContent: React.FC = () => {
               />
             ) : viewMode === 'dag' ? (
               <DAGView />
-            ) : viewMode === 'cola' ? (
-              <ForceView layoutType="cola" />
             ) : (
-              <ForceView layoutType="cose" />
+              <ForceView />
             )}
           </div>
 

@@ -1,31 +1,39 @@
-import { NarrativeNode } from "../types";
+import { NarrativeNode, NarrativeEdge } from "../types";
 
 export interface CytoscapeEdge {
   data: {
     id: string;
     source: string;
     target: string;
-    type: "track" | "attribute";
+    type: "attribute" | "implicit";
   };
 }
 
 /**
  * Computes edges for Cytoscape views (DAG, Force, etc.)
  * 1. Attribute Connections (Solid): Strictly T -> T+1 if they share attributes.
- * 2. Track Connections (Dashed): Sequential connections within the same track (a -> b -> c).
+ * 2. Implicit Links (Wide): Visual flow for track connections.
  */
 export const computeCytoscapeEdges = (
   nodes: NarrativeNode[],
-  linkingAttribute: string,
+  explicitEdges: NarrativeEdge[],
   edgeIdPrefix: string = "edge"
 ): CytoscapeEdge[] => {
   const edges: CytoscapeEdge[] = [];
   const edgeIds = new Set<string>();
 
-  const addEdge = (uId: string, vId: string, type: "track" | "attribute") => {
-    const id = `${edgeIdPrefix}-${uId}-${vId}`;
-    // If an edge already exists, we don't add another one.
-    // By adding 'attribute' edges first, they take precedence (solid over dashed).
+  const addEdge = (
+    uId: string,
+    vId: string,
+    type: "attribute" | "implicit"
+  ) => {
+    // For implicit edges, we use a unique ID including type so they always appear
+    // For explicit edges (attribute), we use a shared ID
+    const isImplicit = type === "implicit";
+    const id = isImplicit
+      ? `${edgeIdPrefix}-${type}-${uId}-${vId}`
+      : `${edgeIdPrefix}-explicit-${uId}-${vId}`;
+
     if (!edgeIds.has(id)) {
       edgeIds.add(id);
       edges.push({
@@ -39,39 +47,14 @@ export const computeCytoscapeEdges = (
     }
   };
 
-  // 1. Attribute Connections: Connect nodes in adjacent time steps (T -> T+1) if they share attributes
-  // These are SOLID edges. We add them first so they take precedence over track edges.
-  const nodesByTime: Record<number, NarrativeNode[]> = {};
-  nodes.forEach((n) => {
-    if (!nodesByTime[n.time]) nodesByTime[n.time] = [];
-    nodesByTime[n.time].push(n);
+  // 1. Attribute Connections: Use the explicit edges from the graph context (consistent with Grid)
+  // These are SOLID edges (visual style defined in component).
+  explicitEdges.forEach((edge) => {
+    addEdge(edge.sourceId, edge.targetId, "attribute");
   });
 
-  const times = Object.keys(nodesByTime)
-    .map(Number)
-    .sort((a, b) => a - b);
-
-  for (const t of times) {
-    const currentNodes = nodesByTime[t];
-    const nextNodes = nodesByTime[t + 1]; // Strictly T+1
-
-    if (nextNodes) {
-      currentNodes.forEach((u) => {
-        nextNodes.forEach((v) => {
-          const uAttrs = u.attributes[linkingAttribute] || [];
-          const vAttrs = v.attributes[linkingAttribute] || [];
-          const isConnected = uAttrs.some((val) => vAttrs.includes(val));
-
-          if (isConnected) {
-            addEdge(u.id, v.id, "attribute");
-          }
-        });
-      });
-    }
-  }
-
   // 2. Track Connections: Connect nodes in the same track sequentially
-  // These are DASHED edges.
+  // These are IMPLICIT edges (visual flow only).
   const nodesByTrack: Record<number, NarrativeNode[]> = {};
   nodes.forEach((n) => {
     if (!nodesByTrack[n.track]) nodesByTrack[n.track] = [];
@@ -83,7 +66,7 @@ export const computeCytoscapeEdges = (
     trackNodes.sort((a, b) => a.time - b.time);
     for (let i = 0; i < trackNodes.length - 1; i++) {
       // Connect a -> b, b -> c (sequential, not a -> c)
-      addEdge(trackNodes[i].id, trackNodes[i + 1].id, "track");
+      addEdge(trackNodes[i].id, trackNodes[i + 1].id, "implicit");
     }
   });
 
