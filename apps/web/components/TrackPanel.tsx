@@ -1,6 +1,6 @@
 
-import React, { useRef } from 'react';
-import { Layers, Eye, EyeOff, Settings2, Upload, Download, Trash2, GripVertical } from 'lucide-react';
+import React from 'react';
+import { Layers, Eye, EyeOff, Settings2, Trash2, GripVertical, Columns, Rows, Plus, Minus } from 'lucide-react';
 import { Dropdown } from './Dropdown';
 import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors, KeyboardSensor } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -8,9 +8,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useGraphContext } from '../context/GraphContext';
 import { TEMPORAL_KEYS } from '../constants';
 
-interface TrackPanelProps {
-  onImport: (file: File) => void;
-}
+interface TrackPanelProps {}
 
 const SortableTrackItem = ({ label, isHidden, onToggle, onDelete }: { label: string, isHidden: boolean, onToggle: (l: string) => void, onDelete: (l: string) => void }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: label });
@@ -74,7 +72,7 @@ const SortableTrackItem = ({ label, isHidden, onToggle, onDelete }: { label: str
     );
 };
 
-export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
+export const TrackPanel: React.FC<TrackPanelProps> = () => {
     const { 
         activeAttribute, 
         setActiveAttribute, 
@@ -87,13 +85,10 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
         hiddenLabels, 
         toggleTrackVisibility, 
         deleteTrack, 
-        reorderTracks, 
-        clearGraph,
-        graph,
-        gridConfig
+        reorderTracks,
+        gridConfig,
+        adjustGrid
     } = useGraphContext();
-
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Filter unique labels for display
     const currentLabels = rowLabelMap[activeAttribute] || [];
@@ -122,30 +117,9 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) onImport(file);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-    };
-
-    const handleExport = () => {
-        const exportObject = {
-            graph: graph,
-            layout: { rows: gridConfig.rows, cols: gridConfig.cols },
-            metadata: { timestamp: new Date().toISOString(), version: '1.0' }
-        };
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "narrative_graph.json");
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-    };
 
     return (
         <div className="w-80 bg-white border-r border-slate-200 h-full flex flex-col shadow-xl z-20 shrink-0">
-             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
 
              <div className="px-5 py-5 border-b border-slate-200 bg-white">
                 <div className="flex items-center gap-2 mb-1">
@@ -175,6 +149,30 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
                     onChange={setLinkingAttribute}
                     className="w-full"
                 />
+                
+                {/* Grid Size Controls */}
+                <div className="pt-2 border-t border-slate-200">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 block">Grid Size</label>
+                    <div className="flex items-center gap-4 bg-white px-3 py-2 rounded-lg border border-slate-200">
+                        <div className="flex items-center gap-2">
+                            <Columns className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-xs font-mono text-slate-500 w-4 font-bold">{gridConfig.cols}</span>
+                            <div className="flex gap-0.5">
+                                <button onClick={() => adjustGrid('cols', -1)} className="p-1 hover:bg-slate-50 hover:shadow-sm rounded transition-all text-slate-500"><Minus className="w-3 h-3" /></button>
+                                <button onClick={() => adjustGrid('cols', 1)} className="p-1 hover:bg-slate-50 hover:shadow-sm rounded transition-all text-slate-500"><Plus className="w-3 h-3" /></button>
+                            </div>
+                        </div>
+                        <div className="w-px h-3 bg-slate-200"></div>
+                        <div className="flex items-center gap-2">
+                            <Rows className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-xs font-mono text-slate-500 w-4 font-bold">{gridConfig.rows}</span>
+                            <div className="flex gap-0.5">
+                                <button onClick={() => adjustGrid('rows', -1)} className="p-1 hover:bg-slate-50 hover:shadow-sm rounded transition-all text-slate-500"><Minus className="w-3 h-3" /></button>
+                                <button onClick={() => adjustGrid('rows', 1)} className="p-1 hover:bg-slate-50 hover:shadow-sm rounded transition-all text-slate-500"><Plus className="w-3 h-3" /></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div className="px-5 py-3 border-b border-slate-200 bg-white flex items-center justify-between">
@@ -213,18 +211,6 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
                         </SortableContext>
                     </DndContext>
                 )}
-            </div>
-            
-            <div className="p-4 border-t border-slate-200 bg-slate-50 grid grid-cols-2 gap-2">
-                <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
-                    <Upload className="w-3.5 h-3.5" /> Import
-                </button>
-                <button onClick={handleExport} className="flex items-center justify-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
-                    <Download className="w-3.5 h-3.5" /> Export
-                </button>
-                <button onClick={clearGraph} className="col-span-2 flex items-center justify-center gap-2 text-xs text-red-600 hover:text-red-700 font-medium px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100 border border-transparent transition-all mt-1">
-                    <Trash2 className="w-3.5 h-3.5" /> Clear All Data
-                </button>
             </div>
         </div>
     );

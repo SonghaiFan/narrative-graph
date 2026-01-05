@@ -4,7 +4,7 @@ import { Motif } from './types';
 // --- VISUAL CONSTANTS ---
 export const CELL_WIDTH = 100;
 export const CELL_HEIGHT = 85;
-export const LABEL_WIDTH = 160;
+export const LABEL_WIDTH = 200;
 export const NODE_DIAMETER = 45;
 export const RIGHT_MARGIN = 120;
 
