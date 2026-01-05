@@ -5,7 +5,7 @@ import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useS
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useGraphContext } from '../context/GraphContext';
-import { TEMPORAL_KEYS } from '../constants';
+import { TEMPORAL_KEYS, getTrackColor } from '../constants';
 import { toPng, toSvg } from 'html-to-image';
 
 interface TrackPanelProps {
@@ -54,6 +54,10 @@ const SortableTrackItem: React.FC<SortableTrackItemProps> = ({ label, isHidden, 
                 >
                     <GripVertical className="w-4 h-4" />
                 </div>
+                <div
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: getTrackColor(label) }}
+                />
                 <span
                     onClick={() => onToggle(label)}
                     className={`text-sm font-medium truncate cursor-pointer flex-1 ${isHidden ? 'line-through decoration-slate-300' : 'text-slate-700'}`}

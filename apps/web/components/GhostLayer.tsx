@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Motif, NarrativeNode, NarrativeGraph } from '../types';
-import { CELL_WIDTH, CELL_HEIGHT } from '../constants';
+import { CELL_WIDTH, CELL_HEIGHT, getTrackColor } from '../constants';
 import { EdgeLayer } from './GraphVisual';
 import { NarrativeNodeItem } from './NarrativeNodeItem';
 
@@ -12,6 +12,7 @@ interface GhostLayerProps {
   gridRows: number;
   gridCols: number;
   offsetX: number;
+  visibleRowLabels: string[];
 }
 
 export const GhostLayer: React.FC<GhostLayerProps> = ({
@@ -21,74 +22,75 @@ export const GhostLayer: React.FC<GhostLayerProps> = ({
   hoverCell,
   gridRows,
   gridCols,
-  offsetX
+  offsetX,
+  visibleRowLabels
 }) => {
   const ghostData = useMemo(() => {
     if (!hoverCell) return null;
-    
+
     // Case 1: Dragging a Motif
     if (draggedMotif) {
-        // Project motif onto grid
-        const projectedNodes: NarrativeNode[] = draggedMotif.nodes.map((n, i) => ({
-            id: `ghost-${i}`,
-            time: hoverCell.t + n.relTime,
-            track: hoverCell.h + n.relTrack,
-            attributes: {} // Dummy
+      // Project motif onto grid
+      const projectedNodes: NarrativeNode[] = draggedMotif.nodes.map((n, i) => ({
+        id: `ghost-${i}`,
+        time: hoverCell.t + n.relTime,
+        track: hoverCell.h + n.relTrack,
+        attributes: {} // Dummy
+      }));
+
+      // Filter out of bounds
+      const validIndices = new Set<number>();
+      const validNodes = projectedNodes.filter((n, i) => {
+        const isValid = n.time >= 0 && n.time < gridCols && n.track >= 0 && n.track < gridRows;
+        if (isValid) validIndices.add(i);
+        return isValid;
+      });
+
+      // Calculate Edges based on valid nodes
+      const edges = draggedMotif.edges
+        .filter(e => validIndices.has(e.sourceIndex) && validIndices.has(e.targetIndex))
+        .map((e, i) => ({
+          id: `ghost-edge-${i}`,
+          source: { x: projectedNodes[e.sourceIndex].time, y: projectedNodes[e.sourceIndex].track },
+          target: { x: projectedNodes[e.targetIndex].time, y: projectedNodes[e.targetIndex].track },
+          isGhost: true
         }));
 
-        // Filter out of bounds
-        const validIndices = new Set<number>();
-        const validNodes = projectedNodes.filter((n, i) => {
-            const isValid = n.time >= 0 && n.time < gridCols && n.track >= 0 && n.track < gridRows;
-            if (isValid) validIndices.add(i);
-            return isValid;
-        });
+      return { nodes: validNodes, edges, type: 'MOTIF' };
 
-        // Calculate Edges based on valid nodes
-        const edges = draggedMotif.edges
-            .filter(e => validIndices.has(e.sourceIndex) && validIndices.has(e.targetIndex))
-            .map((e, i) => ({
-                id: `ghost-edge-${i}`,
-                source: { x: projectedNodes[e.sourceIndex].time, y: projectedNodes[e.sourceIndex].track },
-                target: { x: projectedNodes[e.targetIndex].time, y: projectedNodes[e.targetIndex].track },
-                isGhost: true
-            }));
-
-        return { nodes: validNodes, edges, type: 'MOTIF' };
-
-    } 
+    }
     // Case 2: Dragging a Node
     else if (draggedNode) {
-        if (hoverCell.t < gridCols && hoverCell.h < gridRows) {
-            return {
-                nodes: [{
-                    id: draggedNode.id,
-                    time: hoverCell.t,
-                    track: hoverCell.h,
-                    attributes: {}
-                }],
-                edges: [],
-                type: 'NODE'
-            };
-        }
+      if (hoverCell.t < gridCols && hoverCell.h < gridRows) {
+        return {
+          nodes: [{
+            id: draggedNode.id,
+            time: hoverCell.t,
+            track: hoverCell.h,
+            attributes: {}
+          }],
+          edges: [],
+          type: 'NODE'
+        };
+      }
     }
     // Case 3: Hovering (Creation Preview)
     else {
-         // Check if a node already exists here
-         const exists = graph.nodes.some(n => n.time === hoverCell.t && n.track === hoverCell.h);
-         
-         if (!exists && hoverCell.t < gridCols && hoverCell.h < gridRows) {
-             return {
-                 nodes: [{
-                     id: 'creation-ghost',
-                     time: hoverCell.t,
-                     track: hoverCell.h,
-                     attributes: {}
-                 }],
-                 edges: [],
-                 type: 'CREATION'
-             };
-         }
+      // Check if a node already exists here
+      const exists = graph.nodes.some(n => n.time === hoverCell.t && n.track === hoverCell.h);
+
+      if (!exists && hoverCell.t < gridCols && hoverCell.h < gridRows) {
+        return {
+          nodes: [{
+            id: 'creation-ghost',
+            time: hoverCell.t,
+            track: hoverCell.h,
+            attributes: {}
+          }],
+          edges: [],
+          type: 'CREATION'
+        };
+      }
     }
 
     return null;
@@ -115,11 +117,12 @@ export const GhostLayer: React.FC<GhostLayerProps> = ({
           isSelected={false}
           isHovered={false}
           isGhost={true}
+          color={getTrackColor(visibleRowLabels[node.track])}
           // Note: label="+" is now handled internally by NarrativeNodeItem when isGhost=true
           offsetX={offsetX}
           offsetY={0}
-          onClick={() => {}}
-          onHover={() => {}}
+          onClick={() => { }}
+          onHover={() => { }}
         />
       ))}
     </div>

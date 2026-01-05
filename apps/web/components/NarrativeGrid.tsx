@@ -12,7 +12,7 @@ import {
   CELL_HEIGHT,
   LABEL_WIDTH,
   RIGHT_MARGIN,
-  TRACK_PALETTE,
+  getTrackColor,
 } from "../constants";
 import { GridLattice } from "./GridLattice";
 import { EdgeLayer, RenderedEdge } from "./GraphVisual";
@@ -381,6 +381,7 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                   gridRows={gridConfig.rows}
                   gridCols={gridConfig.cols}
                   offsetX={dynamicLabelWidth}
+                  visibleRowLabels={visibleRowLabels}
                 />
               )}
 
@@ -397,9 +398,7 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                       label={nodeLabels.get(primaryNode.id)}
                       isSelected={group.some((n) => n.id === selectedNodeId)}
                       isHovered={group.some((n) => n.id === hoveredNodeId)}
-                      color={
-                        TRACK_PALETTE[primaryNode.track % TRACK_PALETTE.length]
-                      }
+                      color={getTrackColor(visibleRowLabels[primaryNode.track])}
                       offsetX={dynamicLabelWidth}
                       offsetY={0}
                       onClick={() => {

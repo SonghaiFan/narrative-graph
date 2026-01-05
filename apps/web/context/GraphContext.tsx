@@ -1,12 +1,12 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
 import { NarrativeGraph, NarrativeNode, NarrativeEdge, Motif, Source } from '../types';
-import { 
-    DEFAULT_ROWS_COUNT, 
-    DEFAULT_COLS_COUNT, 
-    DEFAULT_ATTRIBUTES, 
-    INITIAL_AXIS, 
-    INITIAL_LINKING 
+import {
+    DEFAULT_ROWS_COUNT,
+    DEFAULT_COLS_COUNT,
+    DEFAULT_ATTRIBUTES,
+    INITIAL_AXIS,
+    INITIAL_LINKING
 } from '../constants';
 
 interface GridConfig {
@@ -18,7 +18,7 @@ interface GraphContextType {
     // Data
     graph: NarrativeGraph;
     gridConfig: GridConfig;
-    
+
     // Attributes & Tracks
     availableAttributes: string[];
     activeAttribute: string; // The 'Alpha' Axis
@@ -26,7 +26,7 @@ interface GraphContextType {
     rowLabelMap: Record<string, string[]>; // Master list of track labels per attribute
     hiddenLabels: string[]; // Visibility filter
     visibleRowLabels: string[]; // Computed visible labels
-    
+
     // Actions
     setGraphData: (nodes: NarrativeNode[], sources?: Source[]) => void;
     addMotifToGraph: (motif: Motif, startT: number, startH: number) => void;
@@ -34,20 +34,20 @@ interface GraphContextType {
     moveNode: (nodeId: string, t: number, h: number) => void;
     updateNode: (id: string, data: { attributes: Record<string, string[]>, content: string }) => void;
     deleteNode: (id: string) => void;
-    
+
     // Config Actions
     setActiveAttribute: (attr: string) => void;
     setLinkingAttribute: (attr: string) => void;
     addAttribute: (attr: string) => void;
     deleteAttribute: (attr: string) => void;
-    
+
     // Track Actions
     updateRowLabel: (index: number, value: string) => void;
     reorderTracks: (newOrder: string[]) => void;
     toggleTrackVisibility: (label: string) => void;
     createTrack: (value: string) => void;
     deleteTrack: (label: string) => void;
-    
+
     // Grid Actions
     adjustGrid: (type: 'rows' | 'cols', delta: number) => void;
     clearGraph: () => void;
@@ -60,11 +60,11 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const [graph, setGraph] = useState<NarrativeGraph>({ nodes: [], edges: [], sources: [] });
     // Note: 'rows' is now derived from visible labels, only 'cols' is explicit state
     const [gridCols, setGridCols] = useState(DEFAULT_COLS_COUNT);
-    
+
     const [availableAttributes, setAvailableAttributes] = useState<string[]>(DEFAULT_ATTRIBUTES);
     const [activeAttribute, setActiveAttribute] = useState<string>(INITIAL_AXIS);
     const [linkingAttribute, setLinkingAttribute] = useState<string>(INITIAL_LINKING);
-    
+
     const [hiddenLabels, setHiddenLabels] = useState<string[]>([]);
     const [rowLabelMap, setRowLabelMap] = useState<Record<string, string[]>>(() => {
         const initialMap: Record<string, string[]> = {};
@@ -97,17 +97,17 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const computeEdges = useCallback((nodes: NarrativeNode[], linkingAttr: string, maxTime: number): NarrativeEdge[] => {
         const edges: NarrativeEdge[] = [];
         const nodesByTime: Record<number, NarrativeNode[]> = {};
-        
+
         nodes.forEach(n => {
             // STRICT BOUNDS CHECK: Filter out nodes that are hidden or out of time bounds
-            if (n.track < 0 || n.time >= maxTime) return; 
-            
+            if (n.track < 0 || n.time >= maxTime) return;
+
             if (!nodesByTime[n.time]) nodesByTime[n.time] = [];
             nodesByTime[n.time].push(n);
         });
 
         const times = Object.keys(nodesByTime).map(Number).sort((a, b) => a - b);
-        
+
         for (let i = 0; i < times.length; i++) {
             const t = times[i];
             if (!nodesByTime[t + 1]) continue;
@@ -177,7 +177,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 if (bestLabel !== null && visibleIndexLookup.has(bestLabel)) {
                     newTrack = visibleIndexLookup.get(bestLabel)!;
                 }
-                
+
                 if (node.track !== newTrack) changed = true;
                 return { ...node, track: newTrack };
             });
@@ -196,7 +196,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         // 1. Analyze incoming data to extract actual tracks
         const incomingAttrValues: Record<string, Set<string>> = {};
-        
+
         nodes.forEach(node => {
             Object.entries(node.attributes).forEach(([attr, values]) => {
                 nextAvailableAttributes.add(attr);
@@ -224,50 +224,50 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const addMotifToGraph = (motif: Motif, startT: number, startH: number) => {
         const activeRowLabels = visibleRowLabels;
-        
+
         const maxRelTrack = Math.max(...motif.nodes.map(n => n.relTrack));
         const maxRelTime = Math.max(...motif.nodes.map(n => n.relTime));
 
         if (startH + maxRelTrack >= activeRowLabels.length) return;
         if (startT + maxRelTime >= gridCols) return;
-        
+
         const linkRowLabels = rowLabelMap[linkingAttribute] || [];
         const rootNode = motif.nodes[0];
         const rootRow = startH + (rootNode ? rootNode.relTrack : 0);
-        
+
         let commonLinkValue = linkRowLabels[rootRow];
         if (!commonLinkValue || commonLinkValue === '') {
-             commonLinkValue = `${linkingAttribute} ${rootRow + 1}`;
+            commonLinkValue = `${linkingAttribute} ${rootRow + 1}`;
         }
-        
+
         let pendingRowUpdates: Record<number, string> = {};
         const newNodes: NarrativeNode[] = [];
 
         motif.nodes.forEach((n) => {
             const t = startT + n.relTime;
             const h = startH + n.relTrack;
-            
+
             let rowValue = activeRowLabels[h];
             if (!rowValue || rowValue === '') {
-               rowValue = `${activeAttribute} ${h + 1}`;
-               pendingRowUpdates[h] = rowValue;
+                rowValue = `${activeAttribute} ${h + 1}`;
+                pendingRowUpdates[h] = rowValue;
             }
-  
+
             const attributes: Record<string, string[]> = {
                 [activeAttribute]: [rowValue]
             };
-  
+
             if (activeAttribute !== linkingAttribute) {
                 attributes[linkingAttribute] = [commonLinkValue];
             }
-  
+
             newNodes.push({
                 id: crypto.randomUUID(),
                 time: t,
                 track: h,
                 motifSource: motif.name,
                 attributes: attributes,
-                content: '' 
+                content: ''
             });
         });
 
@@ -294,59 +294,59 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         let rowValue = activeRowLabels[h];
         if (!rowValue) {
             rowValue = `${activeAttribute} ${h + 1}`;
-             updateRowLabel(h, rowValue);
+            updateRowLabel(h, rowValue);
         }
-        
+
         const initialAttributes: Record<string, string[]> = {
             [activeAttribute]: [rowValue]
         };
 
         if (activeAttribute !== linkingAttribute) {
-           const linkRowLabels = rowLabelMap[linkingAttribute] || [];
-           let linkValue = linkRowLabels[h];
-           if (!linkValue || linkValue === '') {
-               linkValue = `${linkingAttribute} ${h + 1}`;
-           }
-           initialAttributes[linkingAttribute] = [linkValue];
+            const linkRowLabels = rowLabelMap[linkingAttribute] || [];
+            let linkValue = linkRowLabels[h];
+            if (!linkValue || linkValue === '') {
+                linkValue = `${linkingAttribute} ${h + 1}`;
+            }
+            initialAttributes[linkingAttribute] = [linkValue];
         }
-        
+
         const newNode: NarrativeNode = {
             id: crypto.randomUUID(),
             time: t,
             track: h,
             motifSource: 'Manual',
             attributes: initialAttributes,
-            content: '' 
+            content: ''
         };
-        
+
         setGraph(prev => ({ ...prev, nodes: [...prev.nodes, newNode] }));
     };
 
     const moveNode = (nodeId: string, t: number, h: number) => {
         setGraph(prev => {
-             const node = prev.nodes.find(n => n.id === nodeId);
-             if (!node) return prev;
-             
-             if (h >= visibleRowLabels.length || t >= gridCols) return prev;
+            const node = prev.nodes.find(n => n.id === nodeId);
+            if (!node) return prev;
 
-             const activeRowLabels = visibleRowLabels;
-             let rowValue = activeRowLabels[h];
-             
-             if (!rowValue) {
-                 rowValue = `${activeAttribute} ${h + 1}`;
-                 updateRowLabel(h, rowValue);
-             }
-    
-             const newAttributes = { ...node.attributes };
-             const currentAttrs = newAttributes[activeAttribute] || [];
-             const filteredAttrs = currentAttrs.filter(a => a !== rowValue);
-             newAttributes[activeAttribute] = [rowValue, ...filteredAttrs];
-             
-             const updatedNodes = prev.nodes.map(n => 
-                 n.id === nodeId ? { ...n, time: t, track: h, attributes: newAttributes } : n
-             );
-             
-             return { ...prev, nodes: updatedNodes };
+            if (h >= visibleRowLabels.length || t >= gridCols) return prev;
+
+            const activeRowLabels = visibleRowLabels;
+            let rowValue = activeRowLabels[h];
+
+            if (!rowValue) {
+                rowValue = `${activeAttribute} ${h + 1}`;
+                updateRowLabel(h, rowValue);
+            }
+
+            const newAttributes = { ...node.attributes };
+            const currentAttrs = newAttributes[activeAttribute] || [];
+            const filteredAttrs = currentAttrs.filter(a => a !== rowValue);
+            newAttributes[activeAttribute] = [rowValue, ...filteredAttrs];
+
+            const updatedNodes = prev.nodes.map(n =>
+                n.id === nodeId ? { ...n, time: t, track: h, attributes: newAttributes } : n
+            );
+
+            return { ...prev, nodes: updatedNodes };
         });
     };
 
@@ -369,7 +369,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const updateRowLabel = (index: number, newValue: string) => {
         const oldLabel = visibleRowLabels[index];
-        
+
         setRowLabelMap(prev => {
             const current = [...(prev[activeAttribute] || [])];
             const masterIndex = current.indexOf(oldLabel);
@@ -387,7 +387,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     let newAttrs = [...currentAttrs];
                     if (oldLabel) newAttrs = newAttrs.filter(v => v !== oldLabel);
                     if (newValue && !newAttrs.includes(newValue)) {
-                        newAttrs = [newValue, ...newAttrs]; 
+                        newAttrs = [newValue, ...newAttrs];
                     }
                     return { ...n, attributes: { ...n.attributes, [activeAttribute]: newAttrs } };
                 }
@@ -426,9 +426,29 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     const reorderTracks = (newOrder: string[]) => {
+        const oldVisibleLabels = [...visibleRowLabels];
+
         setRowLabelMap(prev => {
             // newOrder is the full list of tracks provided by TrackPanel
             return { ...prev, [activeAttribute]: newOrder };
+        });
+
+        // After rowLabelMap updates, visibleRowLabels will update.
+        // We need to update node tracks to match their labels' new positions.
+        setGraph(prev => {
+            const newVisibleLabels = newOrder.filter(l => !l || !hiddenLabels.includes(l));
+
+            return {
+                ...prev,
+                nodes: prev.nodes.map(n => {
+                    const label = oldVisibleLabels[n.track];
+                    const newIndex = newVisibleLabels.indexOf(label);
+                    if (newIndex !== -1 && newIndex !== n.track) {
+                        return { ...n, track: newIndex };
+                    }
+                    return n;
+                })
+            };
         });
     };
 
@@ -439,8 +459,8 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const addAttribute = (attr: string) => {
         if (!availableAttributes.includes(attr)) {
             setAvailableAttributes(prev => [...prev, attr]);
-            setRowLabelMap(prev => ({ 
-                ...prev, 
+            setRowLabelMap(prev => ({
+                ...prev,
                 [attr]: Array(DEFAULT_ROWS_COUNT).fill('').map((_, i) => `${attr} ${i + 1}`)
             }));
         }
@@ -450,10 +470,10 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         if (availableAttributes.length <= 1) return;
         const newAttrs = availableAttributes.filter(a => a !== attr);
         setAvailableAttributes(newAttrs);
-        
+
         if (activeAttribute === attr) setActiveAttribute(newAttrs[0]);
         if (linkingAttribute === attr) setLinkingAttribute(newAttrs[0]);
-        
+
         setRowLabelMap(prev => {
             const next = { ...prev };
             delete next[attr];
@@ -477,7 +497,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             if (delta > 0) {
                 const allLabels = rowLabelMap[activeAttribute] || [];
                 const hiddenLabel = allLabels.find(l => hiddenLabels.includes(l));
-                
+
                 if (hiddenLabel) {
                     toggleTrackVisibility(hiddenLabel);
                 } else {
