@@ -7,6 +7,16 @@ import { GraphInspector } from './GraphInspector';
 
 cytoscape.use(dagre);
 
+// Configuration for DAG Layout
+const DAG_LAYOUT_CONFIG = {
+    name: 'dagre',
+    rankDir: 'LR', // Left to Right
+    nodeSep: 50,
+    rankSep: 100,
+    padding: 20,
+    animate: true,
+};
+
 export const DAGView: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const {
@@ -120,14 +130,7 @@ export const DAGView: React.FC = () => {
         const cy = cytoscape({
             container: containerRef.current,
             elements: [...cyNodes, ...dagEdges],
-            layout: {
-                name: 'dagre',
-                rankDir: 'LR', // Left to Right
-                nodeSep: 50,
-                rankSep: 100,
-                padding: 20,
-                animate: true,
-            },
+            layout: DAG_LAYOUT_CONFIG as any,
             style: [
                 {
                     selector: 'node',

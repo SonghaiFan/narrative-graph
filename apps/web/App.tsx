@@ -207,7 +207,7 @@ const AppContent: React.FC = () => {
               </button>
               <button
                 onClick={() => setViewMode('cose')}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'cose' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'cosew' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Cose
               </button>

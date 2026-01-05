@@ -8,6 +8,36 @@ import { GraphInspector } from './GraphInspector';
 
 cytoscape.use(cola);
 
+// Configuration for Force Layouts
+const FORCE_LAYOUT_CONFIG = {
+    cola: {
+        componentSpacing: 40,
+        nodeRepulsion: 4096,
+        edgeLength: {
+            track: 64,
+            attribute: 128
+        },
+        nestingFactor: 1.2,
+        gravity: 0.5,
+        flowSeparation: 200
+    },
+    cose: {
+        componentSpacing: 60,
+        nodeRepulsion: 10000,
+        edgeLength: {
+            track: 100,
+            attribute: 200
+        },
+        edgeElasticity: 32,
+        nestingFactor: 1.2,
+        gravity: 0.1,
+        numIter: 1000,
+        initialTemp: 1000,
+        coolingFactor: 0.99,
+        minTemp: 1.0
+    }
+};
+
 interface ForceViewProps {
     layoutType?: 'cola' | 'cose';
 }
@@ -137,21 +167,23 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
             boundingBox: undefined,
             nodeDimensionsIncludeLabels: false,
             randomize: false, // Use initial positions
-            componentSpacing: 40,
-            nodeRepulsion: 4096,
+            componentSpacing: FORCE_LAYOUT_CONFIG.cola.componentSpacing,
+            nodeRepulsion: FORCE_LAYOUT_CONFIG.cola.nodeRepulsion,
             nodeOverlap: 4,
             edgeLength: (edge: any) => {
                 // Make track edges (structural) shorter/tighter, attribute edges longer
-                return edge.data('type') === 'track' ? 64 : 128;
+                return edge.data('type') === 'track'
+                    ? FORCE_LAYOUT_CONFIG.cola.edgeLength.track
+                    : FORCE_LAYOUT_CONFIG.cola.edgeLength.attribute;
             },
-            nestingFactor: 1.2,
-            gravity: 0.5,
+            nestingFactor: FORCE_LAYOUT_CONFIG.cola.nestingFactor,
+            gravity: FORCE_LAYOUT_CONFIG.cola.gravity,
             numIter: 1000,
             initialTemp: 1000,
             coolingFactor: 0.99,
             minTemp: 1.0,
             // Cola specific constraints
-            flow: { axis: 'x', minSeparation: 200 }, // Enforce left-to-right flow based on edges
+            flow: { axis: 'x', minSeparation: FORCE_LAYOUT_CONFIG.cola.flowSeparation }, // Enforce left-to-right flow based on edges
             // Align nodes with same time index to same X coordinate (soft constraint)
             alignment: (node: any) => {
                 return { x: node.data('time'), y: 0 };
@@ -165,20 +197,22 @@ export const ForceView: React.FC<ForceViewProps> = ({ layoutType = 'cola' }) => 
             boundingBox: undefined,
             nodeDimensionsIncludeLabels: false,
             randomize: false, // Use initial positions
-            componentSpacing: 60,
-            nodeRepulsion: (node: any) => 10000,
+            componentSpacing: FORCE_LAYOUT_CONFIG.cose.componentSpacing,
+            nodeRepulsion: (node: any) => FORCE_LAYOUT_CONFIG.cose.nodeRepulsion,
             nodeOverlap: 4,
             idealEdgeLength: (edge: any) => {
                 // Make track edges (structural) shorter/tighter, attribute edges longer
-                return edge.data('type') === 'track' ? 100 : 200;
+                return edge.data('type') === 'track'
+                    ? FORCE_LAYOUT_CONFIG.cose.edgeLength.track
+                    : FORCE_LAYOUT_CONFIG.cose.edgeLength.attribute;
             },
-            edgeElasticity: (edge: any) => 32,
-            nestingFactor: 1.2,
-            gravity: 0.1,
-            numIter: 1000,
-            initialTemp: 1000,
-            coolingFactor: 0.99,
-            minTemp: 1.0
+            edgeElasticity: (edge: any) => FORCE_LAYOUT_CONFIG.cose.edgeElasticity,
+            nestingFactor: FORCE_LAYOUT_CONFIG.cose.nestingFactor,
+            gravity: FORCE_LAYOUT_CONFIG.cose.gravity,
+            numIter: FORCE_LAYOUT_CONFIG.cose.numIter,
+            initialTemp: FORCE_LAYOUT_CONFIG.cose.initialTemp,
+            coolingFactor: FORCE_LAYOUT_CONFIG.cose.coolingFactor,
+            minTemp: FORCE_LAYOUT_CONFIG.cose.minTemp
         };
 
         // Initialize Cytoscape
