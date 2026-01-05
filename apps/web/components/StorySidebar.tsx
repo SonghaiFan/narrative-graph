@@ -1,18 +1,19 @@
-
 import React, { useMemo, useState, useEffect } from 'react';
 import { NarrativeNode } from '../types';
 import { BookOpen, ChevronLeft, ChevronRight, Hash, ExternalLink, Globe } from 'lucide-react';
 import { useGraphContext } from '../context/GraphContext';
 
+interface ChapterCardProps {
+    nodes: NarrativeNode[]; 
+    timeIndex: number;
+    activeAttribute: string;
+}
+
 // Helper to paginate multiple nodes at same T
-const ChapterCard = ({ 
+const ChapterCard: React.FC<ChapterCardProps> = ({ 
     nodes, 
     timeIndex,
     activeAttribute 
-}: { 
-    nodes: NarrativeNode[], 
-    timeIndex: number,
-    activeAttribute: string
 }) => {
     const [page, setPage] = useState(0);
 

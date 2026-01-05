@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
     DndContext, 
     DragOverlay, 
@@ -17,13 +17,12 @@ import { StorySidebar } from './components/StorySidebar';
 import { TrackPanel } from './components/TrackPanel';
 import { NarrativeNode, Motif } from './types';
 import { CELL_WIDTH, CELL_HEIGHT } from './constants';
-import { ChartNetwork, Sparkles, Save, Download, Upload, Trash2 } from 'lucide-react';
+import { ChartNetwork, Columns, Rows, Plus, Minus, Sparkles } from 'lucide-react';
 import { EdgeLayer } from './components/GraphVisual';
 import { NarrativeNodeItem } from './components/NarrativeNodeItem';
 import { AIGeneratorModal } from './components/AIGeneratorModal';
 import { generateGraphFromPrompt } from './services/ai';
 import { GraphProvider, useGraphContext } from './context/GraphContext';
-import { exportGraphAsJSON, exportGraphAsPNG, exportGraphAsSVG } from './services/export';
 
 const AppContent: React.FC = () => {
   const { 
@@ -35,19 +34,11 @@ const AppContent: React.FC = () => {
       setGraphData,
       availableAttributes,
       activeAttribute,
-      linkingAttribute,
-      rowLabelMap,
-      visibleRowLabels,
-      deleteNode,
-      clearGraph
+      deleteNode
   } = useGraphContext();
-  
-  const gridRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
-  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
 
   // --- DnD State ---
   // DnD state remains in App/UI layer as it's transient
@@ -124,101 +115,6 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const handleSaveGraph = () => {
-    const exportData = {
-      graph,
-      gridConfig,
-      availableAttributes,
-      activeAttribute,
-      linkingAttribute,
-      rowLabelMap,
-      visibleRowLabels,
-      exportDate: new Date().toISOString(),
-      version: '1.0'
-    };
-    exportGraphAsJSON(exportData);
-  };
-
-  const handleExportAsPNG = async () => {
-    if (!gridRef.current) {
-      alert('Graph element not found');
-      return;
-    }
-    
-    // Find the actual graph card element
-    const graphCard = gridRef.current.querySelector('.relative.shadow-sm.bg-white.rounded-xl') as HTMLElement;
-    if (!graphCard) {
-      alert('Graph card not found');
-      return;
-    }
-    
-    try {
-      await exportGraphAsPNG(graphCard);
-    } catch (error: any) {
-      console.error('PNG export failed:', error);
-      const errorMessage = error?.message || 'PNG export failed';
-      if (errorMessage.includes('html2canvas')) {
-        // Offer to use SVG instead
-        if (confirm('PNG export requires html2canvas. Would you like to export as SVG instead?\n\nTo enable PNG export, run: npm install html2canvas')) {
-          exportGraphAsSVG(graphCard);
-        }
-      } else {
-        alert(`Export failed: ${errorMessage}`);
-      }
-    }
-  };
-
-  const handleExportAsSVG = () => {
-    if (!gridRef.current) {
-      alert('Graph element not found');
-      return;
-    }
-    
-    const graphCard = gridRef.current.querySelector('.relative.shadow-sm.bg-white.rounded-xl') as HTMLElement;
-    if (!graphCard) {
-      alert('Graph card not found');
-      return;
-    }
-    
-    exportGraphAsSVG(graphCard);
-  };
-
-  const handleImport = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const json = JSON.parse(e.target?.result as string);
-        if (json.graph && Array.isArray(json.graph.nodes)) {
-          setGraphData(json.graph.nodes, json.graph.sources);
-        } else if (Array.isArray(json.nodes)) {
-          setGraphData(json.nodes, json.sources);
-        } else {
-          alert('Invalid file format. Expected graph data with nodes array.');
-        }
-      } catch (err) {
-        alert('Failed to parse file. Please check the file format.');
-        console.error(err);
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleImport(file);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleClearGraph = () => {
-    if (confirm('Are you sure you want to clear all graph data? This action cannot be undone.')) {
-      clearGraph();
-    }
-  };
-
   const dragOverlayData = useMemo(() => {
     if (draggedMotif) {
         const nodes = draggedMotif.nodes.map((n, i) => ({
@@ -275,70 +171,6 @@ const AppContent: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-6">
-                    {/* Import Button */}
-                    <input 
-                        type="file" 
-                        ref={fileInputRef} 
-                        onChange={handleFileChange} 
-                        className="hidden" 
-                        accept=".json" 
-                    />
-                    <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all font-medium text-xs"
-                        title="Import graph from JSON"
-                    >
-                        <Upload className="w-3.5 h-3.5" />
-                        Import
-                    </button>
-
-                    {/* Save Button */}
-                    <button
-                        onClick={handleSaveGraph}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all font-medium text-xs"
-                        title="Save graph as JSON"
-                    >
-                        <Save className="w-3.5 h-3.5" />
-                        Save
-                    </button>
-
-                    {/* Export as Image Button */}
-                    <div className="relative">
-                        <button
-                            onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all font-medium text-xs"
-                            title="Export graph as image"
-                        >
-                            <Download className="w-3.5 h-3.5" />
-                            Export
-                        </button>
-                        {/* Dropdown menu for export options */}
-                        {isExportMenuOpen && (
-                            <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50 min-w-[140px]">
-                                <button
-                                    onClick={() => {
-                                        setIsExportMenuOpen(false);
-                                        handleExportAsPNG();
-                                    }}
-                                    className="w-full text-left px-3 py-2 text-xs hover:bg-slate-50 rounded-t-lg transition-colors"
-                                >
-                                    Export as PNG
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setIsExportMenuOpen(false);
-                                        handleExportAsSVG();
-                                    }}
-                                    className="w-full text-left px-3 py-2 text-xs hover:bg-slate-50 rounded-b-lg transition-colors"
-                                >
-                                    Export as SVG
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="w-px h-6 bg-slate-100"></div>
-
                     {/* AI Button */}
                     <button
                         onClick={() => setIsAIModalOpen(true)}
@@ -350,34 +182,45 @@ const AppContent: React.FC = () => {
 
                     <div className="w-px h-6 bg-slate-100"></div>
 
-                    {/* Clear Button */}
-                    <button
-                        onClick={handleClearGraph}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg transition-all font-medium text-xs"
-                        title="Clear all graph data"
-                    >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        Clear
-                    </button>
-
+                    <div className="flex items-center gap-4 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <div className="flex items-center gap-2">
+                            <Columns className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-xs font-mono text-slate-500 w-4 font-bold">{gridConfig.cols}</span>
+                            <div className="flex gap-0.5">
+                                <button onClick={() => adjustGrid('cols', -1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Minus className="w-3 h-3" /></button>
+                                <button onClick={() => adjustGrid('cols', 1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Plus className="w-3 h-3" /></button>
+                            </div>
+                        </div>
+                        <div className="w-px h-3 bg-slate-200"></div>
+                        <div className="flex items-center gap-2">
+                            <Rows className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-xs font-mono text-slate-500 w-4 font-bold">{gridConfig.rows}</span>
+                            <div className="flex gap-0.5">
+                                <button onClick={() => adjustGrid('rows', -1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Minus className="w-3 h-3" /></button>
+                                <button onClick={() => adjustGrid('rows', 1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Plus className="w-3 h-3" /></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
         </header>
-
-        {/* Click outside to close export menu */}
-        {isExportMenuOpen && (
-          <div 
-            className="fixed inset-0 z-40" 
-            onClick={() => setIsExportMenuOpen(false)}
-          />
-        )}
 
         {/* Main Content Area */}
         <div className="flex-1 flex overflow-hidden">
             {/* Left: Track Panel */}
-            <TrackPanel />
+            <TrackPanel onImport={(file) => {
+                 const reader = new FileReader();
+                 reader.onload = (e) => {
+                     try {
+                         const json = JSON.parse(e.target?.result as string);
+                         if (json.graph && Array.isArray(json.graph.nodes)) setGraphData(json.graph.nodes, json.graph.sources);
+                         else if (Array.isArray(json.nodes)) setGraphData(json.nodes, json.sources);
+                     } catch(err) { alert("Invalid file"); }
+                 };
+                 reader.readAsText(file);
+            }} />
 
             {/* Center: Grid Workspace */}
-            <div ref={gridRef} className="flex-1 flex flex-col min-w-0 bg-slate-100/50">
+            <div className="flex-1 flex flex-col min-w-0 bg-slate-100/50">
                  <NarrativeGrid 
                     hoverCell={hoverCell}
                     draggedMotif={draggedMotif}

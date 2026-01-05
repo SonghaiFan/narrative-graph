@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { NarrativeNode } from '../types';
 import { X, Plus, AlertCircle, Check, Trash2, AlignLeft, Edit2, GripHorizontal } from 'lucide-react';
@@ -148,7 +147,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
                     <div key={k} className="flex gap-2 justify-between items-start">
                         <span className="text-slate-400 font-medium shrink-0">{k}:</span>
                         <span className="text-right text-white break-words">
-                            {vals.join(', ') || '-'}
+                            {(vals as string[]).join(', ') || '-'}
                         </span>
                     </div>
                 ))}

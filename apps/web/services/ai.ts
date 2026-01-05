@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { NarrativeNode, Source } from "../types";
 
@@ -13,21 +12,29 @@ interface AIResponseNode {
 }
 
 export const generateGraphFromPrompt = async (
-  userPrompt: string, 
+  userPrompt: string,
   currentAttributes: string[],
   gridRows: number,
   gridCols: number,
   useSearch: boolean
-): Promise<{ nodes: NarrativeNode[], sources: Source[], recommendedRows: number, recommendedCols: number }> => {
-  
+): Promise<{
+  nodes: NarrativeNode[];
+  sources: Source[];
+  recommendedRows: number;
+  recommendedCols: number;
+}> => {
   // Using gemini-3-flash-preview which supports search grounding
   const modelId = "gemini-3-flash-preview";
-  
+
   const systemInstruction = `
     You are an experienced journalist.
     Your task is to generate a narrative graph that fits strictly into a ${gridCols} (Time) x ${gridRows} (Track) grid.
     
-    ${useSearch ? "MODE: REAL NEWS. Use Google Search to find factual events." : "MODE: CREATIVE FICTION. Generate a coherent fictional story based on the prompt."}
+    ${
+      useSearch
+        ? "MODE: REAL NEWS. Use Google Search to find factual events."
+        : "MODE: CREATIVE FICTION. Generate a coherent fictional story based on the prompt."
+    }
 
     CRITICAL GOAL: AVOID LINEAR PARALLEL LINES. YOU MUST CREATE INTERACTIONS.
     - A "Linear" graph has tracks that never interact. THIS IS BAD.
@@ -59,7 +66,9 @@ export const generateGraphFromPrompt = async (
        - Ensure the 'Time Period' attribute matches the column index.
     
     2. TRACK BINNING (Rows):
-       - Identify exactly ${gridRows} primary themes/entities (Track 0 to ${gridRows - 1}).
+       - Identify exactly ${gridRows} primary themes/entities (Track 0 to ${
+    gridRows - 1
+  }).
        - Assign events to these tracks.
     
     3. CONTENT STYLE (5Ws):
@@ -69,7 +78,11 @@ export const generateGraphFromPrompt = async (
     
     4. ATTRIBUTES & LINKING (MANDATORY):
        - 'attributes' object MUST contain: 'Entity', 'Topic', and 'Time Period'.
-       - ${useSearch ? "Include a 'Date' attribute with the real date." : "Include a 'Date' attribute with a fictional but consistent date."}
+       - ${
+         useSearch
+           ? "Include a 'Date' attribute with the real date."
+           : "Include a 'Date' attribute with a fictional but consistent date."
+       }
        - TO FORCE INTERACTIONS: When an event involves multiple tracks (e.g., a joint venture, a debate, a merger), include the identifiers of BOTH tracks in the attributes.
     
     Output strictly compliant JSON.
@@ -91,62 +104,78 @@ export const generateGraphFromPrompt = async (
             items: {
               type: Type.OBJECT,
               properties: {
-                time: { type: Type.INTEGER, description: `Column index (0 to ${gridCols - 1})` },
-                track: { type: Type.INTEGER, description: `Row index (0 to ${gridRows - 1})` },
-                content: { type: Type.STRING, description: "Simple 5W statement (Who, what, where, when, why)" },
+                time: {
+                  type: Type.INTEGER,
+                  description: `Column index (0 to ${gridCols - 1})`,
+                },
+                track: {
+                  type: Type.INTEGER,
+                  description: `Row index (0 to ${gridRows - 1})`,
+                },
+                content: {
+                  type: Type.STRING,
+                  description:
+                    "Simple 5W statement (Who, what, where, when, why)",
+                },
                 attributes: {
                   type: Type.ARRAY,
                   items: {
                     type: Type.OBJECT,
                     properties: {
                       key: { type: Type.STRING },
-                      values: { type: Type.ARRAY, items: { type: Type.STRING } }
-                    }
-                  }
-                }
+                      values: {
+                        type: Type.ARRAY,
+                        items: { type: Type.STRING },
+                      },
+                    },
+                  },
+                },
               },
-              required: ["time", "track", "content", "attributes"]
-            }
-          }
-        }
-      }
+              required: ["time", "track", "content", "attributes"],
+            },
+          },
+        },
+      },
     },
     contents: [
       {
         role: "user",
-        parts: [{ text: userPrompt }]
-      }
-    ]
+        parts: [{ text: userPrompt }],
+      },
+    ],
   });
 
   const responseText = response.text;
   if (!responseText) throw new Error("No response from AI");
 
   const data = JSON.parse(responseText) as { nodes: AIResponseNode[] };
-  
+
   // Extract Grounding Metadata (Sources) - Only if search was used/available
   const sources: Source[] = [];
   if (useSearch) {
-      const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
-      if (groundingChunks) {
-          groundingChunks.forEach(chunk => {
-              if (chunk.web?.uri && chunk.web?.title) {
-                  sources.push({
-                      title: chunk.web.title,
-                      uri: chunk.web.uri
-                  });
-              }
+    const groundingChunks =
+      response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+    if (groundingChunks) {
+      groundingChunks.forEach((chunk) => {
+        if (chunk.web?.uri && chunk.web?.title) {
+          sources.push({
+            title: chunk.web.title,
+            uri: chunk.web.uri,
           });
-      }
+        }
+      });
+    }
   }
 
   // Deduplicate sources by URI
-  const uniqueSources = Array.from(new Map(sources.map(s => [s.uri, s])).values());
+  const uniqueSources = Array.from(
+    new Map(sources.map((s) => [s.uri, s])).values()
+  );
 
   // Transform AI response to App Type
-  const finalNodes: NarrativeNode[] = data.nodes.map(n => {
+  const finalNodes: NarrativeNode[] = data.nodes.map((n) => {
     const attrRecord: Record<string, string[]> = {};
-    n.attributes.forEach(a => {
+    n.attributes.forEach((a) => {
       attrRecord[a.key] = a.values;
     });
 
@@ -156,7 +185,7 @@ export const generateGraphFromPrompt = async (
       track: n.track,
       content: n.content,
       attributes: attrRecord,
-      motifSource: useSearch ? 'AI Search' : 'AI Creative'
+      motifSource: useSearch ? "AI Search" : "AI Creative",
     };
   });
 
@@ -164,6 +193,6 @@ export const generateGraphFromPrompt = async (
     nodes: finalNodes,
     sources: uniqueSources,
     recommendedRows: gridRows,
-    recommendedCols: gridCols
+    recommendedCols: gridCols,
   };
 };

@@ -217,7 +217,7 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
                                         <div key={k} className="flex gap-2 justify-between items-start">
                                             <span className="text-slate-400 font-medium shrink-0">{k}:</span>
                                             <span className="text-right text-slate-800 break-words font-medium">
-                                                {vals.join(', ') || '-'}
+                                                {(vals as string[]).join(', ') || '-'}
                                             </span>
                                         </div>
                                     ))}
