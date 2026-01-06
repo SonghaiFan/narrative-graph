@@ -5,7 +5,8 @@ export interface CytoscapeEdge {
     id: string;
     source: string;
     target: string;
-    type: "attribute" | "implicit";
+    type: "explicit" | "implicit";
+    subtype?: "same" | "cross";
   };
 }
 
@@ -38,7 +39,7 @@ export const getStackLabel = (nodes: NarrativeNode[]): string => {
 
 /**
  * Computes edges for Cytoscape views (DAG, Force, etc.)
- * 1. Attribute Connections (Solid): Strictly T -> T+1 if they share attributes.
+ * 1. Explicit Links (Solid/Dashed): Solid for within-track, Dashed for cross-track.
  * 2. Implicit Links (Wide): Visual flow for track connections.
  */
 export const computeCytoscapeEdges = (
@@ -49,10 +50,15 @@ export const computeCytoscapeEdges = (
   const edges: CytoscapeEdge[] = [];
   const edgeIds = new Set<string>();
 
+  // Map node ID to Track ID for easy lookup
+  const nodeTrackMap = new Map<string, number>();
+  nodes.forEach((n) => nodeTrackMap.set(n.id, n.track));
+
   const addEdge = (
     uId: string,
     vId: string,
-    type: "attribute" | "implicit"
+    type: "explicit" | "implicit",
+    subtype?: "same" | "cross"
   ) => {
     // For implicit edges, we use a unique ID including type so they always appear
     // For explicit edges (attribute), we use a shared ID
@@ -69,15 +75,24 @@ export const computeCytoscapeEdges = (
           source: uId,
           target: vId,
           type,
+          subtype,
         },
       });
     }
   };
 
-  // 1. Attribute Connections: Use the explicit edges from the graph context (consistent with Grid)
-  // These are SOLID edges (visual style defined in component).
+  // 1. Attribute Connections: Use the explicit edges from the graph context
   explicitEdges.forEach((edge) => {
-    addEdge(edge.sourceId, edge.targetId, "attribute");
+    const sTrack = nodeTrackMap.get(edge.sourceId);
+    const tTrack = nodeTrackMap.get(edge.targetId);
+
+    // Determine subtype: Same track = solid, Cross track = dashed
+    const subtype =
+      sTrack !== undefined && tTrack !== undefined && sTrack === tTrack
+        ? "same"
+        : "cross";
+
+    addEdge(edge.sourceId, edge.targetId, "explicit", subtype);
   });
 
   // 2. Track Connections: Connect nodes in the same track sequentially

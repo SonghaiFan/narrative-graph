@@ -8,6 +8,7 @@ export interface RenderedEdge {
   target: { x: number; y: number };
   isGhost?: boolean;
   isActive?: boolean;
+  subtype?: 'same' | 'cross';
 }
 
 interface EdgeLayerProps {
@@ -47,7 +48,7 @@ export const EdgeLayer: React.FC<EdgeLayerProps> = ({
     const dy = end.cy - start.cy;
     const angle = Math.atan2(dy, dx);
     const length = Math.sqrt(dx * dx + dy * dy);
-    
+
     // Gap corresponds to the radius.
     // The arrow tip (refX) is aligned with the end of the line.
     // So the line should end exactly at the target node's border.
@@ -94,43 +95,43 @@ export const EdgeLayer: React.FC<EdgeLayerProps> = ({
 
         const isSelected = edge.isActive;
         const isGhost = edge.isGhost;
-        
+
         return (
-          <g 
-            key={edge.id} 
+          <g
+            key={edge.id}
             onClick={(e) => {
-                if (interactive && onEdgeClick && !isGhost) {
-                    e.stopPropagation();
-                    onEdgeClick(edge.id, e);
-                }
+              if (interactive && onEdgeClick && !isGhost) {
+                e.stopPropagation();
+                onEdgeClick(edge.id, e);
+              }
             }}
             className={interactive && !isGhost ? "cursor-pointer pointer-events-auto" : ""}
           >
-             {/* Wide Invisible Hit Path for easier clicking */}
-             {!isGhost && (
-                <line
-                    x1={coords.x1} y1={coords.y1} x2={coords.x2} y2={coords.y2}
-                    stroke="transparent"
-                    strokeWidth="20"
-                />
-             )}
-             
-             {/* Visible Line: Thick black line */}
-             <line
-                x1={coords.x1}
-                y1={coords.y1}
-                x2={coords.x2}
-                y2={coords.y2}
-                stroke={isGhost ? "#94a3b8" : (isSelected ? "#3b82f6" : "#000000")}
-                strokeWidth={isGhost ? 2 : (isSelected ? 5 : 3)}
-                strokeDasharray={isGhost ? "4 4" : undefined}
-                markerEnd={
-                     isGhost 
-                        ? "url(#edge-arrow-ghost)"
-                        : (isSelected ? "url(#edge-arrow-selected)" : "url(#edge-arrow-active)")
-                }
-                opacity={isGhost ? 0.5 : 1}
-             />
+            {/* Wide Invisible Hit Path for easier clicking */}
+            {!isGhost && (
+              <line
+                x1={coords.x1} y1={coords.y1} x2={coords.x2} y2={coords.y2}
+                stroke="transparent"
+                strokeWidth="20"
+              />
+            )}
+
+            {/* Visible Line: Thick black line */}
+            <line
+              x1={coords.x1}
+              y1={coords.y1}
+              x2={coords.x2}
+              y2={coords.y2}
+              stroke={isGhost ? "#94a3b8" : (isSelected ? "#3b82f6" : "#000000")}
+              strokeWidth={isGhost ? 2 : (isSelected ? 5 : 3)}
+              strokeDasharray={isGhost ? "4 4" : (edge.subtype === 'cross' ? "6 4" : undefined)}
+              markerEnd={
+                isGhost
+                  ? "url(#edge-arrow-ghost)"
+                  : (isSelected ? "url(#edge-arrow-selected)" : "url(#edge-arrow-active)")
+              }
+              opacity={isGhost ? 0.5 : 1}
+            />
           </g>
         );
       })}

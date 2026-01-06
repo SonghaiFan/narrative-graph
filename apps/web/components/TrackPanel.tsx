@@ -140,8 +140,11 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
     };
 
     const handleExportJSON = () => {
+        // Exclude edges from export as they are derived from rules
+        const { edges, ...graphData } = graph;
+
         const exportObject = {
-            graph: graph,
+            graph: graphData,
             layout: { rows: gridConfig.rows, cols: gridConfig.cols },
             metadata: { timestamp: new Date().toISOString(), version: '1.0' }
         };

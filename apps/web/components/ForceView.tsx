@@ -13,7 +13,7 @@ const FORCE_LAYOUT_CONFIG = {
     cola: {
         animate: false,
         fit: true,
-        flow: { axis: 'x', minSeparation: 30 },
+        flow: { axis: 'x', minSeparation: 100 },
         edgeLength: {
             track: 50,
             attribute: 20
@@ -153,13 +153,25 @@ export const ForceView: React.FC = () => {
                     },
                 },
                 {
-                    selector: 'edge[type="attribute"]',
+                    selector: 'edge[type="explicit"][subtype="same"]',
                     style: {
                         'width': 3,
                         'line-color': '#000000', // Black
                         'target-arrow-color': '#000000',
                         'target-arrow-shape': 'triangle',
                         'line-style': 'solid',
+                        'curve-style': 'bezier',
+                        'z-index': 2, // Top layer
+                    },
+                },
+                {
+                    selector: 'edge[type="explicit"][subtype="cross"]',
+                    style: {
+                        'width': 3,
+                        'line-color': '#000000', // Black
+                        'target-arrow-color': '#000000',
+                        'target-arrow-shape': 'triangle',
+                        'line-style': 'dashed',
                         'curve-style': 'bezier',
                         'z-index': 2, // Top layer
                     },
@@ -233,6 +245,28 @@ export const ForceView: React.FC = () => {
                 </div>
             </div>
             <div ref={containerRef} className="flex-1 w-full h-full" />
+
+            {/* Legend Overlay */}
+            <div className="absolute top-[4.5rem] left-4 flex items-center gap-4 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-full shadow-sm px-4 py-1.5 z-10 pointer-events-none">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Legend</span>
+                <div className="h-3 w-px bg-slate-200" />
+
+                <div className="flex items-center gap-2">
+                    <div className="relative w-6 h-3 flex items-center">
+                        <div className="w-full h-0.5 bg-slate-800 rounded" />
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 border-l-[5px] border-l-slate-800 border-y-[3.5px] border-y-transparent" />
+                    </div>
+                    <span className="text-[10px] text-slate-600 font-medium">Within Track</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <div className="relative w-6 h-3 flex items-center">
+                        <div className="w-full h-0.5 border-t border-dashed border-slate-800" />
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 border-l-[5px] border-l-slate-800 border-y-[3.5px] border-y-transparent" />
+                    </div>
+                    <span className="text-[10px] text-slate-600 font-medium">Cross Track</span>
+                </div>
+            </div>
 
             {activeNode && (
                 <GraphInspector

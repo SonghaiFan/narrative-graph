@@ -194,6 +194,7 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
           target: { x: t.time, y: t.track },
           isActive: e.id === selectedEdgeId,
           isGhost: false,
+          subtype: s.track === t.track ? 'same' : 'cross',
         };
       })
       .filter(Boolean) as RenderedEdge[];
@@ -279,16 +280,29 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                   </div>
                 </div>
                 <div className="h-4 w-px bg-slate-200" />
-                <div className="flex items-center gap-2">
-                  <div className="relative w-7 h-3">
+                <div className="flex items-center gap-1">
+                    <span className="font-semibold text-slate-800">Linking (β):</span>
+                    <span><span className="font-semibold text-slate-800">{linkingAttribute}</span></span>
+                </div>
+                
+                {/* Same Track (Solid) */}
+                <div className="flex items-center gap-1 pl-2">
+                  <div className="relative w-8 h-3">
                     <div className="absolute left-0 top-1.5 right-0 h-0.5 bg-slate-700 rounded" />
                     <div className="absolute right-0 top-[2px] border-l-[7px] border-l-slate-700 border-y-[5px] border-y-transparent" />
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="font-semibold text-slate-800">Linking (β):</span>
-                    <span>Edges connect shared <span className="font-semibold text-slate-800">{linkingAttribute}</span></span>
-                  </div>
+                  <span className="text-[10px] text-slate-500">Within Track</span>
                 </div>
+
+                {/* Cross Track (Dashed) */}
+                <div className="flex items-center gap-1">
+                  <div className="relative w-8 h-3">
+                    <div className="absolute left-0 top-1.5 right-0 h-0.5 border-t border-dashed border-slate-700" />
+                    <div className="absolute right-0 top-[2px] border-l-[7px] border-l-slate-700 border-y-[5px] border-y-transparent" />
+                  </div>
+                  <span className="text-[10px] text-slate-500">Cross Track</span>
+                </div>
+
               </div>
             </div>
 
