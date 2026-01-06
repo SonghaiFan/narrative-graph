@@ -281,10 +281,10 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                 </div>
                 <div className="h-4 w-px bg-slate-200" />
                 <div className="flex items-center gap-1">
-                    <span className="font-semibold text-slate-800">Linking (β):</span>
-                    <span><span className="font-semibold text-slate-800">{linkingAttribute}</span></span>
+                  <span className="font-semibold text-slate-800">Linking (β):</span>
+                  <span><span className="font-semibold text-slate-800">{linkingAttribute}</span></span>
                 </div>
-                
+
                 {/* Same Track (Solid) */}
                 <div className="flex items-center gap-1 pl-2">
                   <div className="relative w-8 h-3">
