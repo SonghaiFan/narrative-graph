@@ -17,7 +17,7 @@ import { StorySidebar } from './components/StorySidebar';
 import { TrackPanel } from './components/TrackPanel';
 import { NarrativeNode, Motif } from './types';
 import { CELL_WIDTH, CELL_HEIGHT } from './constants';
-import { ChartNetwork, Columns, Rows, Plus, Minus, Sparkles } from 'lucide-react';
+import { ChartNetwork, Columns, Rows, Plus, Minus, Sparkles, Undo, Redo } from 'lucide-react';
 import { EdgeLayer } from './components/GraphVisual';
 import { NarrativeNodeItem } from './components/NarrativeNodeItem';
 import { AIGeneratorModal } from './components/AIGeneratorModal';
@@ -36,12 +36,34 @@ const AppContent: React.FC = () => {
     setGraphData,
     availableAttributes,
     activeAttribute,
-    deleteNode
+    deleteNode,
+    undo,
+    redo,
+    canUndo,
+    canRedo
   } = useGraphContext();
 
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'dag' | 'cola'>('grid');
+
+  // Keyboard Shortcuts
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Undo: Meta+Z (Mac) or Ctrl+Z (Windows)
+      // Redo: Meta+Shift+Z or Ctrl+Shift+Z
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          if (canRedo) redo();
+        } else {
+          if (canUndo) undo();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo, canUndo, canRedo]);
 
   // --- DnD State ---
   // DnD state remains in App/UI layer as it's transient
@@ -174,6 +196,27 @@ const AppContent: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-6">
+
+            {/* Undo / Redo */}
+            <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 gap-0.5">
+              <button
+                onClick={undo}
+                disabled={!canUndo}
+                title="Undo (Ctrl+Z)"
+                className={`p-1.5 rounded-md transition-all ${!canUndo ? 'text-slate-300 cursor-not-allowed' : 'text-slate-500 hover:bg-white hover:text-slate-800 hover:shadow-sm'}`}
+              >
+                <Undo className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={redo}
+                disabled={!canRedo}
+                title="Redo (Ctrl+Shift+Z)"
+                className={`p-1.5 rounded-md transition-all ${!canRedo ? 'text-slate-300 cursor-not-allowed' : 'text-slate-500 hover:bg-white hover:text-slate-800 hover:shadow-sm'}`}
+              >
+                <Redo className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
             {/* AI Button */}
             <button
               onClick={() => setIsAIModalOpen(true)}

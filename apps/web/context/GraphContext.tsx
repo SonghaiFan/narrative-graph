@@ -51,45 +51,114 @@ interface GraphContextType {
     // Grid Actions
     adjustGrid: (type: 'rows' | 'cols', delta: number) => void;
     clearGraph: () => void;
+
+    // History
+    undo: () => void;
+    redo: () => void;
+    canUndo: boolean;
+    canRedo: boolean;
 }
 
 const GraphContext = createContext<GraphContextType | undefined>(undefined);
 
-export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    // --- STATE ---
-    const [graph, setGraph] = useState<NarrativeGraph>({ nodes: [], edges: [], sources: [] });
-    // Note: 'rows' is now derived from visible labels, only 'cols' is explicit state
-    const [gridCols, setGridCols] = useState(DEFAULT_COLS_COUNT);
+// --- State Types ---
+interface AppState {
+    graph: NarrativeGraph;
+    gridCols: number;
+    availableAttributes: string[];
+    activeAttribute: string;
+    linkingAttribute: string;
+    hiddenLabels: string[];
+    rowLabelMap: Record<string, string[]>;
+}
 
-    const [availableAttributes, setAvailableAttributes] = useState<string[]>(DEFAULT_ATTRIBUTES);
-    const [activeAttribute, setActiveAttribute] = useState<string>(INITIAL_AXIS);
-    const [linkingAttribute, setLinkingAttribute] = useState<string>(INITIAL_LINKING);
-
-    const [hiddenLabels, setHiddenLabels] = useState<string[]>([]);
-    const [rowLabelMap, setRowLabelMap] = useState<Record<string, string[]>>(() => {
+const INITIAL_STATE: AppState = {
+    graph: { nodes: [], edges: [], sources: [] },
+    gridCols: DEFAULT_COLS_COUNT,
+    availableAttributes: DEFAULT_ATTRIBUTES,
+    activeAttribute: INITIAL_AXIS,
+    linkingAttribute: INITIAL_LINKING,
+    hiddenLabels: [],
+    rowLabelMap: (() => {
         const initialMap: Record<string, string[]> = {};
         DEFAULT_ATTRIBUTES.forEach(attr => {
             initialMap[attr] = Array(DEFAULT_ROWS_COUNT).fill('').map((_, i) => `${attr} ${i + 1}`);
         });
         return initialMap;
+    })()
+};
+
+export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    // --- STATE ---
+    const [history, setHistory] = useState<{
+        past: AppState[];
+        present: AppState;
+        future: AppState[];
+    }>({
+        past: [],
+        present: INITIAL_STATE,
+        future: []
     });
+
+    // Helpers
+    const { past, present, future } = history;
+
+    // Derived values for backward compatibility and ease of use
+    const {
+        graph, gridCols, availableAttributes, activeAttribute, linkingAttribute, hiddenLabels, rowLabelMap
+    } = present;
+
+    const pushState = useCallback((updates: Partial<AppState>) => {
+        setHistory(curr => ({
+            past: [...curr.past, curr.present],
+            present: { ...curr.present, ...updates },
+            future: []
+        }));
+    }, []);
+
+    const replaceState = useCallback((updates: Partial<AppState>) => {
+        setHistory(curr => ({
+            ...curr,
+            present: { ...curr.present, ...updates }
+        }));
+    }, []);
+
+    const undo = useCallback(() => {
+        if (past.length === 0) return;
+        setHistory(curr => {
+            const newPast = curr.past.slice(0, -1);
+            const previous = curr.past[curr.past.length - 1];
+            return {
+                past: newPast,
+                present: previous,
+                future: [curr.present, ...curr.future]
+            };
+        });
+    }, [past.length]);
+
+    const redo = useCallback(() => {
+        if (future.length === 0) return;
+        setHistory(curr => {
+            const [next, ...newFuture] = curr.future;
+            return {
+                past: [...curr.past, curr.present],
+                present: next,
+                future: newFuture
+            };
+        });
+    }, [future.length]);
 
     // --- COMPUTED VALUES ---
 
     // 1. Visible Labels (Alpha Filter)
     const visibleRowLabels = useMemo(() => {
         const allLabels = rowLabelMap[activeAttribute] || [];
-        // Keep empty strings in map but filter them out for visibility if needed?
-        // Actually grid relies on index. Keep empties if they are placeholders.
-        // But logic says: !l || ... so empties are kept unless explicitly hidden?
-        // Wait, !l is true for empty string.
-        // So empty strings are returned.
         return allLabels.filter(l => !l || !hiddenLabels.includes(l));
     }, [rowLabelMap, activeAttribute, hiddenLabels]);
 
     // Derived Grid Config
     const gridConfig = useMemo(() => ({
-        rows: Math.max(0, visibleRowLabels.length), // Ensure visible rows match visible tracks exactly
+        rows: Math.max(0, visibleRowLabels.length),
         cols: gridCols
     }), [visibleRowLabels.length, gridCols]);
 
@@ -99,9 +168,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const nodesByTime: Record<number, NarrativeNode[]> = {};
 
         nodes.forEach(n => {
-            // STRICT BOUNDS CHECK: Filter out nodes that are hidden or out of time bounds
             if (n.track < 0 || n.time >= maxTime) return;
-
             if (!nodesByTime[n.time]) nodesByTime[n.time] = [];
             nodesByTime[n.time].push(n);
         });
@@ -117,7 +184,6 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
             currentNodes.forEach(u => {
                 nextNodes.forEach(v => {
-                    // Edge only formed between adjacent tracks (including same track)
                     const isAdjacentTrack = Math.abs(u.track - v.track) <= 1;
                     if (!isAdjacentTrack) return;
 
@@ -140,67 +206,51 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     // 3. Update Graph Edges Effect & Persistent Labels
     useEffect(() => {
-        setGraph(prev => {
-            // Sort nodes to ensure deterministic labeling
-            const sortedNodes = [...prev.nodes].sort((a, b) => {
-                if (a.time !== b.time) return a.time - b.time;
-                return a.track - b.track;
-            });
+        // Calculate based on PRESENT state
+        const sortedNodes = [...graph.nodes].sort((a, b) => {
+            if (a.time !== b.time) return a.time - b.time;
+            return a.track - b.track;
+        });
 
-            // Assign labels if missing or incorrect order
-            const labeledNodes = sortedNodes.map((n, i) => ({
-                ...n,
-                label: `v${i + 1}`
-            }));
+        // Assign labels
+        const labeledNodes = sortedNodes.map((n, i) => ({
+            ...n,
+            label: `v${i + 1}`
+        }));
 
-            // Check if labels actually changed to avoid infinite loop
-            const hasChanged = labeledNodes.some((n, i) => n.label !== prev.nodes.find(pn => pn.id === n.id)?.label);
+        const currentLabels = new Map(graph.nodes.map(n => [n.id, n.label]));
+        const newLabels = new Map(labeledNodes.map(n => [n.id, n.label]));
 
-            // If labels didn't change, just update edges. If they did, update nodes too.
-            // However, updating nodes triggers this effect again. 
-            // We need to be careful. 
-            // Actually, let's just compute edges based on current nodes, 
-            // and if we need to update labels, we do it in a separate effect or here if we are careful.
+        let nodesToUse = graph.nodes;
+        let labelsChanged = false;
 
-            // Let's try to update labels ONLY if the set of nodes (ids) or their positions changed.
-            // But this effect runs on graph.nodes change.
-
-            // To avoid loop: Only update if the computed labels are different from current state.
-            const currentLabels = new Map(prev.nodes.map(n => [n.id, n.label]));
-            const newLabels = new Map(labeledNodes.map(n => [n.id, n.label]));
-
-            let nodesToUse = prev.nodes;
-            let labelsChanged = false;
-
-            for (const [id, label] of newLabels) {
-                if (currentLabels.get(id) !== label) {
-                    labelsChanged = true;
-                    break;
-                }
+        for (const [id, label] of newLabels) {
+            if (currentLabels.get(id) !== label) {
+                labelsChanged = true;
+                break;
             }
+        }
 
-            if (labelsChanged) {
-                nodesToUse = labeledNodes;
-            }
+        if (labelsChanged) {
+            nodesToUse = labeledNodes;
+        }
 
-            const newEdges = computeEdges(nodesToUse, linkingAttribute, gridCols);
+        const newEdges = computeEdges(nodesToUse, linkingAttribute, gridCols);
 
-            // Only update state if something actually changed
-            if (labelsChanged || JSON.stringify(newEdges) !== JSON.stringify(prev.edges)) {
-                return {
-                    ...prev,
+        // Only update if something changed
+        if (labelsChanged || JSON.stringify(newEdges) !== JSON.stringify(graph.edges)) {
+            replaceState({
+                graph: {
+                    ...graph,
                     nodes: nodesToUse,
                     edges: newEdges
-                };
-            }
-
-            return prev;
-        });
-    }, [linkingAttribute, computeEdges, graph.nodes, gridCols]);
+                }
+            });
+        }
+    }, [linkingAttribute, computeEdges, graph.nodes, gridCols, graph.edges, replaceState]); // Added dependencies
 
     // 4. Alpha Rule Effect (Track Assignment)
     useEffect(() => {
-        // Track priority follows the ordering set in the TrackPanel (rowLabelMap)
         const priorityOrder = rowLabelMap[activeAttribute] || [];
         const priorityLookup = new Map<string, number>();
         priorityOrder.forEach((label, idx) => {
@@ -212,36 +262,38 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             if (label) visibleIndexLookup.set(label, idx);
         });
 
-        setGraph(prev => {
-            let changed = false;
-            const newNodes = prev.nodes.map(node => {
-                const vals = node.attributes[activeAttribute] || [];
-                let bestLabel: string | null = null;
-                let bestPriority = Infinity;
-                let newTrack = -1;
+        let changed = false;
+        const newNodes = graph.nodes.map(node => {
+            const vals = node.attributes[activeAttribute] || [];
+            let bestLabel: string | null = null;
+            let bestPriority = Infinity;
+            let newTrack = -1;
 
-                // Pick the attribute value with the highest priority based on track order
-                vals.forEach(val => {
-                    const p = priorityLookup.has(val) ? priorityLookup.get(val)! : Infinity;
-                    if (p < bestPriority) {
-                        bestPriority = p;
-                        bestLabel = val;
-                    }
-                });
-
-                // Map the chosen label to the current visible track index
-                if (bestLabel !== null && visibleIndexLookup.has(bestLabel)) {
-                    newTrack = visibleIndexLookup.get(bestLabel)!;
+            vals.forEach(val => {
+                const p = priorityLookup.has(val) ? priorityLookup.get(val)! : Infinity;
+                if (p < bestPriority) {
+                    bestPriority = p;
+                    bestLabel = val;
                 }
-
-                if (node.track !== newTrack) changed = true;
-                return { ...node, track: newTrack };
             });
 
-            if (!changed) return prev;
-            return { ...prev, nodes: newNodes };
+            if (bestLabel !== null && visibleIndexLookup.has(bestLabel)) {
+                newTrack = visibleIndexLookup.get(bestLabel)!;
+            }
+
+            if (node.track !== newTrack) changed = true;
+            return { ...node, track: newTrack };
         });
-    }, [visibleRowLabels, activeAttribute, rowLabelMap]);
+
+        if (changed) {
+            replaceState({
+                graph: {
+                    ...graph,
+                    nodes: newNodes
+                }
+            });
+        }
+    }, [visibleRowLabels, activeAttribute, rowLabelMap, graph.nodes, replaceState]); // Added dependencies
 
 
     // --- ACTIONS ---
@@ -250,9 +302,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const nextAvailableAttributes = new Set(availableAttributes);
         const nextRowLabelMap = { ...rowLabelMap };
 
-        // 1. Analyze incoming data to extract actual tracks
         const incomingAttrValues: Record<string, Set<string>> = {};
-
         nodes.forEach(node => {
             Object.entries(node.attributes).forEach(([attr, values]) => {
                 nextAvailableAttributes.add(attr);
@@ -261,21 +311,19 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             });
         });
 
-        // 2. Update Map - OVERWRITE existing keys if they exist in data
         Object.entries(incomingAttrValues).forEach(([attr, valueSet]) => {
             nextRowLabelMap[attr] = Array.from(valueSet);
         });
 
-        // 3. Update State
-        setAvailableAttributes(Array.from(nextAvailableAttributes));
-        setRowLabelMap(nextRowLabelMap);
-        setHiddenLabels([]); // Clear visibility filters as labels have changed
-
-        // 4. Update Grid Dimensions
         const maxTime = nodes.length > 0 ? Math.max(...nodes.map(n => n.time)) : 0;
-        setGridCols(Math.max(maxTime + 1, DEFAULT_COLS_COUNT));
 
-        setGraph({ nodes, edges: [], sources });
+        pushState({
+            availableAttributes: Array.from(nextAvailableAttributes),
+            rowLabelMap: nextRowLabelMap,
+            hiddenLabels: [],
+            gridCols: Math.max(maxTime + 1, DEFAULT_COLS_COUNT),
+            graph: { nodes, edges: [], sources }
+        });
     };
 
     const addMotifToGraph = (motif: Motif, startT: number, startH: number) => {
@@ -327,30 +375,49 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             });
         });
 
+        let newRowLabelMap = rowLabelMap;
         if (Object.keys(pendingRowUpdates).length > 0) {
-            setRowLabelMap(oldMap => {
-                const current = [...(oldMap[activeAttribute] || [])];
-                Object.entries(pendingRowUpdates).forEach(([hStr, val]) => {
-                    const hIndex = parseInt(hStr);
-                    const visibleLabel = visibleRowLabels[hIndex];
-                    const masterIdx = current.indexOf(visibleLabel);
-                    if (masterIdx !== -1) current[masterIdx] = val;
-                });
-                return { ...oldMap, [activeAttribute]: current };
+            const current = [...(rowLabelMap[activeAttribute] || [])];
+            Object.entries(pendingRowUpdates).forEach(([hStr, val]) => {
+                const hIndex = parseInt(hStr);
+                const visibleLabel = visibleRowLabels[hIndex];
+                const masterIdx = current.indexOf(visibleLabel);
+                if (masterIdx !== -1) current[masterIdx] = val;
             });
+            newRowLabelMap = { ...rowLabelMap, [activeAttribute]: current };
         }
 
-        setGraph(prev => ({ ...prev, nodes: [...prev.nodes, ...newNodes] }));
+        pushState({
+            rowLabelMap: newRowLabelMap,
+            graph: { ...graph, nodes: [...graph.nodes, ...newNodes] }
+        });
     };
 
     const addManualNode = (t: number, h: number) => {
         const activeRowLabels = visibleRowLabels;
         if (h >= activeRowLabels.length || t >= gridCols) return;
 
+        let newRowLabelMap = rowLabelMap;
         let rowValue = activeRowLabels[h];
+
+        // Update Label Logic Inline
         if (!rowValue) {
             rowValue = `${activeAttribute} ${h + 1}`;
-            updateRowLabel(h, rowValue);
+            // Logic to update row label map
+            const oldLabel = visibleRowLabels[h]; // is undefined or empty
+            const current = [...(rowLabelMap[activeAttribute] || [])];
+            const masterIndex = current.indexOf(oldLabel);
+            if (masterIndex !== -1) {
+                current[masterIndex] = rowValue;
+            } else {
+                // Fallback if not found (shouldn't happen for valid h)
+            }
+            newRowLabelMap = { ...rowLabelMap, [activeAttribute]: current };
+
+            // Also need to update existing nodes if we are reusing logic?
+            // Existing 'updateRowLabel' does update nodes. 
+            // In addManualNode, we create a new node. Do we update others?
+            // Only if they shared the empty label? usually empty label means no nodes there.
         }
 
         const initialAttributes: Record<string, string[]> = {
@@ -375,180 +442,219 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             content: ''
         };
 
-        setGraph(prev => ({ ...prev, nodes: [...prev.nodes, newNode] }));
+        // If we updated row labels, we should strictly also update any other nodes on that track (Alpha rule)
+        // But if the label was empty, no nodes should be there?
+        // Let's assume safely we just add the node.
+
+        pushState({
+            rowLabelMap: newRowLabelMap,
+            graph: { ...graph, nodes: [...graph.nodes, newNode] }
+        });
     };
 
     const moveNode = (nodeId: string, t: number, h: number) => {
-        setGraph(prev => {
-            const node = prev.nodes.find(n => n.id === nodeId);
-            if (!node) return prev;
+        const node = graph.nodes.find(n => n.id === nodeId);
+        if (!node) return;
+        if (h >= visibleRowLabels.length || t >= gridCols) return;
 
-            if (h >= visibleRowLabels.length || t >= gridCols) return prev;
+        let newRowLabelMap = rowLabelMap;
+        let rowValue = visibleRowLabels[h];
 
-            const activeRowLabels = visibleRowLabels;
-            let rowValue = activeRowLabels[h];
+        if (!rowValue) {
+            rowValue = `${activeAttribute} ${h + 1}`;
+            const current = [...(rowLabelMap[activeAttribute] || [])];
+            // Find current mapping for the empty label at track h
+            // This is tricky because visibleRowLabels is derived.
+            // We need the index in the MASTER list?
+            // visibleRowLabels contains values from master list.
+            // If activeRowLabels[h] is empty string, we find where that empty string is in master list?
+            // There might be multiple empty strings.
+            // We rely on stable filtering.
 
-            if (!rowValue) {
-                rowValue = `${activeAttribute} ${h + 1}`;
-                updateRowLabel(h, rowValue);
-            }
+            // Simplification: We rely on maintaining the structure.
+            // Actually, `updateRowLabel` uses `visibleRowLabels[index]` to find oldLabel.
+            const oldLabel = visibleRowLabels[h];
+            const masterIndex = current.indexOf(oldLabel);
+            if (masterIndex !== -1) current[masterIndex] = rowValue;
+            newRowLabelMap = { ...rowLabelMap, [activeAttribute]: current };
+        }
 
-            const newAttributes = { ...node.attributes };
-            const currentAttrs = newAttributes[activeAttribute] || [];
-            const filteredAttrs = currentAttrs.filter(a => a !== rowValue);
-            newAttributes[activeAttribute] = [rowValue, ...filteredAttrs];
+        const newAttributes = { ...node.attributes };
+        const currentAttrs = newAttributes[activeAttribute] || [];
+        const filteredAttrs = currentAttrs.filter(a => a !== rowValue);
+        newAttributes[activeAttribute] = [rowValue, ...filteredAttrs];
 
-            const updatedNodes = prev.nodes.map(n =>
-                n.id === nodeId ? { ...n, time: t, track: h, attributes: newAttributes } : n
-            );
+        const updatedNodes = graph.nodes.map(n =>
+            n.id === nodeId ? { ...n, time: t, track: h, attributes: newAttributes } : n
+        );
 
-            return { ...prev, nodes: updatedNodes };
+        pushState({
+            rowLabelMap: newRowLabelMap,
+            graph: { ...graph, nodes: updatedNodes }
         });
     };
 
     const updateNode = (id: string, data: { attributes: Record<string, string[]>, content: string }) => {
-        setGraph(prev => ({
-            ...prev,
-            nodes: prev.nodes.map(n => {
-                if (n.id !== id) return n;
-                return { ...n, attributes: data.attributes, content: data.content };
-            })
-        }));
+        pushState({
+            graph: {
+                ...graph,
+                nodes: graph.nodes.map(n => {
+                    if (n.id !== id) return n;
+                    return { ...n, attributes: data.attributes, content: data.content };
+                })
+            }
+        });
     };
 
     const deleteNode = (id: string) => {
-        setGraph(prev => ({
-            ...prev,
-            nodes: prev.nodes.filter(n => n.id !== id)
-        }));
+        pushState({
+            graph: {
+                ...graph,
+                nodes: graph.nodes.filter(n => n.id !== id)
+            }
+        });
     };
 
     const updateRowLabel = (index: number, newValue: string) => {
         const oldLabel = visibleRowLabels[index];
 
-        setRowLabelMap(prev => {
-            const current = [...(prev[activeAttribute] || [])];
-            const masterIndex = current.indexOf(oldLabel);
-            if (masterIndex !== -1) {
-                current[masterIndex] = newValue;
+        const current = [...(rowLabelMap[activeAttribute] || [])];
+        const masterIndex = current.indexOf(oldLabel);
+        if (masterIndex !== -1) {
+            current[masterIndex] = newValue;
+        }
+        const newRowLabelMap = { ...rowLabelMap, [activeAttribute]: current };
+
+        const newNodes = graph.nodes.map(n => {
+            if (n.track === index) {
+                const currentAttrs = n.attributes[activeAttribute] || [];
+                let newAttrs = [...currentAttrs];
+                if (oldLabel) newAttrs = newAttrs.filter(v => v !== oldLabel);
+                if (newValue && !newAttrs.includes(newValue)) {
+                    newAttrs = [newValue, ...newAttrs];
+                }
+                return { ...n, attributes: { ...n.attributes, [activeAttribute]: newAttrs } };
             }
-            return { ...prev, [activeAttribute]: current };
+            return n;
         });
 
-        setGraph(prev => ({
-            ...prev,
-            nodes: prev.nodes.map(n => {
-                if (n.track === index) {
-                    const currentAttrs = n.attributes[activeAttribute] || [];
-                    let newAttrs = [...currentAttrs];
-                    if (oldLabel) newAttrs = newAttrs.filter(v => v !== oldLabel);
-                    if (newValue && !newAttrs.includes(newValue)) {
-                        newAttrs = [newValue, ...newAttrs];
-                    }
-                    return { ...n, attributes: { ...n.attributes, [activeAttribute]: newAttrs } };
-                }
-                return n;
-            })
-        }));
+        pushState({
+            rowLabelMap: newRowLabelMap,
+            graph: { ...graph, nodes: newNodes }
+        });
     };
 
     const createTrack = (value: string) => {
-        setRowLabelMap(prev => {
-            const current = prev[activeAttribute] || [];
-            if (!current.includes(value)) {
-                return { ...prev, [activeAttribute]: [...current, value] };
-            }
-            return prev;
-        });
+        const current = rowLabelMap[activeAttribute] || [];
+        if (!current.includes(value)) {
+            pushState({
+                rowLabelMap: { ...rowLabelMap, [activeAttribute]: [...current, value] }
+            });
+        }
     };
 
     const deleteTrack = (label: string) => {
-        setRowLabelMap(prev => {
-            const current = prev[activeAttribute] || [];
-            return { ...prev, [activeAttribute]: current.filter(l => l !== label) };
+        const current = rowLabelMap[activeAttribute] || [];
+        const newRowLabelMap = { ...rowLabelMap, [activeAttribute]: current.filter(l => l !== label) };
+
+        const newNodes = graph.nodes.map(n => {
+            const attrs = n.attributes[activeAttribute] || [];
+            if (attrs.includes(label)) {
+                const newAttrs = attrs.filter(v => v !== label);
+                return { ...n, attributes: { ...n.attributes, [activeAttribute]: newAttrs } };
+            }
+            return n;
         });
-        setHiddenLabels(prev => prev.filter(l => l !== label));
-        setGraph(prev => ({
-            ...prev,
-            nodes: prev.nodes.map(n => {
-                const attrs = n.attributes[activeAttribute] || [];
-                if (attrs.includes(label)) {
-                    const newAttrs = attrs.filter(v => v !== label);
-                    return { ...n, attributes: { ...n.attributes, [activeAttribute]: newAttrs } };
-                }
-                return n;
-            })
-        }));
+
+        pushState({
+            rowLabelMap: newRowLabelMap,
+            hiddenLabels: hiddenLabels.filter(l => l !== label),
+            graph: { ...graph, nodes: newNodes }
+        });
     };
 
     const reorderTracks = (newOrder: string[]) => {
         const oldVisibleLabels = [...visibleRowLabels];
+        const newRowLabelMap = { ...rowLabelMap, [activeAttribute]: newOrder };
 
-        setRowLabelMap(prev => {
-            // newOrder is the full list of tracks provided by TrackPanel
-            return { ...prev, [activeAttribute]: newOrder };
+        const newVisibleLabels = newOrder.filter(l => !l || !hiddenLabels.includes(l));
+
+        const newNodes = graph.nodes.map(n => {
+            const label = oldVisibleLabels[n.track];
+            const newIndex = newVisibleLabels.indexOf(label);
+            if (newIndex !== -1 && newIndex !== n.track) {
+                return { ...n, track: newIndex };
+            }
+            return n;
         });
 
-        // After rowLabelMap updates, visibleRowLabels will update.
-        // We need to update node tracks to match their labels' new positions.
-        setGraph(prev => {
-            const newVisibleLabels = newOrder.filter(l => !l || !hiddenLabels.includes(l));
-
-            return {
-                ...prev,
-                nodes: prev.nodes.map(n => {
-                    const label = oldVisibleLabels[n.track];
-                    const newIndex = newVisibleLabels.indexOf(label);
-                    if (newIndex !== -1 && newIndex !== n.track) {
-                        return { ...n, track: newIndex };
-                    }
-                    return n;
-                })
-            };
+        pushState({
+            rowLabelMap: newRowLabelMap,
+            graph: { ...graph, nodes: newNodes }
         });
     };
 
     const toggleTrackVisibility = (label: string) => {
-        setHiddenLabels(prev => prev.includes(label) ? prev.filter(l => l !== label) : [...prev, label]);
+        pushState({
+            hiddenLabels: hiddenLabels.includes(label)
+                ? hiddenLabels.filter(l => l !== label)
+                : [...hiddenLabels, label]
+        });
     };
 
     const addAttribute = (attr: string) => {
         if (!availableAttributes.includes(attr)) {
-            setAvailableAttributes(prev => [...prev, attr]);
-            setRowLabelMap(prev => ({
-                ...prev,
-                [attr]: Array(DEFAULT_ROWS_COUNT).fill('').map((_, i) => `${attr} ${i + 1}`)
-            }));
+            pushState({
+                availableAttributes: [...availableAttributes, attr],
+                rowLabelMap: {
+                    ...rowLabelMap,
+                    [attr]: Array(DEFAULT_ROWS_COUNT).fill('').map((_, i) => `${attr} ${i + 1}`)
+                }
+            });
         }
     };
+
+    const setActiveAttribute = (attr: string) => {
+        pushState({ activeAttribute: attr });
+    }
+
+    const setLinkingAttribute = (attr: string) => {
+        pushState({ linkingAttribute: attr });
+    }
 
     const deleteAttribute = (attr: string) => {
         if (availableAttributes.length <= 1) return;
         const newAttrs = availableAttributes.filter(a => a !== attr);
-        setAvailableAttributes(newAttrs);
 
-        if (activeAttribute === attr) setActiveAttribute(newAttrs[0]);
-        if (linkingAttribute === attr) setLinkingAttribute(newAttrs[0]);
+        let newActive = activeAttribute;
+        let newLinking = linkingAttribute;
 
-        setRowLabelMap(prev => {
-            const next = { ...prev };
-            delete next[attr];
-            return next;
+        if (activeAttribute === attr) newActive = newAttrs[0];
+        if (linkingAttribute === attr) newLinking = newAttrs[0];
+
+        const nextMap = { ...rowLabelMap };
+        delete nextMap[attr];
+
+        const newNodes = graph.nodes.map(n => {
+            const newAttributes = { ...n.attributes };
+            delete newAttributes[attr];
+            return { ...n, attributes: newAttributes };
         });
 
-        setGraph(prev => ({
-            ...prev,
-            nodes: prev.nodes.map(n => {
-                const newAttributes = { ...n.attributes };
-                delete newAttributes[attr];
-                return { ...n, attributes: newAttributes };
-            })
-        }));
+        pushState({
+            availableAttributes: newAttrs,
+            activeAttribute: newActive,
+            linkingAttribute: newLinking,
+            rowLabelMap: nextMap,
+            graph: { ...graph, nodes: newNodes }
+        });
     };
 
     const adjustGrid = (type: 'rows' | 'cols', delta: number) => {
         if (type === 'cols') {
-            setGridCols(Math.max(1, gridCols + delta));
+            pushState({
+                gridCols: Math.max(1, gridCols + delta)
+            });
         } else {
             if (delta > 0) {
                 const allLabels = rowLabelMap[activeAttribute] || [];
@@ -570,15 +676,23 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     const clearGraph = () => {
-        setGraph({ nodes: [], edges: [], sources: [] });
-        setHiddenLabels([]);
-        setRowLabelMap(prev => ({
-            ...prev,
-            [activeAttribute]: Array(DEFAULT_ROWS_COUNT).fill('').map((_, i) => `${activeAttribute} ${i + 1}`)
-        }));
+        pushState({
+            graph: { nodes: [], edges: [], sources: [] },
+            hiddenLabels: [],
+            rowLabelMap: {
+                ...rowLabelMap,
+                [activeAttribute]: Array(DEFAULT_ROWS_COUNT).fill('').map((_, i) => `${activeAttribute} ${i + 1}`)
+            }
+        });
     };
 
-    useEffect(() => { setHiddenLabels([]); }, [activeAttribute]);
+    useEffect(() => {
+        if (hiddenLabels.length > 0) {
+            // If we want this to be undoable, use replaceState?
+            // But resetting hidden labels on attribute switch is a UX choice.
+            replaceState({ hiddenLabels: [] });
+        }
+    }, [activeAttribute]); // Only runs when attribute changes
 
     return (
         <GraphContext.Provider value={{
@@ -587,7 +701,8 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             setGraphData, addMotifToGraph, addManualNode, moveNode, updateNode, deleteNode,
             setActiveAttribute, setLinkingAttribute, addAttribute, deleteAttribute,
             updateRowLabel, reorderTracks, toggleTrackVisibility, createTrack, deleteTrack,
-            adjustGrid, clearGraph
+            adjustGrid, clearGraph,
+            undo, redo, canUndo: past.length > 0, canRedo: future.length > 0
         }}>
             {children}
         </GraphContext.Provider>
