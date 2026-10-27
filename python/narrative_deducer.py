@@ -6,7 +6,7 @@ from meta.types import Chapter, Story
 from langchain.output_parsers import PydanticOutputParser
 from typing import Union, List
 from langchain.prompts import PromptTemplate
-from langchain.llms import OpenAI
+from langchain_community.chat_models import ChatOpenAI
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
@@ -62,8 +62,8 @@ def make_chapter(
     print(prompt_template)
     print("-" * 50)
 
-    model = OpenAI(model_name=model_name, temperature=temperature)
-    output = model(prompt_template)
+    model = ChatOpenAI(model_name=model_name, temperature=temperature)
+    output = model.invoke(prompt_template).content
 
     return chapter_parser.parse(output)
 
@@ -92,7 +92,7 @@ def create_story(alignment):
 
         new_chapter = make_chapter(
             id=node,
-            theme=details["Theme"],
+            topic=details["Theme"],
             theme_context=details["ThemeDescription"],
             entity=details["Entity"],
             time_period=details["Time"],
