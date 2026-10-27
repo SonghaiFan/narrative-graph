@@ -28,7 +28,7 @@ npm install
 npm run dev
 ```
 
-Python engine: see [python/README.md](python/README.md). It is out of date; [docs/MIGRATION.md](docs/MIGRATION.md) lists what is wrong with it.
+Python engine: see [python/README.md](python/README.md).
 
 ## License
 

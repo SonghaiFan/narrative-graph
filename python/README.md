@@ -1,80 +1,140 @@
 # GPT Storytale
 
-Create controllable story sequences with transformers that can be used in user-evaluation studies of text-to-visualisation pipelines.
+Generate controllable synthetic news stories for user-evaluation studies of text-to-visualisation pipelines.
 
+You describe the *shape* of a story as a small graph (for example `A1 -> B2 -> A3`, where letters are themes and digits are the chapter order). The engine assigns themes, entities and time periods to each node, then asks an LLM to write one short news chapter per node, each continuing from the chapters it connects to.
 
-![Overview of the Graph-to-Text-Pipeline](figs/overview.png)
+![Overview of the Graph-to-Text pipeline](figs/overview.png)
 
-## Getting started
+| Step in the figure | What it does | Where it lives |
+|---|---|---|
+| ① Crafter (LLM) | Enriches a bare graph with themes, entities and time ranges | Not in this directory. Its output is [meta/narrative_context_*.json](meta) |
+| ② Cartographer (rules) | Picks entities and time slices for every node | [narrative_alignmenter.py](narrative_alignmenter.py) |
+| ③ Writer (LLM) | Writes each chapter from its aligned context and its parents' text | [narrative_deducer.py](narrative_deducer.py) |
 
-GPT Storytale has been tested on python 3.10. You will need to install the required packages. Using a virtual environment is recommended. e.g.
+[storytale.py](storytale.py) runs ② and ③ for every structure in a context file and saves the results.
+
+## Setup
+
 ```bash
-python3 -m venv myvenv          # set up the virtual env
-source myvenv/bin/activate      # activate the virtual env (Linux) (On Windows: myvenv\Scripts\activate)
-pip install -r requirements.txt # install the required packages
+cd python
+python3 -m venv .venv
+source .venv/bin/activate        # fish: source .venv/bin/activate.fish
+pip install -r requirements.txt
+cp .env-template .env            # then put your key after OPENAI_API_KEY=
 ```
 
-You will also need to set up your OpenAI API key. You can do this by creating a `.env` file in the root directory of the project and adding the following line:
+The versions in `requirements.txt` are pinned on purpose. A plain `pip install langchain` now installs 1.x, which no longer has `langchain.output_parsers`, so `narrative_deducer.py` would fail on import.
+
+`.env` is git-ignored. Do not commit it.
+
+## Run
+
+Run everything from this `python/` directory, because all paths are relative.
+
 ```bash
-OPENAI_API_KEY=your-api-key
-```
-(see `.env-template` for an example)
-
-## Usage
-
-To run the GPT Storytale system:
-
-1. Generate a story sequence:
-```bash
-python src/generate_story.py --input your_input.json --output output_folder
+python storytale.py
 ```
 
-2. Evaluate the generated sequences:
-```bash
-python src/evaluate.py --story_path output_folder
+This reads `meta/narrative_context_a.json` and generates one story for each of its nine structures under the label `Set_A2` (hard-coded at the bottom of `storytale.py`). That is **27 `gpt-4` calls**, one per chapter, at temperature 0.5. Each structure gets a random seed from 0 to 1000.
+
+It prints nothing to the console: `storytale.py` redirects stdout into the log file. The log fills in as it goes, but it is buffered, so it can lag behind.
+
+Outputs, named `{label}_{structure}_seed{N}.json`:
+
+| Folder | File | Contents |
+|---|---|---|
+| `alignment/` | `alignment_…json` | Themes, entities, time slices and parents per node |
+| `stories/` | `story_…json` | The generated chapters |
+| `logs/` | `log_…json` | Plain text, despite the extension: every prompt sent and every chapter received |
+
+To generate one structure with a seed you choose:
+
+```python
+import json, storytale
+
+storytale.narrative_context = json.load(open("meta/narrative_context_a.json"))
+storytale.generate_story_files("Set_A2", "Arch", seed=42)
 ```
 
-For detailed examples and parameter options, see the [examples](examples/) directory.
+The seed fixes which entities are sampled. It does not make the LLM output repeatable. The label is only used in file names; themes come from the context file.
 
-## Project Structure
+To rewrite `story.json` from the sample `alignment_results.json` (Arch, three chapters), run `python narrative_deducer.py`. This overwrites the committed `story.json`.
 
+## Data formats
+
+A **context file** is a list of structures:
+
+```json
+{
+  "name": "Arch",
+  "description": "The narrative begins with Theme A, then shifts to Theme B, and finally returns to Theme A.",
+  "structure": "A1 -> B2 -> A3",
+  "nodes": ["A1", "B2", "A3"],
+  "edges": [{"from": "A1", "to": "B2"}, {"from": "B2", "to": "A3"}],
+  "context": [
+    {"symbol": "A", "theme": "Economic Boom", "description": "…", "time": ["2023-01-01", "2023-12-31"],
+     "entities": [{"name": "Mayor Lina", "type": "people"}]}
+  ]
+}
 ```
-GPT Storytale/
-├── src/                # Source code
-├── examples/           # Example inputs and outputs
-├── tests/             # Test files
-├── figs/              # Figures and diagrams
-└── requirements.txt   # Project dependencies
+
+Entity types seen are `people`, `location` and `organisation`. A node id is its theme `symbol` plus a single digit, and the digit is its chapter number within the theme. The theme's time range is cut into roughly equal slices, one per chapter number.
+
+The aligner turns that into one entry per node. Each node gets up to four entities sampled from its theme, plus one entity shared with a parent, so connected chapters have something in common:
+
+```json
+{"A1": {"Theme": "Economic Boom", "ThemeDescription": "…", "Entity": ["…"], "Time": ["2023-01-01", "2023-05-02"],
+        "Prev": [], "StuctureInstruction": "…"}}
 ```
 
-## Features
+`StuctureInstruction` is misspelled in the code and in the data. Keep the spelling when reading or writing these files.
 
-- Generate coherent story sequences using transformer models
-- Controllable narrative parameters
-- Support for multiple story genres and styles
-- Evaluation metrics for generated sequences
-- Easy integration with visualization pipelines
+The writer returns `{"chapters": [{"id", "title", "time_period", "Topic", "entity", "content"}]}`, with each `content` around 100 words in plain English (the prompt asks for CEFR A1 and the style of a newspaper lead).
 
-## Acknowledgements
+## Structures
 
-This project builds upon several open-source tools and libraries:
+`meta/narrative_context_a.json` holds nine structures, three chapters each:
 
-- [OpenAI GPT](https://openai.com/api/) - For text generation
-- [Transformers](https://huggingface.co/transformers/) - Hugging Face's transformer models
-- [NumPy](https://numpy.org/) - For numerical computations
-- [Pandas](https://pandas.pydata.org/) - For data manipulation
+| Structure | Edges | Name in the web editor |
+|---|---|---|
+| Linear | A1→A2→A3 | Linear |
+| Arch | A1→B2→A3 | Arch |
+| Ladder | A1→B2→C3 | Ladder |
+| ShortFork | A1→B2→B3 | EarlyTurn |
+| LongFork | A1→A2→B3 | LateTurn |
+| WideBranch | B1→A2, B1→C2 | WideBranch |
+| WideMerge | A1→B2, C1→B2 | WideMerge |
+| SharpMerge | A1→B2, B1→B2 | SharpMerge (the web version merges into the first track, A, instead) |
+| SharpBranch | A1→A2, A1→B2 | SharpBranch |
 
-## Contributing
+The other context files hold different sets: `_b` (2 structures), `_train` (5), `_full` (11, adds `Retain` and `Shift`) and `_c` (16). `_c` repeats several structure names, and the aligner uses the first match for a name.
 
-We welcome contributions! Please follow these steps:
+## Files
 
-1. Fork the repository
-2. Create a new branch for your feature
-3. Submit a pull request with a clear description of your changes
+| Path | Purpose |
+|---|---|
+| `storytale.py` | Entry point: align, write, save for each structure |
+| `narrative_alignmenter.py` | Rule-based alignment (step ②) |
+| `narrative_deducer.py` | LLM chapter writer (step ③) |
+| `meta/types.py` | Pydantic models for chapters and stories (also `Node`, `Edge`, `Graph`, `Article` from the earlier pipeline) |
+| `meta/narrative_context_*.json` | Structures with themes and entities |
+| `story_packer.py` | Bundles story files; see the warning below |
+| `alignment_results.json`, `story.json` | Sample input and output for `narrative_deducer.py` |
+| `alignment/arc`, `stories/arc`, `logs/arc` | Results of earlier runs |
+
+## Gotchas
+
+- **`story_packer.py` moves files.** It runs as soon as it is imported. It writes `stories/combined_stories.json`, then *moves* every file in `stories/`, `logs/` and `alignment/` into an `arc/` subfolder of each. Run it only on a folder you can afford to reshuffle.
+- **Don't run `narrative_alignmenter.py` directly.** Its `__main__` block uses `narrative_context`, which that file never loads, so it stops with a `NameError`. Use it through `storytale.py`.
+- **The committed samples use an older schema.** 80 of the `story_*.json` files in `stories/arc` use the fields `event` and `topics`; the current writer produces `title` and `Topic`. The root `story.json` is the same older shape. Don't build on them without checking.
+- **Node ids are one letter and one digit.** The aligner reads only the last character as the chapter number, so a chapter 10 or later would break.
+- **Keep `ChatOpenAI`; don't go back to `langchain.llms.OpenAI`.** With `model_name="gpt-4"` the old call turned into langchain-community's `OpenAIChat`, which ignores the model name: it sent `gpt-3.5-turbo` plus a stray `model_name` field, and on openai 1.x or newer it fails on the first call. `langchain_community.chat_models.ChatOpenAI` sends `gpt-4` correctly but is itself deprecated; the maintained replacement is `langchain-openai`.
+
+## What has been checked
+
+On Python 3.13, with the versions in `requirements.txt` installed into a clean virtual environment (`pip check` is clean), the repo's own code ran unmodified against a stand-in network with sockets blocked. The request that `ChatOpenAI` and the openai SDK build was inspected: `POST /v1/chat/completions`, `model` `gpt-4`, temperature 0.5, no stray fields. Replies were parsed into chapters, each prompt carried its parent chapter's text, and `storytale.py` wrote the alignment, story and log files for four structures (12 requests). **A real call to the OpenAI API is still untried**, so run one structure before launching a full run.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-
+Not chosen yet. An earlier version of this README claimed MIT, but no `LICENSE` file exists. See [../docs/MIGRATION.md](../docs/MIGRATION.md).

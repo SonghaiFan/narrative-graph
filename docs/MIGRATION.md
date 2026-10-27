@@ -17,16 +17,17 @@ Each subtree was imported with its paths rewritten under the prefix, then joined
 
 ## Known problems to fix first
 
-1. **`python` cannot run.** `create_story` in `python/narrative_deducer.py:93-102` calls `make_chapter(theme=...)`, but the function takes a required `topic` and has no `theme` parameter, so the call raises `TypeError`.
-2. **`python/README.md` describes files that do not exist:** `src/generate_story.py`, `src/evaluate.py`, `examples/`, `tests/` and a `LICENSE`.
-3. **Dependencies:** the code uses the deprecated `langchain.llms.OpenAI`, and `python/requirements.txt` lists two unpinned packages.
+1. **Fixed:** `create_story` called `make_chapter(theme=...)` although the function takes `topic`, so every run raised `TypeError`. It now passes `topic=`.
+2. **Fixed:** `python/README.md` described files that did not exist (`src/generate_story.py`, `src/evaluate.py`, `examples/`, `tests/`, `LICENSE`). It was rewritten from the actual files.
+3. **Fixed:** `python/requirements.txt` is pinned to langchain 0.3.30, langchain-community 0.3.31, openai 3.39.0 and python-dotenv 1.2.4. It no longer installs LangChain 1.x (which has no `langchain.output_parsers`) and no longer omits `openai` and `langchain-community`. In `narrative_deducer.py`, `langchain.llms.OpenAI(model_name="gpt-4")` was replaced by `langchain_community.chat_models.ChatOpenAI`: the old call became `OpenAIChat`, which ignored the model name (it sent `gpt-3.5-turbo`) and fails on openai 1.x or newer. `ChatOpenAI` from langchain-community is itself deprecated in favour of `langchain-openai`. No real OpenAI call has been tried.
 4. **Two shapes for the same data.**
    - Python: `python/meta/types.py` uses `Topic`, `index`, `time_period`; `legacy/gpt_storyteller/graph.py` reads `themes`.
    - Web: `apps/web/types.ts` uses `track`, `time`, `attributes`.
    - Motif names also drifted: `ShortFork` / `LongFork` in `python/meta/narrative_context_*.json`, `EarlyTurn` / `LateTurn` in `apps/web/constants.ts`.
 5. **Key exposure in the web app.** `apps/web/vite.config.ts` inlines `GEMINI_API_KEY` into the client bundle. Do not deploy publicly until users bring their own key or a proxy holds it.
 6. **`apps/web/README.md`** is still the AI Studio template.
-7. **No LICENSE.** `python/README.md` claims MIT.
+7. **No LICENSE.** The old `python/README.md` claimed MIT.
+8. **More loose ends in `python/`:** `narrative_alignmenter.py` stops with `NameError` when run directly; `story_packer.py` runs on import and moves files into `arc/` folders; 80 of the committed sample stories use an older schema (`event`/`topics` instead of `title`/`Topic`).
 
 ## Planned moves
 
