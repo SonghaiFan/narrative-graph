@@ -22,6 +22,7 @@ python -m pytest
 cd apps/web
 npm ci
 npm run typecheck
+npm test
 npm run build
 ```
 
@@ -31,8 +32,8 @@ npm run build
 
 | Stage | What is replaced | How we know the ship still floats | State |
 |---|---|---|---|
-| 0. Keel | Nothing changes behaviour. Add the test net, fix the web type check, add CI | The tests below pass on the current code | done on this branch |
-| 1. Shared contract | Define the graph and story JSON in `schema/`. Move the web's edge rule into a pure function and write the same rule in Python | Both read the same fixtures and derive identical edges | next |
+| 0. Keel | Nothing changes behaviour. Add the test net, fix the web type check, add CI | The tests below pass on the current code | done (`refactor/stage-0-keel`) |
+| 1. Shared contract | Define the graph and story JSON in `schema/`. Move the web's edge rule into a pure function and write the same rule in Python | Both read the same fixtures and derive identical edges | done (`refactor/stage-1-contract`), except that the story is not yet mapped to the graph |
 | 2. Aligner | The aligner reads a TTNG graph. Nodes that already carry entities keep them; only missing ones are sampled | The nine existing context files still align exactly as before | |
 | 3. Writer | A swappable LLM client, prompts moved to files, the deprecated community `ChatOpenAI` replaced | The wire test still sees `gpt-4`, temperature 0.5 and the parent chapter text | |
 | 4. Connect | A small local service wraps the Python engine; the editor gets a "write story" action that fills `node.content` | Build a graph in the editor, get chapters back | |
@@ -46,13 +47,17 @@ npm run build
 - **Wire** (`tests/test_openai_wire.py`): the real `ChatOpenAI` and openai SDK send one `POST /v1/chat/completions` with `model` `gpt-4` and no stray fields.
 - **Packer** (`tests/test_story_packer.py`): `story_packer.py` bundles the stories and then moves every file into `arc/`.
 - **Guards** (`tests/test_guards.py`): sockets and DNS are blocked, and the writer must not go back to `langchain.llms.OpenAI`.
+- **Edge rule** (`python/tests/test_edges.py`, `apps/web/tests/computeEdges.test.ts`): 23 hand-written and 30 random cases from `schema/fixtures/`. Both sides must produce the same edges in the same order, leave the input untouched, and give edges that fit the graph schema.
+- **Schemas** (`python/tests/test_schema.py`, `apps/web/tests/schema.test.ts`): the schemas are valid, the good graphs and stories are accepted, 18 bad documents are refused, and what the pipeline writes matches `story.schema.json`.
 
 Each of these was checked by putting the bug back in a scratch copy: the old `theme=` argument, the old `langchain.llms.OpenAI` call, a silent drop to `gpt-3.5-turbo`, a writer that forgets the parent chapter, an aligner that stops linking children to parents, time slices running backwards, and a packer that stops moving files. Every one made tests fail.
+
+Stage 1 was checked in two more ways. The original inline code in `GraphContext.tsx`, the extracted `computeEdges` and the Python rule agreed on 10,000 random graphs, down to the id and the order of every edge. And 14 planted deviations in the rule, 7 in each language, were each caught by the tests of the language they were planted in, while the other language's tests kept passing.
 
 ## What the test net does not cover
 
 - A real OpenAI call. Nothing in this repo has been run against the live API since the writer was fixed.
-- The web app's behaviour. It builds and type-checks, but it has no tests yet.
+- The web app's behaviour beyond the edge rule. It builds and type-checks, but its components and the rest of the graph context have no tests.
 - The CI workflow on GitHub itself.
 
 ## Facts that shape the next stages
@@ -63,6 +68,8 @@ Each of these was checked by putting the bug back in a scratch copy: the old `th
 - **Time periods do not line up yet.** The aligner cuts each theme's own date range into slices. The editor has one period per column, and only when the generator adds a `Time Period` attribute.
 - **The editor already shows chapters.** `StorySidebar` renders `node.content` per time column, which is where Stage 4 writes the chapters back.
 - **The web's type check was hollow.** The project had no `@types/react`, so React props were silently `any`. With the typings added the existing code type-checks cleanly.
+- **The editor cannot export graph JSON.** It imports `{nodes, sources}` or `{graph: {...}}` and exports only PNG and SVG. Stage 4 needs a JSON export, otherwise a graph cannot leave the editor.
+- **Graph and story are still two different shapes.** `graph.schema.json` describes what the editor holds (nodes on a grid) and `story.schema.json` what the writer produces (chapters). Mapping one onto the other is the work of Stage 2.
 
 ## Decision needed before Stage 2
 

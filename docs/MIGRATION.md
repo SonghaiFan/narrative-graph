@@ -36,7 +36,8 @@ At the moment of import `apps/web` and `python` were byte-identical to the upstr
 
 The staged plan for these moves, and the checks that keep the repo working while they happen, is in [REFACTOR.md](REFACTOR.md).
 
-- [ ] Define `schema/` and generate TS types and pydantic models from it.
+- [x] Define `schema/` for the graph and the story, with fixtures both test suites read.
+- [ ] Generate TS types and pydantic models from the schemas.
 - [ ] Move `python/` into an installable package; replace LangChain with plain provider clients.
 - [ ] Lift `gpt_cartographer.py`, `gpt_journalist.py` and `graph.py` out of `legacy/gpt_storyteller`; drop `narrative_deducer copy 2.py` and the notebooks.
 - [ ] Connect the editor to the writer: edit a graph in the browser, then generate the chapters.
