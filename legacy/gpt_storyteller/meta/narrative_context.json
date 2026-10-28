@@ -1,0 +1,479 @@
+{
+  "World_News": {
+    "Time": ["2021-2-5", "2023-7-21"],
+    "Entities": [
+      {
+        "name": "Globex Federation",
+        "type": "organisation",
+        "description": "A newly established intercontinental alliance promoting sustainable trade practices."
+      },
+      {
+        "name": "Westonia",
+        "type": "places",
+        "description": "An emerging nation in Central Asia known for its rich mineral resources."
+      },
+      {
+        "name": "Paxterra Conference",
+        "type": "event",
+        "description": "A global gathering to discuss peace initiatives and international cooperation."
+      },
+      {
+        "name": "Lana DeCosta",
+        "type": "people",
+        "description": "An influential diplomat brokering peace deals in conflict zones."
+      },
+      {
+        "name": "Mount Tarnova",
+        "type": "places",
+        "description": "A significant volcanic site where recent activities have raised global concern."
+      },
+      {
+        "name": "Oceana Coalition",
+        "type": "organisation",
+        "description": "An alliance of Pacific islands addressing rising sea levels."
+      },
+      {
+        "name": "Solar Treaty",
+        "type": "event",
+        "description": "An international agreement to accelerate the adoption of solar energy."
+      },
+      {
+        "name": "Rafiq Al Sayed",
+        "type": "people",
+        "description": "A renowned global activist fighting for refugee rights."
+      },
+      {
+        "name": "Translandia",
+        "type": "places",
+        "description": "A strategic isthmus experiencing geopolitical tensions."
+      },
+      {
+        "name": "Global Digital Forum",
+        "type": "event",
+        "description": "An event where nations discuss cyber-security and digital ethics."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Digital Diplomacy",
+        "description": "The use of digital platforms for international relations."
+      },
+      {
+        "name": "Environmental Security",
+        "description": "Addressing environmental threats as security challenges."
+      },
+      {
+        "name": "Energy Shift",
+        "description": "Transitioning from fossil fuels to sustainable energy sources."
+      },
+      {
+        "name": "Migration Patterns",
+        "description": "Monitoring global movements due to conflicts and climate changes."
+      },
+      {
+        "name": "Space Exploration",
+        "description": "The challenges and opportunities of exploring outer space."
+      }
+    ]
+  },
+  "Politics": {
+    "Time": ["2020-6-15", "2023-4-10"],
+    "Entities": [
+      {
+        "name": "Lucia Fernandes",
+        "type": "people",
+        "description": "A charismatic leader from South America advocating for environmental reforms."
+      },
+      {
+        "name": "Civic Unity Party",
+        "type": "organisation",
+        "description": "A rising political party in Europe focusing on urban development and social welfare."
+      },
+      {
+        "name": "EuraReferendum",
+        "type": "event",
+        "description": "A vote in several European countries on adopting a unified digital currency."
+      },
+      {
+        "name": "Northland",
+        "type": "places",
+        "description": "A fictional nation known for its strict surveillance policies."
+      },
+      {
+        "name": "Sarah Thomson",
+        "type": "people",
+        "description": "An up-and-coming politician advocating for universal healthcare."
+      },
+      {
+        "name": "Freedom First Movement",
+        "type": "organisation",
+        "description": "A political movement that champions individual freedoms and liberties."
+      },
+      {
+        "name": "Global Governance Talks",
+        "type": "event",
+        "description": "An annual event discussing the possibility of a unified global governance system."
+      },
+      {
+        "name": "Demetrio Vasquez",
+        "type": "people",
+        "description": "A controversial leader known for his populist policies."
+      },
+      {
+        "name": "Solara City",
+        "type": "places",
+        "description": "A city-state known for its advanced democratic processes."
+      },
+      {
+        "name": "Peaceful Transition Summit",
+        "type": "event",
+        "description": "A summit discussing peaceful power transitions in volatile regions."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Digital Governance",
+        "description": "Using digital tools for efficient government administration."
+      },
+      {
+        "name": "Populism Rise",
+        "description": "The increasing popularity of leaders and movements that appeal to general populaces, often at the expense of minority groups."
+      },
+      {
+        "name": "Global Alliances",
+        "description": "The formation and impact of international coalitions and partnerships."
+      },
+      {
+        "name": "Urban Planning and Infrastructure",
+        "description": "The importance of planning and infrastructure in rapidly urbanizing areas."
+      },
+      {
+        "name": "Electoral Reforms",
+        "description": "Changes proposed or made to electoral systems to enhance democracy."
+      }
+    ]
+  },
+  "Business_and_Economy": {
+    "Time": ["2019-10-1", "2022-12-20"],
+    "Entities": [
+      {
+        "name": "NexaTech Enterprises",
+        "type": "organisation",
+        "description": "A multinational conglomerate specializing in renewable energy solutions and smart devices."
+      },
+      {
+        "name": "Econopolis",
+        "type": "places",
+        "description": "A business hub in Southeast Asia renowned for its innovative startups."
+      },
+      {
+        "name": "Bridgestone Acquisition",
+        "type": "event",
+        "description": "A landmark business deal that altered global market dynamics."
+      },
+      {
+        "name": "Elara Financials",
+        "type": "organisation",
+        "description": "A leading bank credited with innovative fintech solutions."
+      },
+      {
+        "name": "Mara Rivera",
+        "type": "people",
+        "description": "A thought leader in sustainable business practices."
+      },
+      {
+        "name": "Silvershore Markets",
+        "type": "places",
+        "description": "An emerging trading center in the Southern Hemisphere."
+      },
+      {
+        "name": "Quantex Expo",
+        "type": "event",
+        "description": "An annual exhibition showcasing future technologies in finance."
+      },
+      {
+        "name": "Ronald Fletcher",
+        "type": "people",
+        "description": "A celebrated economist known for his theories on digital currencies."
+      },
+      {
+        "name": "LunarTech Inc.",
+        "type": "organisation",
+        "description": "A startup working on mining rare minerals from the moon."
+      },
+      {
+        "name": "Global Trade Reforms Meet",
+        "type": "event",
+        "description": "A meeting discussing new age reforms in international trade."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Quantum Commerce",
+        "description": "Integration of quantum computing in trade and finance."
+      },
+      {
+        "name": "Sustainable Businesses",
+        "description": "Shift towards environmentally conscious business models."
+      },
+      {
+        "name": "Fintech Innovations",
+        "description": "Technological advancements in the financial sector."
+      },
+      {
+        "name": "Space Economy",
+        "description": "Economic opportunities related to space exploration and utilization."
+      },
+      {
+        "name": "Economic Nationalism",
+        "description": "Countries prioritizing domestic businesses over international trade."
+      }
+    ]
+  },
+
+  "Science_and_Technology": {
+    "Time": ["2021-5-8", "2023-7-22"],
+    "Entities": [
+      {
+        "name": "Orion Labs",
+        "type": "organisation",
+        "description": "A leading facility researching deep space technologies."
+      },
+      {
+        "name": "Nanobot Revolution",
+        "type": "event",
+        "description": "An event showcasing nanotechnology's potential in real-time."
+      },
+      {
+        "name": "Dr. Lina Kurov",
+        "type": "people",
+        "description": "A pioneer in biotechnological research."
+      },
+      {
+        "name": "Techville University",
+        "type": "places",
+        "description": "A prestigious institution leading in AI research."
+      },
+      {
+        "name": "QuantumNet Launch",
+        "type": "event",
+        "description": "The unveiling of the first quantum-based internet."
+      },
+      {
+        "name": "NeuraTech Corp.",
+        "type": "organisation",
+        "description": "A company leading the neurotechnology frontier."
+      },
+      {
+        "name": "Mars Habitat Project",
+        "type": "event",
+        "description": "A project aiming to create sustainable habitats on Mars."
+      },
+      {
+        "name": "SolarX Symposium",
+        "type": "event",
+        "description": "A conference discussing advances in solar energy capture."
+      },
+      {
+        "name": "Atlas Ocean Exploration",
+        "type": "organisation",
+        "description": "An organization focused on deep sea exploration and conservation."
+      },
+      {
+        "name": "Vera Flynn",
+        "type": "people",
+        "description": "A visionary in sustainable technologies."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Bio-Integration",
+        "description": "Combining organic and synthetic materials to enhance capabilities."
+      },
+      {
+        "name": "Space Colonization",
+        "description": "The challenges and potentials of human habitation beyond Earth."
+      },
+      {
+        "name": "Deep Sea Mysteries",
+        "description": "Exploring and understanding the uncharted depths of our oceans."
+      },
+      {
+        "name": "Quantum Leap",
+        "description": "The rapid advancements and implications of quantum technologies."
+      },
+      {
+        "name": "Green Tech Evolution",
+        "description": "Technological solutions for environmental sustainability."
+      }
+    ]
+  },
+
+  "Culture_and_Entertainment": {
+    "Time": ["2019-2-14", "2023-5-30"],
+    "Entities": [
+      {
+        "name": "Elena Voz",
+        "type": "people",
+        "description": "A rising actress known for her unique cinematic choices."
+      },
+      {
+        "name": "Global Film Festival Gala",
+        "type": "event",
+        "description": "An event celebrating world cinema."
+      },
+      {
+        "name": "Harmony Arts Center",
+        "type": "places",
+        "description": "A cultural hub promoting global art forms."
+      },
+      {
+        "name": "Jupiter Sounds",
+        "type": "organisation",
+        "description": "A record label known for promoting indie artists."
+      },
+      {
+        "name": "Nathan Brooks",
+        "type": "people",
+        "description": "A bestselling author of futuristic novels."
+      },
+      {
+        "name": "Virtual World Expo",
+        "type": "event",
+        "description": "A showcase of the latest in virtual reality entertainment."
+      },
+      {
+        "name": "Sapphire Dance Troupe",
+        "type": "organisation",
+        "description": "A group revolutionizing contemporary dance forms."
+      },
+      {
+        "name": "Frost Literature Fest",
+        "type": "event",
+        "description": "A winter event celebrating literary talents from around the world."
+      },
+      {
+        "name": "Crystal Theatre",
+        "type": "places",
+        "description": "A famous venue known for avant-garde performances."
+      },
+      {
+        "name": "Kai Lannister",
+        "type": "people",
+        "description": "A celebrated music producer and judge on 'Talent Worldwide'."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Virtual Reality Theatres",
+        "description": "The rise of immersive cinema experiences using VR."
+      },
+      {
+        "name": "Digital Art Revolution",
+        "description": "The transformative power of digital tools in art creation and exhibition."
+      },
+      {
+        "name": "Cultural Fusion",
+        "description": "Integrating diverse cultural elements to produce unique entertainment forms."
+      },
+      {
+        "name": "Cinema Renaissance",
+        "description": "The resurgence of cinema with experimental storytelling."
+      },
+      {
+        "name": "Music and Technology",
+        "description": "The blend of technology in creating and experiencing music."
+      }
+    ]
+  },
+  "Muddle_Puddle": {
+    "Time": ["2022-5-10", "2023-12-15"],
+    "Entities": [
+      {
+        "name": "Greenwood College",
+        "type": "organization",
+        "description": "A well-known school famous for its work in science and learning."
+      },
+      {
+        "name": "Sunny Meadows Camp",
+        "type": "places",
+        "description": "A peaceful place in the countryside that holds big meetings about science, art, and learning."
+      },
+      {
+        "name": "FutureTech Solutions",
+        "type": "organization",
+        "description": "A new company that’s making cool tech stuff and new products."
+      },
+      {
+        "name": "Lucy Smart",
+        "type": "people",
+        "description": "A smart reporter who finds out about secret plans."
+      },
+      {
+        "name": "Dr. Alex Wise",
+        "type": "people",
+        "description": "A teacher who thinks of new and fun ways to learn."
+      },
+      {
+        "name": "Emma Swift",
+        "type": "people",
+        "description": "A young boss known for being smart in business and tech."
+      },
+      {
+        "name": "Mike Strong",
+        "type": "people",
+        "description": "Once a famous sports star, now a successful business person in tech."
+      },
+      {
+        "name": "Sara Green",
+        "type": "people",
+        "description": "A scientist who knows a lot about farming and growing plants."
+      },
+      {
+        "name": "Bob Oldbook",
+        "type": "people",
+        "description": "A person who finds and sells old and important books."
+      },
+      {
+        "name": "Lily Story",
+        "type": "people",
+        "description": "A movie maker who tells interesting and mysterious stories."
+      },
+      {
+        "name": "Techie Tom",
+        "type": "people",
+        "description": "A well-known person who talks about and reviews new tech stuff."
+      }
+    ],
+    "Themes": [
+      {
+        "name": "Politics",
+        "description": "Lucy Smart finds a secret paper that talks about a plan between countries."
+      },
+      {
+        "name": "Education",
+        "description": "A school named Hilltop Learning has a cool way of teaching, and Greenwood College is interested."
+      },
+      {
+        "name": "Techniques",
+        "description": "FutureTech Solutions is making new tech that could change a lot, but big companies are not happy."
+      },
+      {
+        "name": "Business",
+        "description": "FutureTech Solutions is growing fast and other big tech companies are competing with them."
+      },
+      {
+        "name": "Culture",
+        "description": "With all the new tech, people are trying to remember old traditions and mix them with the new."
+      },
+      {
+        "name": "Entertainment",
+        "description": "New tech is changing movies and games, making them more fun and different."
+      },
+      {
+        "name": "Sports",
+        "description": "New tech from FutureTech Solutions is being used in sports for training and making fans happy."
+      }
+    ]
+  }
+}

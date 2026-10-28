@@ -1,0 +1,150 @@
+{
+    "nodes": [
+        {
+            "index": 1,
+            "label": "A1: The Rise of eSports",
+            "time_period": [
+                "2020-01-01",
+                "2020-06-26"
+            ],
+            "themes": [
+                "Evolution of Sports",
+                "eSports",
+                "Traditional Sports"
+            ],
+            "entity": [
+                "Alexa Meyer"
+            ]
+        },
+        {
+            "index": 2,
+            "label": "A2: eSports",
+            "time_period": [
+                "2020-06-26",
+                "2020-12-20"
+            ],
+            "themes": [
+                "Evolution of Sports"
+            ],
+            "entity": [
+                "Alexa Meyer"
+            ]
+        },
+        {
+            "index": 3,
+            "label": "B3: Ethics in Sports",
+            "time_period": [
+                "2020-12-20",
+                "2021-06-15"
+            ],
+            "themes": [
+                "Ethics in Sports",
+                "Doping",
+                "Fair Play",
+                "Moral Choices"
+            ],
+            "entity": [
+                "Victory Marathon",
+                "Alexa Meyer"
+            ]
+        },
+        {
+            "index": 4,
+            "label": "C3: Triumph and Tragedy",
+            "time_period": [
+                "2020-12-20",
+                "2021-06-15"
+            ],
+            "themes": [
+                "Athletic Triumph",
+                "Tragedy"
+            ],
+            "entity": [
+                "Team Thunder",
+                "Liam Torres",
+                "Victory Marathon",
+                "Stadium One"
+            ]
+        },
+        {
+            "index": 5,
+            "label": "D4: The Rising Stars and the Unseen Shadows",
+            "time_period": [
+                "2021-06-15",
+                "2021-12-09"
+            ],
+            "themes": [
+                "Youth & Potential"
+            ],
+            "entity": [
+                "Alexa Meyer",
+                "Team Thunder",
+                "Liam Torres"
+            ]
+        },
+        {
+            "index": 6,
+            "label": "D5: The Rise of eSports and the Unyielding Spirit of Young Athletes",
+            "time_period": [
+                "2021-12-09",
+                "2022-06-06"
+            ],
+            "themes": [
+                "Youth & Potential"
+            ],
+            "entity": [
+                "Liam Torres",
+                "eSports Mania",
+                "Alexa Meyer",
+                "Team Thunder",
+                "Stadium One"
+            ]
+        },
+        {
+            "index": 7,
+            "label": "E5: The Business Behind the Game",
+            "time_period": [
+                "2021-12-09",
+                "2022-06-06"
+            ],
+            "themes": [
+                "Commercialization"
+            ],
+            "entity": [
+                "Alexa Meyer"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "start_node": 1,
+            "end_node": 2,
+            "labels": "Alexa Meyer"
+        },
+        {
+            "start_node": 2,
+            "end_node": 3,
+            "labels": "Alexa Meyer"
+        },
+        {
+            "start_node": 3,
+            "end_node": 5,
+            "labels": "Alexa Meyer"
+        },
+        {
+            "start_node": 4,
+            "end_node": 5,
+            "labels": "Liam Torres, Team Thunder"
+        },
+        {
+            "start_node": 5,
+            "end_node": 6,
+            "labels": "Alexa Meyer, Liam Torres, Team Thunder"
+        },
+        {
+            "start_node": 5,
+            "end_node": 7,
+            "labels": "Alexa Meyer"
+        }
+    ]
+}

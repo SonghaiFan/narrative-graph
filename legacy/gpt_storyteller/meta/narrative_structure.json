@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Linear",
+    "description": "Three chapters progress in sequence, consistently following Theme A.",
+    "structure": "A1 -> A2 -> A3",
+    "instructions": "Contains ONLY 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "A2", "A3"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "A3" }
+    ]
+  },
+  {
+    "name": "Arch",
+    "description": "The narrative begins with Theme A, then shifts to Theme B, and finally returns to Theme A.",
+    "structure": "A1 -> B2 -> A3",
+    "instructions": "Contains ONLY 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B2", "A3"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "A3" }
+    ]
+  },
+  {
+    "name": "Ladder",
+    "description": "The narrative begins with Theme A, then shifts to Theme B, and finally shifts to Theme C.",
+    "structure": "A1 -> B2 -> C3",
+    "instructions": "Contains ONLY 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B2", "C3"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "C3" }
+    ]
+  },
+  {
+    "name": "LateTurn",
+    "description": "The narrative follows Theme A for two chapters, then diverges to Theme B in the third chapter.",
+    "structure": "A1 -> A2 -> B3",
+    "instructions": "Contains 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "A2", "B3"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A2", "to": "B3" }
+    ]
+  },
+  {
+    "name": "EarlyTurn",
+    "description": "The narrative follows Theme A for one chapter, then diverges to Theme B in the second chapter.",
+    "structure": "A1 -> B2 -> B3",
+    "instructions": "Contains 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B2", "B3"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B2", "to": "B3" }
+    ]
+  },
+  {
+    "name": "WideMerge",
+    "description": "Two initial chapters, each from Themes A and C, converge into a shared Theme B in the subsequent chapter.",
+    "structure": "A1 -> B2; C1 -> B2",
+    "instructions": "Contains 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B2", "C1"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "C1", "to": "B2" }
+    ]
+  },
+  {
+    "name": "WideBranch",
+    "description": "From Theme B, the narrative branches out to both Themes A and C in the following chapters.",
+    "structure": "B1 -> A2; B1 -> C2",
+    "instructions": "Contains 3 nodes and 2 edges in total.",
+    "nodes": ["A2", "B1", "C2"],
+    "edges": [
+      { "from": "B1", "to": "A2" },
+      { "from": "B1", "to": "C2" }
+    ]
+  },
+  {
+    "name": "SharpMerge",
+    "description": "A chapter from Theme A and another from Theme B converge into a single chapter under Theme B.",
+    "structure": "A1 -> B2; B1 -> B2",
+    "instructions": "Contains 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "B1", "B2"],
+    "edges": [
+      { "from": "A1", "to": "B2" },
+      { "from": "B1", "to": "B2" }
+    ]
+  },
+  {
+    "name": "SharpBranch",
+    "description": "A chapter under Theme A diverges into two chapters, one continuing Theme A and another shifting to Theme B.",
+    "structure": "A1 -> A2; A1 -> B2",
+    "instructions": "Contains 3 nodes and 2 edges in total.",
+    "nodes": ["A1", "A2", "B2"],
+    "edges": [
+      { "from": "A1", "to": "A2" },
+      { "from": "A1", "to": "B2" }
+    ]
+  }
+]

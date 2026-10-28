@@ -1,0 +1,66 @@
+{
+    "nodes": [
+        {
+            "index": 1,
+            "label": "B1: Democratic Renewal",
+            "time_period": [
+                "2020-03-04",
+                "2021-05-04"
+            ],
+            "themes": [
+                "Democratic Renewal"
+            ],
+            "entity": [
+                "The Bridgeside Pact Signing",
+                "Chancellor Eric Weber",
+                "Gregory Collins",
+                "Rashida Al-Amin"
+            ]
+        },
+        {
+            "index": 2,
+            "label": "C2: Media Influence and the Dawn of a New Political Era",
+            "time_period": [
+                "2021-05-04",
+                "2022-07-05"
+            ],
+            "themes": [
+                "Media Influence"
+            ],
+            "entity": [
+                "The Bridgeside Pact Signing",
+                "The Grand Assembly Inauguration"
+            ]
+        },
+        {
+            "index": 3,
+            "label": "A2: A New Era of Transparency",
+            "time_period": [
+                "2021-05-04",
+                "2022-07-05"
+            ],
+            "themes": [
+                "Corruption & Transparency"
+            ],
+            "entity": [
+                "Chancellor Eric Weber",
+                "The Bridgeside Pact Signing",
+                "Gregory Collins",
+                "Capital City",
+                "The Grand Assembly Inauguration"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "start_node": 1,
+            "end_node": 3,
+            "labels": "Gregory Collins, The Bridgeside Pact Signing, Chancellor Eric Weber"
+        },
+        {
+            "start_node": 1,
+            "end_node": 2,
+            "labels": "The Bridgeside Pact Signing"
+        }
+    ]
+}
