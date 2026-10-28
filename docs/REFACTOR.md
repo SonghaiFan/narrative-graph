@@ -36,7 +36,7 @@ npm run build
 | 1. Shared contract | Define the graph and story JSON in `schema/`. Move the web's edge rule into a pure function and write the same rule in Python | Both read the same fixtures and derive identical edges | done (`refactor/stage-1-contract`), except that the story is not yet mapped to the graph |
 | 2. Aligner | The aligner reads a TTNG graph. Nodes that already carry entities keep them; only missing ones are sampled | The nine existing structures, turned into graphs, align exactly as the old aligner does | done (`refactor/stage-2-aligner`), as a new module next to the old aligner; nothing is switched over yet |
 | 3. Writer | A swappable LLM client, prompts moved to files, the deprecated community `ChatOpenAI` replaced | The wire test still sees `gpt-4`, temperature 0.5 and the parent chapter text | done (`refactor/stage-3-writer`) |
-| 4. Connect | The editor's JSON file is the hand-over: Python reads it, writes the chapters into `node.content` and gives the file back for import. No service; the editor's export and import code is pulled out into tested functions and the file gets a schema | A file in the editor's export shape goes through `python -m ttng_story` and comes out as a valid file with text in every node | done (`refactor/stage-4-connect`), except that nothing was tried in a browser and the text is made by a command, not by a button |
+| 4. Connect | The editor's JSON file is the hand-over: Python reads it, writes the chapters into `node.content` and gives the file back for import. No service; the editor's export and import code is pulled out into tested functions and the file gets a schema | A file in the editor's export shape goes through `python -m ttng_story` and comes out as a valid file with text in every node | done (`refactor/stage-4-connect`); the text is made by a command, not by a button |
 | 5. Retire | Delete `legacy/` and the flat scripts, decide the fate of `python/*/arc` data, choose a license and a name, stop inlining the Gemini key | Everything deleted is already covered by a new part | |
 
 ## What the test net covers today
@@ -57,6 +57,8 @@ npm run build
 Each of these was checked by putting the bug back in a scratch copy: the old `theme=` argument, the old `langchain.llms.OpenAI` call, a silent drop to `gpt-3.5-turbo`, a writer that forgets the parent chapter, an aligner that stops linking children to parents, time slices running backwards, and a packer that stops moving files. Every one made tests fail.
 
 Stage 1 was checked in two more ways. The original inline code in `GraphContext.tsx`, the extracted `computeEdges` and the Python rule agreed on 10,000 random graphs, down to the id and the order of every edge. And 14 planted deviations in the rule, 7 in each language, were each caught by the tests of the language they were planted in, while the other language's tests kept passing.
+
+Stage 4 was also tried by hand in the editor (dev server, built-in browser): a graph was imported, the real JSON button produced a file in the schema's shape with no edges, `ttng_story` filled it using a stub model (no API call), and importing the result drew the graph and showed each chapter's text in the story sidebar. A file with no nodes, a file that is not JSON and `null` each gave "Invalid file" and left the graph alone. The dev server needs a `GEMINI_API_KEY` even to load (a dummy value will do), because `services/ai.ts` builds its client at import time; that is not a Stage 4 change.
 
 Stage 4 was checked by planting six deviations in `ttng_story.py` and `ttng_align.py` (reversed chapters, matching by the model's id, editing the input in place, overwriting every node, a wrong time slice for the period, not unwrapping the file). Every one made tests fail. One behaviour changed in the editor: importing a valid JSON file that has no nodes now says "Invalid file" instead of doing nothing.
 
@@ -93,7 +95,7 @@ Where does the engine run once the two halves are connected?
 ## Known loose ends
 
 - Pydantic's `.dict()` and `Field(labels=...)` raise deprecation warnings in the test run.
-- Nothing in Stage 4 was tried in a browser: the export and import functions are tested, and the app type-checks and builds, but the buttons themselves were not clicked. There is no "write story" button; the text comes from `python -m ttng_story`.
+- There is no "write story" button; the text comes from `python -m ttng_story`.
 - `storytale.py` still calls `create_story` without a client, so it always uses `OpenAIClient`. Choosing another client from the command line is not built.
 - The web bundle is about 3.2 MB in one chunk.
 - `apps/web/vite.config.ts` inlines `GEMINI_API_KEY` into the client bundle. Do not deploy publicly until that is replaced.
