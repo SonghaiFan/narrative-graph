@@ -16,3 +16,6 @@ myvenv/
 .env
 .env.*
 !.env.example
+
+# Test caches
+.pytest_cache/

@@ -61,6 +61,15 @@ The seed fixes which entities are sampled. It does not make the LLM output repea
 
 To rewrite `story.json` from the sample `alignment_results.json` (Arch, three chapters), run `python narrative_deducer.py`. This overwrites the committed `story.json`.
 
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+The tests never reach the network. Sockets and DNS are blocked, the writer runs against a fake chat model, and one test sends the real `ChatOpenAI` request through a faked HTTP layer to check the endpoint, the model name (`gpt-4`) and the temperature. What they cover, and what they do not, is listed in [../docs/REFACTOR.md](../docs/REFACTOR.md).
+
 ## Data formats
 
 A **context file** is a list of structures:
