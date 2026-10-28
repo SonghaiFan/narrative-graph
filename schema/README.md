@@ -46,6 +46,6 @@ cd apps/web && npm test
 
 ## Not here yet
 
-- The narrative context files in `python/meta/` (a structure plus its themes and entities) have no schema. They are Stage 2.
+- The narrative context files in `python/meta/` (a structure plus its themes and entities) have no schema. `python/ttng_align.py` reads them, but nothing validates them.
 - Story files written by older versions of the code (`event` / `topics`) do not match `story.schema.json`, on purpose.
 - Nothing generates TypeScript types or pydantic models from these schemas yet.

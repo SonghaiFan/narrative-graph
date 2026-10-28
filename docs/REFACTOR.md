@@ -34,7 +34,7 @@ npm run build
 |---|---|---|---|
 | 0. Keel | Nothing changes behaviour. Add the test net, fix the web type check, add CI | The tests below pass on the current code | done (`refactor/stage-0-keel`) |
 | 1. Shared contract | Define the graph and story JSON in `schema/`. Move the web's edge rule into a pure function and write the same rule in Python | Both read the same fixtures and derive identical edges | done (`refactor/stage-1-contract`), except that the story is not yet mapped to the graph |
-| 2. Aligner | The aligner reads a TTNG graph. Nodes that already carry entities keep them; only missing ones are sampled | The nine existing context files still align exactly as before | |
+| 2. Aligner | The aligner reads a TTNG graph. Nodes that already carry entities keep them; only missing ones are sampled | The nine existing structures, turned into graphs, align exactly as the old aligner does | done (`refactor/stage-2-aligner`), as a new module next to the old aligner; nothing is switched over yet |
 | 3. Writer | A swappable LLM client, prompts moved to files, the deprecated community `ChatOpenAI` replaced | The wire test still sees `gpt-4`, temperature 0.5 and the parent chapter text | |
 | 4. Connect | A small local service wraps the Python engine; the editor gets a "write story" action that fills `node.content` | Build a graph in the editor, get chapters back | |
 | 5. Retire | Delete `legacy/` and the flat scripts, decide the fate of `python/*/arc` data, choose a license and a name, stop inlining the Gemini key | Everything deleted is already covered by a new part | |
@@ -48,11 +48,14 @@ npm run build
 - **Packer** (`tests/test_story_packer.py`): `story_packer.py` bundles the stories and then moves every file into `arc/`.
 - **Guards** (`tests/test_guards.py`): sockets and DNS are blocked, and the writer must not go back to `langchain.llms.OpenAI`.
 - **Edge rule** (`python/tests/test_edges.py`, `apps/web/tests/computeEdges.test.ts`): 23 hand-written and 30 random cases from `schema/fixtures/`. Both sides must produce the same edges in the same order, leave the input untouched, and give edges that fit the graph schema.
+- **Graph aligner** (`python/tests/test_align_graph.py`): for all nine structures and three seeds, the graph of a structure aligns to exactly what `align_theme_entity` gives (same node order, same fields, same entities). Also: given entities are kept, a node that shares nothing with its parent gets one, parents come from declared edges or else the edge rule, time comes from the node or from slicing the topic's range, off-grid nodes are left out, bad graphs are refused with a reason, the writer accepts the result, and the command line works.
 - **Schemas** (`python/tests/test_schema.py`, `apps/web/tests/schema.test.ts`): the schemas are valid, the good graphs and stories are accepted, 18 bad documents are refused, and what the pipeline writes matches `story.schema.json`.
 
 Each of these was checked by putting the bug back in a scratch copy: the old `theme=` argument, the old `langchain.llms.OpenAI` call, a silent drop to `gpt-3.5-turbo`, a writer that forgets the parent chapter, an aligner that stops linking children to parents, time slices running backwards, and a packer that stops moving files. Every one made tests fail.
 
 Stage 1 was checked in two more ways. The original inline code in `GraphContext.tsx`, the extracted `computeEdges` and the Python rule agreed on 10,000 random graphs, down to the id and the order of every edge. And 14 planted deviations in the rule, 7 in each language, were each caught by the tests of the language they were planted in, while the other language's tests kept passing.
+
+Stage 2 was checked by planting seven deviations in `ttng_align.py` (sample size, the parent entity, giving a parent entity to every node, dropping `Prev`, wrong time slice, keeping off-grid nodes, ignoring declared edges). Every one made tests fail; one first survived and got its own test.
 
 ## What the test net does not cover
 
@@ -69,7 +72,9 @@ Stage 1 was checked in two more ways. The original inline code in `GraphContext.
 - **The editor already shows chapters.** `StorySidebar` renders `node.content` per time column, which is where Stage 4 writes the chapters back.
 - **The web's type check was hollow.** The project had no `@types/react`, so React props were silently `any`. With the typings added the existing code type-checks cleanly.
 - **The editor cannot export graph JSON.** It imports `{nodes, sources}` or `{graph: {...}}` and exports only PNG and SVG. Stage 4 needs a JSON export, otherwise a graph cannot leave the editor.
-- **Graph and story are still two different shapes.** `graph.schema.json` describes what the editor holds (nodes on a grid) and `story.schema.json` what the writer produces (chapters). Mapping one onto the other is the work of Stage 2.
+- **Graph and story are two different shapes.** `graph.schema.json` describes what the editor holds (nodes on a grid) and `story.schema.json` what the writer produces (chapters). `python/ttng_align.py` now maps the graph to the alignment the writer takes. Writing the chapters back into `node.content` is Stage 4.
+- **The editor's edge rule cannot bootstrap a graph without entities.** It links nodes only through shared entities, so a graph whose nodes have none has no edges. The aligner therefore needs declared `edges` for such a graph. Exporting them from the editor is part of the JSON export Stage 4 needs.
+- **Old aligner quirk kept on purpose:** the sampled entities are put through `list(set(...))`, so their order depends on string hashing and changes between runs. Tests compare them sorted.
 
 ## Decision needed before Stage 2
 
