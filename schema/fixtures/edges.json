@@ -1,0 +1,246 @@
+{
+  "description": "Hand-written cases for the edge rule (apps/web/utils/computeEdges.ts and python/ttng_edges.py). The expected edges were typed by hand, as [sourceId, targetId] pairs in the order the rule emits them: by time column, then by the input order of the nodes. Edge ids are 'edge-<sourceId>-<targetId>'.",
+  "cases": [
+    {
+      "name": "chain across consecutive columns",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 2, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"], ["b", "c"]]
+    },
+    {
+      "name": "no shared value means no edge",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ben"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "tracks one row apart are linked",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 1, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "tracks two rows apart are not linked",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 2, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "an empty column breaks the chain",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 2, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "only the very next column counts",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ben"]}},
+        {"id": "c", "time": 2, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "one node branches into two",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 1, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 1, "track": 2, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"], ["a", "c"]]
+    },
+    {
+      "name": "two nodes merge into one",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 0, "track": 2, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 1, "track": 1, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "c"], ["b", "c"]]
+    },
+    {
+      "name": "several shared values still make one edge",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana", "Ben"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ben", "Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "a node on a negative track is ignored",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": -1, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "c"]]
+    },
+    {
+      "name": "a node in a column at or beyond maxTime is ignored",
+      "linkingAttribute": "Entity",
+      "maxTime": 2,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 2, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "the linking attribute decides: Topic links these",
+      "linkingAttribute": "Topic",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"], "Topic": ["Tax"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ben"], "Topic": ["Tax"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "the linking attribute decides: Entity does not",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"], "Topic": ["Tax"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ben"], "Topic": ["Tax"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "a missing attribute never links",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Topic": ["Tax"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "values are case sensitive",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "an empty value list never links",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": []}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": []}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "nodes in the same column are never linked",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 0, "track": 1, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "an empty graph has no edges",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "gaps split the chain",
+      "linkingAttribute": "Entity",
+      "maxTime": 6,
+      "nodes": [
+        {"id": "n0", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "n1", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "n3", "time": 3, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "n4", "time": 4, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["n0", "n1"], ["n3", "n4"]]
+    },
+    {
+      "name": "edges follow the input order of the next column",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 1, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 1, "track": 2, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "c"], ["a", "b"]]
+    },
+    {
+      "name": "columns are walked in ascending order whatever the input order",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "n2", "time": 2, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "n0", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "n1", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["n0", "n1"], ["n1", "n2"]]
+    },
+    {
+      "name": "ids with hyphens and spaces go into the edge id as they are",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "x-1", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "y 2", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["x-1", "y 2"]]
+    },
+    {
+      "name": "a merge followed by a branch across three columns",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 0, "track": 1, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 1, "track": 1, "attributes": {"Entity": ["Ana"]}},
+        {"id": "d", "time": 2, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "e", "time": 2, "track": 2, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "c"], ["b", "c"], ["c", "d"], ["c", "e"]]
+    }
+  ]
+}

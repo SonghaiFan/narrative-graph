@@ -1,0 +1,496 @@
+{
+  "description": "Random graphs from a seeded generator (seed 99). The expected edges come from the Python rule, and the web implementation must give the same answers. Before this file was written both were also compared with the original inline code on 10,000 other random graphs, with no difference.",
+  "cases": [
+    {
+      "name": "random 00",
+      "linkingAttribute": "Missing",
+      "maxTime": 4,
+      "nodes": [
+        {"id": "r0-6", "time": 0, "track": -1, "attributes": {"Entity": ["Eli"], "Topic": []}},
+        {"id": "r0-5", "time": 1, "track": 3, "attributes": {"Entity": [], "Topic": ["ana"]}},
+        {"id": "r0-7", "time": 3, "track": 2, "attributes": {"Entity": ["Ana", "Dev", "ana"], "Topic": ["Eli", "Ana"]}},
+        {"id": "r0-0", "time": 2, "track": 2, "attributes": {"Entity": ["Ben"], "Topic": []}},
+        {"id": "r0-1", "time": 3, "track": 1, "attributes": {"Entity": []}},
+        {"id": "r0-3", "time": 3, "track": 2, "attributes": {"Entity": ["Eli"], "Topic": []}},
+        {"id": "r0-4", "time": 3, "track": 1, "attributes": {"Entity": ["Eli", "Ana"], "Topic": ["Eli", "Ana"]}},
+        {"id": "r0-2", "time": 6, "track": 1, "attributes": {"Entity": ["Cleo"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "random 01",
+      "linkingAttribute": "Topic",
+      "maxTime": 3,
+      "nodes": [
+        {"id": "r1-8", "time": 3, "track": 1, "attributes": {"Entity": []}},
+        {"id": "r1-1", "time": 0, "track": 0, "attributes": {"Entity": ["Eli"]}},
+        {"id": "r1-0", "time": 3, "track": -1, "attributes": {"Entity": ["Cleo"]}},
+        {"id": "r1-9", "time": 3, "track": 1, "attributes": {"Entity": ["ana", "Cleo"], "Topic": ["Cleo"]}},
+        {"id": "r1-7", "time": 2, "track": 3, "attributes": {"Entity": ["Ben", "ana"], "Topic": ["Dev"]}},
+        {"id": "r1-5", "time": 2, "track": 2, "attributes": {"Topic": ["Ana"]}},
+        {"id": "r1-3", "time": 4, "track": 1, "attributes": {"Entity": ["Ana", "Cleo"], "Topic": []}},
+        {"id": "r1-4", "time": 3, "track": 2, "attributes": {"Entity": [], "Topic": ["Dev", "Cleo", "Dev"]}},
+        {"id": "r1-2", "time": 2, "track": 3, "attributes": {"Entity": ["Ben", "Ben"], "Topic": ["Eli"]}},
+        {"id": "r1-6", "time": 1, "track": 1, "attributes": {"Entity": ["Cleo"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "random 02",
+      "linkingAttribute": "Missing",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "r2-1", "time": 6, "track": 2, "attributes": {"Entity": ["ana", "Dev"], "Topic": ["Dev"]}},
+        {"id": "r2-3", "time": 1, "track": 3, "attributes": {}},
+        {"id": "r2-0", "time": 1, "track": 0, "attributes": {"Entity": ["ana", "Cleo"]}},
+        {"id": "r2-6", "time": 3, "track": 1, "attributes": {"Entity": []}},
+        {"id": "r2-5", "time": 6, "track": 1, "attributes": {"Entity": []}},
+        {"id": "r2-4", "time": 5, "track": 1, "attributes": {"Topic": ["Dev", "Eli", "Eli"]}},
+        {"id": "r2-2", "time": 4, "track": 1, "attributes": {"Entity": [], "Topic": ["Ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "random 03",
+      "linkingAttribute": "Topic",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r3-2", "time": 4, "track": 1, "attributes": {"Entity": ["Eli", "ana", "Dev"], "Topic": []}},
+        {"id": "r3-3", "time": 2, "track": 3, "attributes": {"Topic": []}},
+        {"id": "r3-1", "time": 6, "track": 2, "attributes": {"Entity": ["Cleo"], "Topic": ["Dev", "Eli"]}},
+        {"id": "r3-0", "time": 6, "track": 2, "attributes": {"Entity": ["Ben", "Ben"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "random 04",
+      "linkingAttribute": "Entity",
+      "maxTime": 2,
+      "nodes": [
+        {"id": "r4-1", "time": 0, "track": 2, "attributes": {"Entity": ["Eli"], "Topic": ["Dev"]}},
+        {"id": "r4-0", "time": 3, "track": -1, "attributes": {"Entity": ["Cleo", "Ben", "Ben"], "Topic": []}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "random 05",
+      "linkingAttribute": "Missing",
+      "maxTime": 2,
+      "nodes": [
+        {"id": "r5-3", "time": 6, "track": -1, "attributes": {"Entity": ["Eli"], "Topic": ["Cleo"]}},
+        {"id": "r5-1", "time": 5, "track": 0, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r5-7", "time": 2, "track": 1, "attributes": {"Topic": ["Dev"]}},
+        {"id": "r5-5", "time": 1, "track": 2, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r5-6", "time": 3, "track": 0, "attributes": {"Topic": ["Eli"]}},
+        {"id": "r5-4", "time": 3, "track": 1, "attributes": {}},
+        {"id": "r5-8", "time": 2, "track": 0, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r5-0", "time": 1, "track": 2, "attributes": {"Entity": ["ana", "Cleo"], "Topic": ["Eli"]}},
+        {"id": "r5-2", "time": 0, "track": 2, "attributes": {"Topic": []}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "random 101",
+      "linkingAttribute": "Entity",
+      "maxTime": 4,
+      "nodes": [
+        {"id": "r101-11", "time": 0, "track": 0, "attributes": {"Entity": ["Dev", "Ana"], "Topic": ["Ben"]}},
+        {"id": "r101-7", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"], "Topic": ["ana", "Eli"]}},
+        {"id": "r101-3", "time": 5, "track": 2, "attributes": {"Entity": ["Eli"]}},
+        {"id": "r101-9", "time": 3, "track": -1, "attributes": {"Entity": [], "Topic": ["Cleo"]}},
+        {"id": "r101-5", "time": 0, "track": 2, "attributes": {"Entity": ["Cleo", "ana", "Ben"], "Topic": []}},
+        {"id": "r101-0", "time": 2, "track": 1, "attributes": {"Entity": ["Ben", "Ben"], "Topic": []}},
+        {"id": "r101-8", "time": 1, "track": -1, "attributes": {"Entity": ["Ben", "Eli"], "Topic": ["Ana", "Eli"]}},
+        {"id": "r101-2", "time": 2, "track": 0, "attributes": {"Entity": ["ana", "Ana"]}},
+        {"id": "r101-6", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "r101-1", "time": 3, "track": -1, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r101-4", "time": 6, "track": 0, "attributes": {"Topic": ["Ana"]}},
+        {"id": "r101-10", "time": 6, "track": 0, "attributes": {"Entity": ["Ben"], "Topic": ["Dev", "Ben"]}}
+      ],
+      "expectedEdges": [["r101-11", "r101-7"], ["r101-11", "r101-6"], ["r101-7", "r101-2"], ["r101-6", "r101-2"]]
+    },
+    {
+      "name": "random 112",
+      "linkingAttribute": "Topic",
+      "maxTime": 4,
+      "nodes": [
+        {"id": "r112-2", "time": 2, "track": 3, "attributes": {"Topic": ["Cleo", "ana", "ana"]}},
+        {"id": "r112-0", "time": 4, "track": 1, "attributes": {"Entity": ["Dev", "Dev"], "Topic": ["Dev"]}},
+        {"id": "r112-5", "time": 5, "track": 0, "attributes": {"Entity": ["ana"], "Topic": []}},
+        {"id": "r112-7", "time": 3, "track": -1, "attributes": {"Entity": ["Eli"]}},
+        {"id": "r112-4", "time": 0, "track": 0, "attributes": {"Topic": []}},
+        {"id": "r112-6", "time": 2, "track": 0, "attributes": {"Entity": ["Eli"], "Topic": ["Dev"]}},
+        {"id": "r112-3", "time": 1, "track": 2, "attributes": {"Entity": ["ana"], "Topic": ["Dev", "Ana", "Cleo"]}},
+        {"id": "r112-8", "time": 4, "track": 2, "attributes": {"Entity": ["Eli", "ana", "Ana"], "Topic": ["Ben", "Ana"]}},
+        {"id": "r112-1", "time": 4, "track": 0, "attributes": {"Entity": ["Cleo", "Eli", "Cleo"], "Topic": ["Dev"]}},
+        {"id": "r112-9", "time": 3, "track": 1, "attributes": {"Entity": ["Ben"], "Topic": ["Dev", "Ben", "Ben"]}}
+      ],
+      "expectedEdges": [["r112-3", "r112-2"], ["r112-6", "r112-9"]]
+    },
+    {
+      "name": "random 126",
+      "linkingAttribute": "Entity",
+      "maxTime": 4,
+      "nodes": [
+        {"id": "r126-0", "time": 6, "track": 2, "attributes": {}},
+        {"id": "r126-1", "time": 4, "track": 1, "attributes": {"Topic": ["Ben", "Cleo"]}},
+        {"id": "r126-8", "time": 2, "track": 1, "attributes": {"Entity": ["Dev", "Ben", "ana"], "Topic": ["Ana", "Cleo"]}},
+        {"id": "r126-3", "time": 5, "track": 1, "attributes": {"Entity": ["Ana", "Ben", "Cleo"], "Topic": ["Ben"]}},
+        {"id": "r126-4", "time": 3, "track": 0, "attributes": {"Entity": ["Ben"], "Topic": ["Eli"]}},
+        {"id": "r126-6", "time": 0, "track": 0, "attributes": {"Entity": ["ana", "Dev", "Eli"], "Topic": ["ana", "Ana"]}},
+        {"id": "r126-5", "time": 1, "track": -1, "attributes": {"Topic": ["Ana"]}},
+        {"id": "r126-9", "time": 0, "track": 1, "attributes": {"Entity": ["Cleo", "Eli", "Ben"]}},
+        {"id": "r126-7", "time": 5, "track": 2, "attributes": {"Topic": ["Dev", "Ben", "Eli"]}},
+        {"id": "r126-2", "time": 5, "track": 0, "attributes": {"Entity": ["Ben", "Eli"], "Topic": ["Cleo"]}},
+        {"id": "r126-10", "time": 2, "track": 2, "attributes": {"Entity": []}}
+      ],
+      "expectedEdges": [["r126-8", "r126-4"]]
+    },
+    {
+      "name": "random 128",
+      "linkingAttribute": "Entity",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r128-2", "time": 5, "track": 1, "attributes": {"Entity": ["Cleo"]}},
+        {"id": "r128-5", "time": 2, "track": 1, "attributes": {"Entity": ["ana", "Ben", "ana"], "Topic": ["ana", "Ana"]}},
+        {"id": "r128-3", "time": 5, "track": 1, "attributes": {"Entity": ["Eli", "ana", "Ben"]}},
+        {"id": "r128-7", "time": 5, "track": 0, "attributes": {"Entity": ["Eli"], "Topic": ["Ana"]}},
+        {"id": "r128-8", "time": 1, "track": 1, "attributes": {"Topic": ["Cleo", "Cleo"]}},
+        {"id": "r128-0", "time": 3, "track": 2, "attributes": {"Entity": ["ana", "Ben"], "Topic": []}},
+        {"id": "r128-1", "time": 6, "track": 2, "attributes": {"Topic": ["Ana", "ana", "Cleo"]}},
+        {"id": "r128-4", "time": 5, "track": -1, "attributes": {"Entity": ["Eli", "Dev", "Ben"], "Topic": ["Cleo", "Cleo", "Dev"]}},
+        {"id": "r128-6", "time": 3, "track": 0, "attributes": {"Topic": ["ana"]}}
+      ],
+      "expectedEdges": [["r128-5", "r128-0"]]
+    },
+    {
+      "name": "random 133",
+      "linkingAttribute": "Entity",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r133-10", "time": 5, "track": 1, "attributes": {"Entity": ["Cleo", "Eli"]}},
+        {"id": "r133-1", "time": 4, "track": 0, "attributes": {"Topic": []}},
+        {"id": "r133-0", "time": 5, "track": 2, "attributes": {"Entity": ["ana"], "Topic": ["Ana", "Ben"]}},
+        {"id": "r133-8", "time": 5, "track": 0, "attributes": {"Topic": []}},
+        {"id": "r133-3", "time": 3, "track": 1, "attributes": {"Entity": [], "Topic": ["Eli"]}},
+        {"id": "r133-9", "time": 5, "track": 2, "attributes": {"Entity": ["Ana", "ana", "Ben"]}},
+        {"id": "r133-4", "time": 4, "track": 0, "attributes": {"Entity": ["Ben", "Ana", "Cleo"]}},
+        {"id": "r133-2", "time": 5, "track": 3, "attributes": {"Entity": ["Eli"]}},
+        {"id": "r133-6", "time": 6, "track": 3, "attributes": {"Entity": ["ana"]}},
+        {"id": "r133-7", "time": 4, "track": 2, "attributes": {"Entity": ["Dev", "Eli"]}},
+        {"id": "r133-5", "time": 2, "track": 1, "attributes": {"Topic": ["ana"]}}
+      ],
+      "expectedEdges": [["r133-4", "r133-10"], ["r133-7", "r133-10"], ["r133-7", "r133-2"], ["r133-0", "r133-6"], ["r133-9", "r133-6"]]
+    },
+    {
+      "name": "random 140",
+      "linkingAttribute": "Topic",
+      "maxTime": 4,
+      "nodes": [
+        {"id": "r140-1", "time": 6, "track": 2, "attributes": {"Entity": ["ana"]}},
+        {"id": "r140-8", "time": 1, "track": 1, "attributes": {"Topic": ["Eli", "ana", "Cleo"]}},
+        {"id": "r140-6", "time": 1, "track": 0, "attributes": {"Entity": ["Ben"], "Topic": ["Dev", "Eli", "Cleo"]}},
+        {"id": "r140-2", "time": 3, "track": 0, "attributes": {"Topic": []}},
+        {"id": "r140-4", "time": 0, "track": 2, "attributes": {"Entity": ["Cleo", "Eli"], "Topic": []}},
+        {"id": "r140-0", "time": 3, "track": 1, "attributes": {"Entity": []}},
+        {"id": "r140-7", "time": 4, "track": 2, "attributes": {"Entity": [], "Topic": ["Ana", "Eli"]}},
+        {"id": "r140-10", "time": 2, "track": 0, "attributes": {"Topic": ["Eli", "Dev", "Cleo"]}},
+        {"id": "r140-3", "time": 2, "track": -1, "attributes": {"Entity": [], "Topic": ["Cleo"]}},
+        {"id": "r140-9", "time": 0, "track": 3, "attributes": {"Entity": [], "Topic": ["Cleo", "Cleo", "Eli"]}},
+        {"id": "r140-5", "time": 2, "track": 2, "attributes": {"Entity": ["Cleo", "Cleo"]}}
+      ],
+      "expectedEdges": [["r140-8", "r140-10"], ["r140-6", "r140-10"]]
+    },
+    {
+      "name": "random 141",
+      "linkingAttribute": "Entity",
+      "maxTime": 3,
+      "nodes": [
+        {"id": "r141-2", "time": 0, "track": 1, "attributes": {"Entity": ["Eli", "Ben", "ana"], "Topic": []}},
+        {"id": "r141-4", "time": 1, "track": 1, "attributes": {"Entity": ["Cleo"], "Topic": ["Ana"]}},
+        {"id": "r141-3", "time": 6, "track": -1, "attributes": {"Entity": ["Ana", "Cleo"], "Topic": ["Cleo", "Ben", "ana"]}},
+        {"id": "r141-0", "time": 6, "track": 0, "attributes": {"Entity": ["Cleo", "Ben", "Ana"], "Topic": ["Ben", "Ana"]}},
+        {"id": "r141-5", "time": 4, "track": 2, "attributes": {"Entity": ["ana", "Ben", "Ben"], "Topic": ["Ben", "Eli"]}},
+        {"id": "r141-1", "time": 0, "track": 1, "attributes": {"Entity": ["ana", "Ben", "Cleo"], "Topic": ["ana", "Ana", "Cleo"]}}
+      ],
+      "expectedEdges": [["r141-1", "r141-4"]]
+    },
+    {
+      "name": "random 30",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "r30-1", "time": 4, "track": 1, "attributes": {"Entity": [], "Topic": ["Dev", "ana"]}},
+        {"id": "r30-2", "time": 3, "track": 1, "attributes": {"Entity": [], "Topic": ["Ana", "Dev", "Eli"]}},
+        {"id": "r30-0", "time": 1, "track": 1, "attributes": {"Entity": ["ana", "Cleo", "Dev"], "Topic": ["Cleo", "Cleo"]}},
+        {"id": "r30-3", "time": 1, "track": -1, "attributes": {"Entity": ["Eli", "Eli", "ana"]}},
+        {"id": "r30-4", "time": 2, "track": 2, "attributes": {"Entity": ["Dev", "Eli"], "Topic": ["Ben", "ana"]}}
+      ],
+      "expectedEdges": [["r30-0", "r30-4"]]
+    },
+    {
+      "name": "random 44",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "r44-1", "time": 3, "track": 0, "attributes": {"Entity": ["Ben", "Eli"], "Topic": ["Ben", "Ana"]}},
+        {"id": "r44-0", "time": 2, "track": 2, "attributes": {"Entity": ["Ana"], "Topic": ["Ana"]}},
+        {"id": "r44-5", "time": 3, "track": 3, "attributes": {"Entity": ["ana", "ana", "ana"], "Topic": ["Eli"]}},
+        {"id": "r44-2", "time": 1, "track": 0, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r44-4", "time": 1, "track": 1, "attributes": {"Entity": ["Ben", "Ana", "Ben"], "Topic": []}},
+        {"id": "r44-6", "time": 3, "track": 0, "attributes": {"Topic": ["Ben", "Ana"]}},
+        {"id": "r44-7", "time": 6, "track": 0, "attributes": {"Topic": ["Dev"]}},
+        {"id": "r44-3", "time": 5, "track": 2, "attributes": {"Entity": ["Dev"], "Topic": ["Eli", "Cleo"]}}
+      ],
+      "expectedEdges": [["r44-4", "r44-0"]]
+    },
+    {
+      "name": "random 48",
+      "linkingAttribute": "Entity",
+      "maxTime": 6,
+      "nodes": [
+        {"id": "r48-7", "time": 1, "track": 3, "attributes": {"Entity": ["Eli", "Ana", "Cleo"], "Topic": ["Ana"]}},
+        {"id": "r48-4", "time": 2, "track": 1, "attributes": {"Entity": [], "Topic": ["Ben", "Eli"]}},
+        {"id": "r48-0", "time": 4, "track": -1, "attributes": {"Entity": []}},
+        {"id": "r48-5", "time": 2, "track": 1, "attributes": {"Topic": ["Eli", "Ben", "ana"]}},
+        {"id": "r48-1", "time": 3, "track": -1, "attributes": {"Entity": [], "Topic": ["Eli", "Ana"]}},
+        {"id": "r48-3", "time": 3, "track": 0, "attributes": {"Entity": ["Dev", "Dev", "Ben"], "Topic": ["ana"]}},
+        {"id": "r48-6", "time": 0, "track": 0, "attributes": {"Entity": [], "Topic": ["ana", "Ana", "Ana"]}},
+        {"id": "r48-2", "time": 2, "track": 0, "attributes": {"Entity": ["Ben", "Cleo", "Ben"], "Topic": []}}
+      ],
+      "expectedEdges": [["r48-2", "r48-3"]]
+    },
+    {
+      "name": "random 51",
+      "linkingAttribute": "Entity",
+      "maxTime": 6,
+      "nodes": [
+        {"id": "r51-1", "time": 4, "track": 1, "attributes": {"Topic": ["Dev", "Dev"]}},
+        {"id": "r51-7", "time": 3, "track": 1, "attributes": {"Entity": ["Eli"]}},
+        {"id": "r51-6", "time": 3, "track": 3, "attributes": {"Entity": ["Ben"], "Topic": ["Dev", "Dev", "Dev"]}},
+        {"id": "r51-3", "time": 6, "track": 0, "attributes": {"Topic": ["ana", "Ben"]}},
+        {"id": "r51-4", "time": 2, "track": 2, "attributes": {"Entity": ["Cleo", "Eli", "Cleo"], "Topic": ["Eli", "Dev", "Cleo"]}},
+        {"id": "r51-0", "time": 1, "track": 0, "attributes": {"Entity": []}},
+        {"id": "r51-5", "time": 2, "track": 0, "attributes": {"Topic": ["Cleo", "Ben", "ana"]}},
+        {"id": "r51-2", "time": 3, "track": 3, "attributes": {"Entity": ["Cleo", "Ben"], "Topic": ["Cleo", "Ana"]}}
+      ],
+      "expectedEdges": [["r51-4", "r51-7"], ["r51-4", "r51-2"]]
+    },
+    {
+      "name": "random 53",
+      "linkingAttribute": "Topic",
+      "maxTime": 4,
+      "nodes": [
+        {"id": "r53-1", "time": 5, "track": -1, "attributes": {"Entity": [], "Topic": ["Ben", "Cleo", "Eli"]}},
+        {"id": "r53-7", "time": 5, "track": 0, "attributes": {"Entity": ["ana", "Cleo", "Ana"]}},
+        {"id": "r53-8", "time": 2, "track": 0, "attributes": {"Entity": ["Ana", "Cleo"], "Topic": ["Ana", "Cleo", "ana"]}},
+        {"id": "r53-4", "time": 2, "track": 2, "attributes": {"Entity": ["Ana"], "Topic": []}},
+        {"id": "r53-2", "time": 3, "track": 0, "attributes": {"Entity": ["Ana", "Ben", "Cleo"], "Topic": []}},
+        {"id": "r53-5", "time": 6, "track": 1, "attributes": {"Entity": ["ana", "Ana"], "Topic": ["Eli"]}},
+        {"id": "r53-6", "time": 2, "track": 1, "attributes": {"Topic": ["Eli"]}},
+        {"id": "r53-3", "time": 2, "track": 1, "attributes": {"Entity": ["Eli"], "Topic": ["ana", "Eli", "Eli"]}},
+        {"id": "r53-9", "time": 3, "track": 0, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r53-0", "time": 1, "track": 2, "attributes": {"Entity": ["Ben", "Dev"], "Topic": ["Eli", "Dev", "Eli"]}}
+      ],
+      "expectedEdges": [["r53-0", "r53-6"], ["r53-0", "r53-3"]]
+    },
+    {
+      "name": "random 54",
+      "linkingAttribute": "Topic",
+      "maxTime": 6,
+      "nodes": [
+        {"id": "r54-0", "time": 5, "track": 3, "attributes": {"Entity": [], "Topic": ["Ben", "Ben"]}},
+        {"id": "r54-1", "time": 2, "track": 0, "attributes": {"Entity": [], "Topic": ["Eli"]}},
+        {"id": "r54-2", "time": 1, "track": 0, "attributes": {"Entity": ["Dev", "Eli", "Cleo"], "Topic": ["Eli", "ana", "ana"]}}
+      ],
+      "expectedEdges": [["r54-2", "r54-1"]]
+    },
+    {
+      "name": "random 59",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "r59-4", "time": 3, "track": -1, "attributes": {"Entity": ["Eli", "Dev"], "Topic": ["Cleo", "Ben"]}},
+        {"id": "r59-2", "time": 3, "track": 1, "attributes": {"Entity": ["Cleo", "Eli"]}},
+        {"id": "r59-0", "time": 2, "track": 0, "attributes": {"Entity": ["Cleo", "Cleo"], "Topic": []}},
+        {"id": "r59-6", "time": 0, "track": 1, "attributes": {"Entity": [], "Topic": ["Cleo"]}},
+        {"id": "r59-5", "time": 0, "track": 2, "attributes": {"Entity": ["Dev"]}},
+        {"id": "r59-1", "time": 1, "track": 1, "attributes": {"Entity": ["Cleo"], "Topic": ["Eli", "Dev"]}},
+        {"id": "r59-3", "time": 3, "track": -1, "attributes": {"Entity": ["Cleo", "ana", "Cleo"], "Topic": ["Dev", "Ben"]}}
+      ],
+      "expectedEdges": [["r59-1", "r59-0"], ["r59-0", "r59-2"]]
+    },
+    {
+      "name": "random 64",
+      "linkingAttribute": "Entity",
+      "maxTime": 6,
+      "nodes": [
+        {"id": "r64-0", "time": 2, "track": 1, "attributes": {"Entity": ["ana"], "Topic": ["Ben", "Ana", "Ana"]}},
+        {"id": "r64-8", "time": 4, "track": 1, "attributes": {"Entity": ["ana"], "Topic": []}},
+        {"id": "r64-9", "time": 2, "track": 2, "attributes": {"Entity": ["Eli", "Ben"]}},
+        {"id": "r64-5", "time": 3, "track": 1, "attributes": {"Entity": ["Ben"], "Topic": ["Ben"]}},
+        {"id": "r64-2", "time": 3, "track": 0, "attributes": {"Entity": ["Cleo", "Eli"]}},
+        {"id": "r64-3", "time": 4, "track": -1, "attributes": {"Entity": [], "Topic": ["Ben"]}},
+        {"id": "r64-1", "time": 2, "track": 2, "attributes": {"Entity": [], "Topic": ["Ben"]}},
+        {"id": "r64-7", "time": 4, "track": 3, "attributes": {"Topic": ["Ben"]}},
+        {"id": "r64-6", "time": 0, "track": 0, "attributes": {"Topic": ["ana"]}},
+        {"id": "r64-10", "time": 4, "track": 1, "attributes": {"Entity": []}},
+        {"id": "r64-4", "time": 3, "track": 1, "attributes": {"Topic": ["Eli", "Cleo", "Ben"]}}
+      ],
+      "expectedEdges": [["r64-9", "r64-5"]]
+    },
+    {
+      "name": "random 65",
+      "linkingAttribute": "Entity",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r65-7", "time": 5, "track": 2, "attributes": {"Entity": ["Dev", "Ben"], "Topic": ["Ana"]}},
+        {"id": "r65-1", "time": 2, "track": 1, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r65-0", "time": 2, "track": 0, "attributes": {"Entity": ["ana"], "Topic": ["Ben"]}},
+        {"id": "r65-8", "time": 6, "track": 0, "attributes": {"Entity": ["Cleo", "ana", "Ana"], "Topic": []}},
+        {"id": "r65-6", "time": 1, "track": 1, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r65-3", "time": 5, "track": 2, "attributes": {"Entity": ["Ben", "Eli", "Dev"], "Topic": ["Eli", "ana", "Cleo"]}},
+        {"id": "r65-2", "time": 6, "track": 1, "attributes": {"Entity": ["Dev"], "Topic": ["Ben", "Ana", "Eli"]}},
+        {"id": "r65-5", "time": 2, "track": 2, "attributes": {"Topic": ["Ana", "Ana"]}},
+        {"id": "r65-4", "time": 4, "track": 2, "attributes": {"Entity": ["Eli", "Ben", "Cleo"]}}
+      ],
+      "expectedEdges": [["r65-4", "r65-7"], ["r65-4", "r65-3"], ["r65-7", "r65-2"], ["r65-3", "r65-2"]]
+    },
+    {
+      "name": "random 66",
+      "linkingAttribute": "Topic",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "r66-3", "time": 6, "track": 1, "attributes": {"Topic": ["Ben", "Ben"]}},
+        {"id": "r66-5", "time": 1, "track": 1, "attributes": {"Entity": ["Ana", "Eli", "Ben"], "Topic": []}},
+        {"id": "r66-7", "time": 0, "track": 1, "attributes": {"Entity": [], "Topic": ["Cleo", "Ana", "Ben"]}},
+        {"id": "r66-9", "time": 1, "track": 2, "attributes": {"Entity": ["Ben", "Cleo", "Ben"], "Topic": ["Cleo", "Cleo"]}},
+        {"id": "r66-0", "time": 0, "track": 3, "attributes": {"Entity": ["ana", "Eli"], "Topic": ["Ben", "Dev", "Ben"]}},
+        {"id": "r66-4", "time": 5, "track": 1, "attributes": {"Entity": ["Ana"], "Topic": []}},
+        {"id": "r66-8", "time": 1, "track": 3, "attributes": {"Entity": ["Dev", "Dev", "Eli"], "Topic": ["ana", "Dev", "Eli"]}},
+        {"id": "r66-1", "time": 2, "track": 3, "attributes": {"Topic": ["Eli", "Dev"]}},
+        {"id": "r66-2", "time": 1, "track": 1, "attributes": {"Entity": ["ana", "Cleo"], "Topic": ["Dev"]}},
+        {"id": "r66-6", "time": 2, "track": 3, "attributes": {"Entity": [], "Topic": []}}
+      ],
+      "expectedEdges": [["r66-7", "r66-9"], ["r66-0", "r66-8"], ["r66-8", "r66-1"]]
+    },
+    {
+      "name": "random 67",
+      "linkingAttribute": "Entity",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r67-2", "time": 4, "track": 1, "attributes": {"Entity": ["Ben", "Ben"], "Topic": ["Eli", "ana"]}},
+        {"id": "r67-3", "time": 5, "track": 1, "attributes": {"Entity": ["Cleo"], "Topic": ["Eli", "Dev", "Ana"]}},
+        {"id": "r67-1", "time": 1, "track": 2, "attributes": {"Entity": ["Eli", "Ben"], "Topic": ["Ben"]}},
+        {"id": "r67-0", "time": 5, "track": 0, "attributes": {"Entity": ["Ben"], "Topic": ["ana"]}},
+        {"id": "r67-4", "time": 6, "track": 2, "attributes": {"Entity": ["Ben", "ana", "ana"], "Topic": ["Ana"]}}
+      ],
+      "expectedEdges": [["r67-2", "r67-0"]]
+    },
+    {
+      "name": "random 70",
+      "linkingAttribute": "Entity",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r70-4", "time": 5, "track": 2, "attributes": {"Entity": [], "Topic": ["Eli"]}},
+        {"id": "r70-1", "time": 3, "track": 1, "attributes": {"Entity": ["Eli", "ana", "Ana"], "Topic": ["Ben", "ana"]}},
+        {"id": "r70-2", "time": 2, "track": -1, "attributes": {"Entity": []}},
+        {"id": "r70-0", "time": 3, "track": 2, "attributes": {"Entity": ["ana", "Cleo"], "Topic": []}},
+        {"id": "r70-6", "time": 2, "track": 0, "attributes": {"Entity": ["Ana"], "Topic": ["Eli", "Cleo", "ana"]}},
+        {"id": "r70-5", "time": 4, "track": 1, "attributes": {"Entity": ["ana", "ana", "Ben"], "Topic": ["Ben"]}},
+        {"id": "r70-3", "time": 1, "track": 1, "attributes": {"Entity": ["Dev", "ana"], "Topic": ["ana", "Eli"]}}
+      ],
+      "expectedEdges": [["r70-6", "r70-1"], ["r70-1", "r70-5"], ["r70-0", "r70-5"]]
+    },
+    {
+      "name": "random 76",
+      "linkingAttribute": "Topic",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r76-2", "time": 4, "track": 1, "attributes": {"Entity": [], "Topic": ["Cleo", "Ben"]}},
+        {"id": "r76-4", "time": 6, "track": 3, "attributes": {"Entity": ["ana", "Cleo"], "Topic": []}},
+        {"id": "r76-3", "time": 5, "track": 1, "attributes": {"Topic": ["Ben"]}},
+        {"id": "r76-5", "time": 3, "track": 2, "attributes": {"Topic": ["Eli"]}},
+        {"id": "r76-0", "time": 2, "track": 3, "attributes": {"Entity": [], "Topic": ["Eli", "Dev"]}},
+        {"id": "r76-6", "time": 4, "track": 1, "attributes": {"Entity": ["Eli"], "Topic": ["Dev", "Eli", "Ben"]}},
+        {"id": "r76-1", "time": 6, "track": 2, "attributes": {"Topic": ["ana"]}},
+        {"id": "r76-7", "time": 1, "track": 3, "attributes": {"Entity": ["Ben", "Ben"], "Topic": ["Eli", "Ben"]}}
+      ],
+      "expectedEdges": [["r76-7", "r76-0"], ["r76-0", "r76-5"], ["r76-5", "r76-6"], ["r76-2", "r76-3"], ["r76-6", "r76-3"]]
+    },
+    {
+      "name": "random 77",
+      "linkingAttribute": "Topic",
+      "maxTime": 4,
+      "nodes": [
+        {"id": "r77-9", "time": 2, "track": 1, "attributes": {"Entity": ["Ben", "Dev", "Cleo"], "Topic": ["Ben", "Cleo", "Dev"]}},
+        {"id": "r77-10", "time": 0, "track": 1, "attributes": {"Entity": ["Dev"], "Topic": ["Ben", "Cleo", "Ana"]}},
+        {"id": "r77-0", "time": 1, "track": 1, "attributes": {"Entity": ["Ben", "Ana", "Cleo"], "Topic": []}},
+        {"id": "r77-3", "time": 5, "track": 2, "attributes": {"Entity": ["Eli", "Eli"], "Topic": ["Ana", "Ben"]}},
+        {"id": "r77-11", "time": 4, "track": 1, "attributes": {"Topic": ["Eli", "Eli"]}},
+        {"id": "r77-5", "time": 5, "track": 0, "attributes": {"Entity": ["Dev", "Cleo", "Ben"], "Topic": ["Ana", "Ben", "Dev"]}},
+        {"id": "r77-2", "time": 4, "track": 0, "attributes": {"Entity": ["Ben", "ana"], "Topic": ["Cleo", "Ana"]}},
+        {"id": "r77-7", "time": 2, "track": 2, "attributes": {"Topic": []}},
+        {"id": "r77-1", "time": 1, "track": 2, "attributes": {"Entity": [], "Topic": ["Ben", "Cleo"]}},
+        {"id": "r77-8", "time": 1, "track": 1, "attributes": {}},
+        {"id": "r77-6", "time": 4, "track": 3, "attributes": {"Entity": ["Cleo"]}},
+        {"id": "r77-4", "time": 4, "track": 3, "attributes": {"Topic": ["ana"]}}
+      ],
+      "expectedEdges": [["r77-10", "r77-1"], ["r77-1", "r77-9"]]
+    },
+    {
+      "name": "random 81",
+      "linkingAttribute": "Entity",
+      "maxTime": 3,
+      "nodes": [
+        {"id": "r81-10", "time": 1, "track": 1, "attributes": {"Entity": ["Dev", "ana", "Cleo"], "Topic": ["Cleo", "ana"]}},
+        {"id": "r81-3", "time": 1, "track": 1, "attributes": {"Entity": ["Ben", "Ben", "Dev"], "Topic": ["ana"]}},
+        {"id": "r81-0", "time": 4, "track": 3, "attributes": {"Entity": ["ana"], "Topic": ["Eli", "Cleo", "Ana"]}},
+        {"id": "r81-8", "time": 1, "track": -1, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r81-9", "time": 2, "track": 1, "attributes": {"Entity": ["Eli", "Dev"], "Topic": ["Dev", "Eli"]}},
+        {"id": "r81-6", "time": 1, "track": -1, "attributes": {"Entity": [], "Topic": ["Cleo"]}},
+        {"id": "r81-2", "time": 5, "track": 2, "attributes": {"Entity": ["Eli"], "Topic": []}},
+        {"id": "r81-4", "time": 3, "track": 0, "attributes": {"Topic": ["Cleo", "Dev"]}},
+        {"id": "r81-5", "time": 5, "track": 2, "attributes": {"Entity": [], "Topic": ["Cleo"]}},
+        {"id": "r81-1", "time": 1, "track": 0, "attributes": {"Entity": ["Eli", "Ben"], "Topic": ["ana"]}},
+        {"id": "r81-7", "time": 4, "track": 1, "attributes": {"Entity": ["Ana", "Ana"], "Topic": []}}
+      ],
+      "expectedEdges": [["r81-10", "r81-9"], ["r81-3", "r81-9"], ["r81-1", "r81-9"]]
+    },
+    {
+      "name": "random 90",
+      "linkingAttribute": "Topic",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r90-8", "time": 5, "track": -1, "attributes": {"Entity": ["Dev", "Ben"]}},
+        {"id": "r90-0", "time": 1, "track": 1, "attributes": {"Entity": ["Ana"]}},
+        {"id": "r90-6", "time": 3, "track": 0, "attributes": {"Entity": ["ana", "Cleo"], "Topic": ["Ana"]}},
+        {"id": "r90-7", "time": 1, "track": 0, "attributes": {"Topic": ["Ana", "Ben"]}},
+        {"id": "r90-4", "time": 6, "track": 1, "attributes": {"Entity": ["Ben", "Eli", "ana"]}},
+        {"id": "r90-3", "time": 0, "track": 0, "attributes": {"Entity": ["Ana", "ana", "Ana"], "Topic": ["ana"]}},
+        {"id": "r90-2", "time": 5, "track": 1, "attributes": {"Topic": ["ana", "Eli", "ana"]}},
+        {"id": "r90-5", "time": 0, "track": 1, "attributes": {"Entity": ["Dev"], "Topic": ["Eli"]}},
+        {"id": "r90-1", "time": 4, "track": 1, "attributes": {"Entity": ["Ben"], "Topic": ["ana"]}}
+      ],
+      "expectedEdges": [["r90-1", "r90-2"]]
+    },
+    {
+      "name": "random 93",
+      "linkingAttribute": "Entity",
+      "maxTime": 7,
+      "nodes": [
+        {"id": "r93-0", "time": 2, "track": 1, "attributes": {"Entity": ["Ben", "ana", "Dev"], "Topic": ["Dev", "Dev", "Dev"]}},
+        {"id": "r93-3", "time": 2, "track": 3, "attributes": {"Entity": ["Cleo"], "Topic": []}},
+        {"id": "r93-2", "time": 0, "track": 2, "attributes": {"Entity": [], "Topic": ["Dev", "ana"]}},
+        {"id": "r93-9", "time": 2, "track": 2, "attributes": {"Entity": ["Ben", "Cleo"], "Topic": ["Ana", "Cleo"]}},
+        {"id": "r93-1", "time": 3, "track": 1, "attributes": {"Entity": [], "Topic": []}},
+        {"id": "r93-7", "time": 2, "track": 2, "attributes": {"Topic": ["Ben", "Dev", "Ana"]}},
+        {"id": "r93-8", "time": 3, "track": 2, "attributes": {"Entity": ["Ana", "Dev"], "Topic": ["Cleo", "Ben", "Ben"]}},
+        {"id": "r93-5", "time": 3, "track": 2, "attributes": {}},
+        {"id": "r93-6", "time": 4, "track": 1, "attributes": {"Topic": ["Ben"]}},
+        {"id": "r93-4", "time": 4, "track": 2, "attributes": {"Entity": ["Cleo", "Dev"], "Topic": ["Eli", "Dev", "Dev"]}}
+      ],
+      "expectedEdges": [["r93-0", "r93-8"], ["r93-8", "r93-4"]]
+    }
+  ]
+}

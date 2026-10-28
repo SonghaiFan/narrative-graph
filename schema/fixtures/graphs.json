@@ -1,0 +1,104 @@
+{
+  "description": "Graphs that graph.schema.json must accept.",
+  "graphs": [
+    {
+      "name": "an empty graph",
+      "graph": {
+        "nodes": []
+      }
+    },
+    {
+      "name": "nodes only",
+      "graph": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 0,
+            "track": 0,
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "every optional field",
+      "graph": {
+        "nodes": [
+          {
+            "id": "n1",
+            "label": "v1",
+            "time": 0,
+            "track": 0,
+            "motifSource": "AI Creative",
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ],
+              "Topic": [
+                "Tax"
+              ],
+              "Time Period": [
+                "Jan 2024"
+              ]
+            },
+            "content": "Ana proposed a new tax in the city council in January."
+          },
+          {
+            "id": "n2",
+            "label": "v2",
+            "time": 1,
+            "track": 1,
+            "motifSource": "AI Creative",
+            "attributes": {
+              "Entity": [
+                "Ana",
+                "Ben"
+              ],
+              "Topic": [
+                "Budget"
+              ],
+              "Time Period": [
+                "Feb 2024"
+              ]
+            },
+            "content": "Ben argued that the budget could not carry it."
+          }
+        ],
+        "edges": [
+          {
+            "id": "edge-n1-n2",
+            "sourceId": "n1",
+            "targetId": "n2"
+          }
+        ],
+        "sources": [
+          {
+            "title": "City council minutes",
+            "uri": "https://example.org/minutes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a node off the grid",
+      "graph": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 0,
+            "track": -1,
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

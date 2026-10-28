@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SonghaiFan/gpt_storytale/main/schema/graph.schema.json",
+  "title": "Temporal Topic Narrative Graph",
+  "description": "A narrative laid out on a grid: time runs along the columns, tracks (topics or entities) down the rows. The graph editor (apps/web) reads and edits this shape. It also accepts the same object wrapped as {\"graph\": {...}}; this schema describes the unwrapped form. The editor ignores any edges in a file and derives them again with the rule in apps/web/utils/computeEdges.ts.",
+  "type": "object",
+  "required": ["nodes"],
+  "additionalProperties": false,
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "edges": {
+      "description": "Derived data. Nothing reads it back on import, so a file does not need to carry it.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "sources": {
+      "description": "Web pages the nodes were grounded in, when the graph was generated from real news.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/source" }
+    }
+  },
+  "$defs": {
+    "node": {
+      "description": "One story unit.",
+      "type": "object",
+      "required": ["id", "time", "track", "attributes"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": {
+          "description": "Persistent display label such as v1, assigned by the editor.",
+          "type": "string"
+        },
+        "time": {
+          "description": "Column index, starting at 0.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "track": {
+          "description": "Row index, starting at 0. A negative value means the node is off the grid; the edge rule ignores it.",
+          "type": "integer"
+        },
+        "motifSource": {
+          "description": "Which motif or generator created the node. Metadata only.",
+          "type": "string"
+        },
+        "attributes": {
+          "description": "Named lists of values, for example Entity, Topic, Time Period. One attribute organises the tracks and one links nodes together.",
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" } }
+        },
+        "content": {
+          "description": "The narrative text of the node.",
+          "type": "string"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["id", "sourceId", "targetId"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "sourceId": { "type": "string", "minLength": 1 },
+        "targetId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["title", "uri"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "uri": { "type": "string" }
+      }
+    }
+  }
+}
