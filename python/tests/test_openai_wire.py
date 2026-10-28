@@ -1,7 +1,8 @@
-"""The real ChatOpenAI -> openai SDK path, with only the HTTP layer faked.
+"""The real writer -> OpenAIClient -> openai SDK path, with only the HTTP layer faked.
 
 This is the test that notices a silent model downgrade: through langchain.llms.OpenAI the request used to
 go out as gpt-3.5-turbo with a stray model_name field, and on a newer SDK it failed on the first call.
+It held through the move from ChatOpenAI to OpenAIClient: same model, temperature and parent text.
 """
 import json
 
@@ -44,7 +45,7 @@ def test_make_chapter_sends_a_gpt4_chat_completion(monkeypatch):
         entity=["Mayor Lina"],
         time_period=["2023-01-01", "2023-05-02"],
         narrative_structure="Arch",
-        prev_content="",
+        prev_content="The parent chapter said the harbour opened.",
         temperature=0.5,
     )
 
@@ -57,3 +58,4 @@ def test_make_chapter_sends_a_gpt4_chat_completion(monkeypatch):
     assert set(body) <= {"messages", "model", "n", "stream", "temperature"}, "stray request fields"
     assert [m["role"] for m in body["messages"]] == ["user"]
     assert "Topic: Economic Boom" in body["messages"][0]["content"]
+    assert "Previous context: The parent chapter said the harbour opened." in body["messages"][0]["content"]

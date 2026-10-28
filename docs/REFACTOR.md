@@ -35,7 +35,7 @@ npm run build
 | 0. Keel | Nothing changes behaviour. Add the test net, fix the web type check, add CI | The tests below pass on the current code | done (`refactor/stage-0-keel`) |
 | 1. Shared contract | Define the graph and story JSON in `schema/`. Move the web's edge rule into a pure function and write the same rule in Python | Both read the same fixtures and derive identical edges | done (`refactor/stage-1-contract`), except that the story is not yet mapped to the graph |
 | 2. Aligner | The aligner reads a TTNG graph. Nodes that already carry entities keep them; only missing ones are sampled | The nine existing structures, turned into graphs, align exactly as the old aligner does | done (`refactor/stage-2-aligner`), as a new module next to the old aligner; nothing is switched over yet |
-| 3. Writer | A swappable LLM client, prompts moved to files, the deprecated community `ChatOpenAI` replaced | The wire test still sees `gpt-4`, temperature 0.5 and the parent chapter text | |
+| 3. Writer | A swappable LLM client, prompts moved to files, the deprecated community `ChatOpenAI` replaced | The wire test still sees `gpt-4`, temperature 0.5 and the parent chapter text | done (`refactor/stage-3-writer`) |
 | 4. Connect | A small local service wraps the Python engine; the editor gets a "write story" action that fills `node.content` | Build a graph in the editor, get chapters back | |
 | 5. Retire | Delete `legacy/` and the flat scripts, decide the fate of `python/*/arc` data, choose a license and a name, stop inlining the Gemini key | Everything deleted is already covered by a new part | |
 
@@ -44,9 +44,10 @@ npm run build
 - **Aligner** (`tests/test_alignment.py`): for all nine structures and three seeds: every node aligned once, parents before children, `Prev` matches the edges, themes and time slices stay in range, each child shares an entity with its parents, same seed gives the same result.
 - **Writer** (`tests/test_writer.py`): chapter order, theme and time period in every prompt, parent text carried forward (including a merge with two parents), `gpt-4` at temperature 0.5, the result validates as a `Story`.
 - **End to end** (`tests/test_storytale_flow.py`): `generate_story_files` writes the alignment, story and log for every structure.
-- **Wire** (`tests/test_openai_wire.py`): the real `ChatOpenAI` and openai SDK send one `POST /v1/chat/completions` with `model` `gpt-4` and no stray fields.
+- **Wire** (`tests/test_openai_wire.py`, `tests/test_llm.py`): the real writer, `OpenAIClient` and openai SDK send one `POST /v1/chat/completions` with `model` `gpt-4`, temperature 0.5, the parent chapter's text and no stray fields.
+- **Prompt** (`tests/test_prompts.py`): `prompts/chapter.md` renders to exactly the text the old f-string produced, with and without a parent chapter. The reference is `tests/golden/chapter_prompt.json`, captured from the old code before it was moved.
 - **Packer** (`tests/test_story_packer.py`): `story_packer.py` bundles the stories and then moves every file into `arc/`.
-- **Guards** (`tests/test_guards.py`): sockets and DNS are blocked, and the writer must not go back to `langchain.llms.OpenAI`.
+- **Guards** (`tests/test_guards.py`): sockets and DNS are blocked, the writer must not go back to a LangChain model wrapper, and the prompt text must stay out of the code.
 - **Edge rule** (`python/tests/test_edges.py`, `apps/web/tests/computeEdges.test.ts`): 23 hand-written and 30 random cases from `schema/fixtures/`. Both sides must produce the same edges in the same order, leave the input untouched, and give edges that fit the graph schema.
 - **Graph aligner** (`python/tests/test_align_graph.py`): for all nine structures and three seeds, the graph of a structure aligns to exactly what `align_theme_entity` gives (same node order, same fields, same entities). Also: given entities are kept, a node that shares nothing with its parent gets one, parents come from declared edges or else the edge rule, time comes from the node or from slicing the topic's range, off-grid nodes are left out, bad graphs are refused with a reason, the writer accepts the result, and the command line works.
 - **Schemas** (`python/tests/test_schema.py`, `apps/web/tests/schema.test.ts`): the schemas are valid, the good graphs and stories are accepted, 18 bad documents are refused, and what the pipeline writes matches `story.schema.json`.
@@ -54,6 +55,8 @@ npm run build
 Each of these was checked by putting the bug back in a scratch copy: the old `theme=` argument, the old `langchain.llms.OpenAI` call, a silent drop to `gpt-3.5-turbo`, a writer that forgets the parent chapter, an aligner that stops linking children to parents, time slices running backwards, and a packer that stops moving files. Every one made tests fail.
 
 Stage 1 was checked in two more ways. The original inline code in `GraphContext.tsx`, the extracted `computeEdges` and the Python rule agreed on 10,000 random graphs, down to the id and the order of every edge. And 14 planted deviations in the rule, 7 in each language, were each caught by the tests of the language they were planted in, while the other language's tests kept passing.
+
+Stage 3 was checked by planting nine deviations in the writer, the client and the prompt file (temperature, default model, ignoring a handed-in client, not passing it on, the message role, a hard-coded temperature, a hard-coded model, a reworded prompt line, a dropped parent chapter). Every one made tests fail. The request body of the old and new paths was compared: the new one sends the same `model`, `temperature` and `messages`, and leaves out `n: 1` and `stream: false`, which are the API's defaults.
 
 Stage 2 was checked by planting seven deviations in `ttng_align.py` (sample size, the parent entity, giving a parent entity to every node, dropping `Prev`, wrong time slice, keeping off-grid nodes, ignoring declared edges). Every one made tests fail; one first survived and got its own test.
 
@@ -85,6 +88,7 @@ Where does the engine run once the two halves are connected?
 
 ## Known loose ends
 
-- Pydantic's `.dict()` and the community `ChatOpenAI` both raise deprecation warnings in the test run.
+- Pydantic's `.dict()` and `Field(labels=...)` raise deprecation warnings in the test run.
+- `storytale.py` still calls `create_story` without a client, so it always uses `OpenAIClient`. Choosing another client from the command line is not built.
 - The web bundle is about 3.2 MB in one chunk.
 - `apps/web/vite.config.ts` inlines `GEMINI_API_KEY` into the client bundle. Do not deploy publicly until that is replaced.

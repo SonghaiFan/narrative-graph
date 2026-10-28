@@ -63,16 +63,14 @@ def sample_alignment():
 
 @pytest.fixture
 def fake_chat(monkeypatch):
-    """Replace ChatOpenAI in narrative_deducer; record how it was built and what it was asked."""
+    """Replace the default OpenAIClient in narrative_deducer; record what it was asked, and with which model."""
     import narrative_deducer
 
-    rec = SimpleNamespace(inits=[], prompts=[])
+    rec = SimpleNamespace(calls=[], prompts=[])
 
     class FakeChat:
-        def __init__(self, **kwargs):
-            rec.inits.append(kwargs)
-
-        def invoke(self, prompt):
+        def complete(self, prompt, *, model, temperature):
+            rec.calls.append({"model": model, "temperature": temperature})
             rec.prompts.append(prompt)
             chapter_id = re.search(r"Chapter ID: (\S+)", prompt).group(1)
             topic = re.search(r"\n\s*Topic: (.+)", prompt).group(1).strip()
@@ -84,7 +82,8 @@ def fake_chat(monkeypatch):
                 "entity": ["Someone"],
                 "content": f"Content of {chapter_id}",
             }
-            return SimpleNamespace(content=json.dumps(reply))
+            return json.dumps(reply)
 
-    monkeypatch.setattr(narrative_deducer, "ChatOpenAI", FakeChat)
+    monkeypatch.setattr(narrative_deducer, "OpenAIClient", FakeChat)
+    rec.client = FakeChat  # for tests that hand a client to the writer themselves
     return rec

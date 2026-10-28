@@ -20,6 +20,12 @@ def test_dns_lookups_are_blocked():
         socket.getaddrinfo("example.com", 80)
 
 
-def test_the_writer_does_not_go_back_to_the_legacy_openai_wrapper():
+def test_the_writer_does_not_go_back_to_a_langchain_model_wrapper():
     source = (PYTHON_DIR / "narrative_deducer.py").read_text()
     assert "langchain.llms" not in source
+    assert "ChatOpenAI" not in source and "langchain_community" not in source
+
+
+def test_the_prompt_is_not_written_into_the_code_again():
+    assert "senior reporter" not in (PYTHON_DIR / "narrative_deducer.py").read_text()
+    assert "senior reporter" in (PYTHON_DIR / "prompts" / "chapter.md").read_text()
