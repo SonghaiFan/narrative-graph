@@ -11,6 +11,10 @@ npm run dev        # http://localhost:3000
 
 The AI Generate dialog works through [OpenRouter](https://openrouter.ai), so one key reaches many models. Type your own OpenRouter API key and a model id (`vendor/model`, any id on openrouter.ai/models; a few are suggested). The key stays in the browser tab (session storage) and is sent only to OpenRouter; the model id is remembered across visits. Nothing is read from `.env` and nothing is built into the bundle. "Real News" mode turns on OpenRouter's web search and shows the pages it cited as sources; "Creative Fiction" does not.
 
+## Tracks
+
+Tracks are edited beside the graph. Hover a track name to get its controls: drag the handle to reorder, the eye hides the track (it then appears under the graph as a chip to show it again), the bin deletes it. The name itself is editable. Nodes stay with their track when it moves.
+
 ## Check
 
 ```bash
