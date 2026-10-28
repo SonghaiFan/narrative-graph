@@ -24,8 +24,7 @@ Web editor:
 ```bash
 cd apps/web
 npm install
-# put GEMINI_API_KEY in apps/web/.env.local
-npm run dev
+npm run dev    # the AI dialog asks for your own Gemini key; none is needed to edit
 ```
 
 Python engine: see [python/README.md](python/README.md).

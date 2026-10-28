@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Sparkles, X, Loader2, Play, Globe, Feather } from 'lucide-react';
+import { loadApiKey, saveApiKey } from '../utils/apiKey';
 
 interface AIGeneratorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onGenerate: (prompt: string, useSearch: boolean) => Promise<void>;
+  onGenerate: (prompt: string, useSearch: boolean, apiKey: string) => Promise<void>;
   isGenerating: boolean;
 }
 
@@ -16,6 +17,7 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({
 }) => {
   const [prompt, setPrompt] = useState('');
   const [useSearch, setUseSearch] = useState(true);
+  const [apiKey, setApiKey] = useState(loadApiKey);
 
   if (!isOpen) return null;
 
@@ -102,6 +104,20 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({
             />
           </div>
 
+          <div className="mt-4 space-y-2">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+                Your Gemini API key
+            </label>
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => { setApiKey(e.target.value); saveApiKey(e.target.value); }}
+              autoComplete="off"
+              placeholder="Paste your own key. It stays in this browser tab and goes only to Google."
+              className="w-full p-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-50/30"
+            />
+          </div>
+
           <div className="mt-4 bg-blue-50 text-blue-800 text-xs p-3 rounded border border-blue-100 flex items-start gap-2">
             <Sparkles className="w-4 h-4 shrink-0 mt-0.5" />
             <p>
@@ -122,8 +138,8 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({
             Cancel
           </button>
           <button 
-            onClick={() => onGenerate(prompt, useSearch)}
-            disabled={!prompt.trim() || isGenerating}
+            onClick={() => onGenerate(prompt, useSearch, apiKey)}
+            disabled={!prompt.trim() || !apiKey.trim() || isGenerating}
             className="flex items-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-md shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isGenerating ? (

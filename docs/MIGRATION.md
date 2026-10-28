@@ -27,8 +27,8 @@ At the moment of import `apps/web` and `python` were byte-identical to the upstr
    - Python: `python/meta/types.py` uses `Topic`, `index`, `time_period`; `legacy/gpt_storyteller/graph.py` reads `themes`.
    - Web: `apps/web/types.ts` uses `track`, `time`, `attributes`.
    - Motif names also drifted: `ShortFork` / `LongFork` in `python/meta/narrative_context_*.json`, `EarlyTurn` / `LateTurn` in `apps/web/constants.ts`.
-5. **Key exposure in the web app.** `apps/web/vite.config.ts` inlines `GEMINI_API_KEY` into the client bundle. Do not deploy publicly until users bring their own key or a proxy holds it.
-6. **`apps/web/README.md`** is still the AI Studio template.
+5. **Fixed:** the web app no longer builds `GEMINI_API_KEY` into the client bundle. The AI dialog asks users for their own key, which stays in session storage. The Gemini call itself has not been run.
+6. **Fixed:** `apps/web/README.md` was the AI Studio template; it now describes the editor.
 7. **No LICENSE.** The old `python/README.md` claimed MIT.
 8. **More loose ends in `python/`:** `narrative_alignmenter.py` stops with `NameError` when run directly; `story_packer.py` runs on import and moves files into `arc/` folders; 80 of the committed sample stories use an older schema (`event`/`topics` instead of `title`/`Topic`).
 

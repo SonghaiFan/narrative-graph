@@ -37,7 +37,7 @@ npm run build
 | 2. Aligner | The aligner reads a TTNG graph. Nodes that already carry entities keep them; only missing ones are sampled | The nine existing structures, turned into graphs, align exactly as the old aligner does | done (`refactor/stage-2-aligner`), as a new module next to the old aligner; nothing is switched over yet |
 | 3. Writer | A swappable LLM client, prompts moved to files, the deprecated community `ChatOpenAI` replaced | The wire test still sees `gpt-4`, temperature 0.5 and the parent chapter text | done (`refactor/stage-3-writer`) |
 | 4. Connect | The editor's JSON file is the hand-over: Python reads it, writes the chapters into `node.content` and gives the file back for import. No service; the editor's export and import code is pulled out into tested functions and the file gets a schema | A file in the editor's export shape goes through `python -m ttng_story` and comes out as a valid file with text in every node | done (`refactor/stage-4-connect`); the text is made by a command, not by a button |
-| 5. Retire | Delete `legacy/` and the flat scripts, decide the fate of `python/*/arc` data, choose a license and a name, stop inlining the Gemini key | Everything deleted is already covered by a new part | |
+| 5. Retire | Delete `legacy/` and the flat scripts, decide the fate of `python/*/arc` data, choose a license and a name, stop inlining the Gemini key | Everything deleted is already covered by a new part | partly done (`refactor/stage-5-retire`): the Gemini key is no longer built into the bundle. Nothing was deleted, and the license, the name and the fate of `legacy/` and the `arc` data wait for a decision |
 
 ## What the test net covers today
 
@@ -57,6 +57,8 @@ npm run build
 Each of these was checked by putting the bug back in a scratch copy: the old `theme=` argument, the old `langchain.llms.OpenAI` call, a silent drop to `gpt-3.5-turbo`, a writer that forgets the parent chapter, an aligner that stops linking children to parents, time slices running backwards, and a packer that stops moving files. Every one made tests fail.
 
 Stage 1 was checked in two more ways. The original inline code in `GraphContext.tsx`, the extracted `computeEdges` and the Python rule agreed on 10,000 random graphs, down to the id and the order of every edge. And 14 planted deviations in the rule, 7 in each language, were each caught by the tests of the language they were planted in, while the other language's tests kept passing.
+
+Stage 5 so far: `vite.config.ts` no longer defines `process.env.API_KEY` or `GEMINI_API_KEY`, `services/ai.ts` builds its client from a key passed in, and the AI dialog has a password field for it (kept in session storage, Generate is disabled without one). A build with a sentinel key held the key once before the change and not at all after; a unit test fails if the config defines anything from the environment. Tried in the editor with no key set: it loads (it used to crash at import), the dialog shows the field, and Generate stays disabled until a key is typed. The Gemini call itself was not run. This also fixes the crash at load that happened without a key.
 
 Stage 4 was also tried by hand in the editor (dev server, built-in browser): a graph was imported, the real JSON button produced a file in the schema's shape with no edges, `ttng_story` filled it using a stub model (no API call), and importing the result drew the graph and showed each chapter's text in the story sidebar. A file with no nodes, a file that is not JSON and `null` each gave "Invalid file" and left the graph alone. The dev server needs a `GEMINI_API_KEY` even to load (a dummy value will do), because `services/ai.ts` builds its client at import time; that is not a Stage 4 change.
 
@@ -98,4 +100,4 @@ Where does the engine run once the two halves are connected?
 - There is no "write story" button; the text comes from `python -m ttng_story`.
 - `storytale.py` still calls `create_story` without a client, so it always uses `OpenAIClient`. Choosing another client from the command line is not built.
 - The web bundle is about 3.2 MB in one chunk.
-- `apps/web/vite.config.ts` inlines `GEMINI_API_KEY` into the client bundle. Do not deploy publicly until that is replaced.
+- `legacy/gpt_storyteller` cannot be deleted yet by rule 2: `gpt_cartographer.py`, `gpt_journalist.py`, `graph.py`, `motifs.py`, `storyteller.py`, `gpt_writer.py` and the graph samples have no replacement. Only its copies of the aligner, the writer and the packer are covered by `python/`.

@@ -1,20 +1,24 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# TTNG Constructor
 
-# Run and deploy your AI Studio app
+A visual editor for Temporal Topic Narrative Graphs: drag narrative motifs onto a time-by-track grid, give the nodes attributes such as Topic and Entity, and see how they connect.
 
-This contains everything you need to run your app locally.
+## Run
 
-View your app in AI Studio: https://ai.studio/apps/drive/1_s0XQW64s1CwumLv9egJqK6zGmT5gR2i
+```bash
+npm install
+npm run dev        # http://localhost:3000
+```
 
-## Run Locally
+The AI Generate dialog asks for your own Gemini API key. The key stays in the browser tab (session storage) and is sent only to Google. Nothing is read from `.env` and nothing is built into the bundle.
 
-**Prerequisites:**  Node.js
+## Check
 
+```bash
+npm run typecheck
+npm test
+npm run build
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Files
+
+The **JSON** button downloads `narrative_graph.json` and **Import** reads it back; [../../schema/graph-file.schema.json](../../schema/graph-file.schema.json) describes the file. Edges are not saved, because the editor derives them from the nodes ([utils/computeEdges.ts](utils/computeEdges.ts)). To write the chapters of an exported graph, see `python -m ttng_story` in [../../python/README.md](../../python/README.md).
