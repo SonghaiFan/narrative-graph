@@ -1,0 +1,120 @@
+{
+  "description": "Files the editor's JSON button writes, which graph-file.schema.json must accept. The graph has no edges.",
+  "files": [
+    {
+      "name": "an export with text",
+      "file": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "n1",
+              "label": "v1",
+              "time": 0,
+              "track": 0,
+              "motifSource": "Manual",
+              "attributes": {
+                "Topic": [
+                  "Tax"
+                ],
+                "Entity": [
+                  "Ana",
+                  "Ben"
+                ],
+                "Time Period": [
+                  "Jan 2024"
+                ]
+              },
+              "content": "Ana proposed a tax."
+            },
+            {
+              "id": "n2",
+              "label": "v2",
+              "time": 1,
+              "track": 0,
+              "motifSource": "Manual",
+              "attributes": {
+                "Topic": [
+                  "Tax"
+                ],
+                "Entity": [
+                  "Ben"
+                ]
+              },
+              "content": "Ben asked who pays."
+            },
+            {
+              "id": "n3",
+              "label": "v3",
+              "time": 1,
+              "track": 1,
+              "motifSource": "Manual",
+              "attributes": {
+                "Topic": [
+                  "Budget"
+                ],
+                "Entity": [
+                  "Ben",
+                  "Cy"
+                ]
+              }
+            }
+          ],
+          "sources": [
+            {
+              "title": "Minutes",
+              "uri": "https://example.org/m"
+            }
+          ]
+        },
+        "layout": {
+          "rows": 3,
+          "cols": 4
+        },
+        "metadata": {
+          "timestamp": "2024-06-01T12:00:00.000Z",
+          "version": "1.0"
+        }
+      }
+    },
+    {
+      "name": "an export without sources or layout details",
+      "file": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "a",
+              "label": "v",
+              "time": 0,
+              "track": 0,
+              "motifSource": "Manual",
+              "attributes": {
+                "Topic": [
+                  "Tax"
+                ],
+                "Entity": [
+                  "Ana"
+                ]
+              }
+            }
+          ]
+        },
+        "layout": {
+          "rows": 0,
+          "cols": 0
+        },
+        "metadata": {
+          "timestamp": "2024-06-01T12:00:00.000Z",
+          "version": "1.0"
+        }
+      }
+    },
+    {
+      "name": "only the graph key",
+      "file": {
+        "graph": {
+          "nodes": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SonghaiFan/gpt_storytale/main/schema/graph-file.schema.json",
+  "title": "Graph file",
+  "description": "The file the editor's JSON button downloads (narrative_graph.json). The graph inside has no edges, because the editor derives them. Importing reads only `graph`; `layout` and `metadata` are information for people. The editor also imports the bare graph without this wrapper.",
+  "type": "object",
+  "required": ["graph"],
+  "additionalProperties": false,
+  "properties": {
+    "graph": { "$ref": "graph.schema.json" },
+    "layout": {
+      "description": "The grid size at export time.",
+      "type": "object",
+      "required": ["rows", "cols"],
+      "additionalProperties": false,
+      "properties": {
+        "rows": { "type": "integer", "minimum": 0 },
+        "cols": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["timestamp", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "timestamp": { "description": "ISO 8601 time of the export.", "type": "string" },
+        "version": { "type": "string" }
+      }
+    }
+  }
+}

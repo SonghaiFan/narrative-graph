@@ -52,6 +52,16 @@ def graph_validator():
 
 
 @pytest.fixture(scope="session")
+def file_validator():
+    """For the editor's exported file, whose `graph` refers to graph.schema.json by its relative path."""
+    from referencing import Registry, Resource
+
+    graph = load_schema("graph")
+    registry = Registry().with_resource(graph["$id"], Resource.from_contents(graph))
+    return Draft202012Validator(load_schema("graph-file"), registry=registry)
+
+
+@pytest.fixture(scope="session")
 def story_validator():
     return Draft202012Validator(load_schema("story"))
 

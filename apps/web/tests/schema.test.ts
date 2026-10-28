@@ -8,7 +8,8 @@ import { loadFixture, loadSchema } from './fixtures';
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 const graph = ajv.compile(loadSchema('graph'));
 const story = ajv.compile(loadSchema('story'));
-const validators = { graph, story };
+const file = ajv.compile(loadSchema('graph-file')); // refers to the graph schema by its relative path
+const validators = { graph, story, file };
 
 const messages = (validate: typeof graph, document: unknown): string[] => {
   validate(document);
@@ -19,6 +20,12 @@ describe('schemas', () => {
   it('are valid schemas', () => {
     expect(ajv.validateSchema(loadSchema('graph'))).toBe(true);
     expect(ajv.validateSchema(loadSchema('story'))).toBe(true);
+    expect(ajv.validateSchema(loadSchema('graph-file'))).toBe(true);
+  });
+
+  const files = loadFixture<{ files: { name: string; file: unknown }[] }>('files.json').files;
+  it.each(files.map(f => [f.name, f.file] as const))('graph file accepted: %s', (_name, doc) => {
+    expect(messages(file, doc)).toEqual([]);
   });
 
   const graphs = loadFixture<{ graphs: { name: string; graph: unknown }[] }>('graphs.json').graphs;
@@ -31,7 +38,7 @@ describe('schemas', () => {
     expect(messages(story, doc)).toEqual([]);
   });
 
-  const invalid = loadFixture<{ cases: { schema: 'graph' | 'story'; name: string; data: unknown }[] }>('invalid.json').cases;
+  const invalid = loadFixture<{ cases: { schema: 'graph' | 'story' | 'file'; name: string; data: unknown }[] }>('invalid.json').cases;
   it.each(invalid.map(c => [`${c.schema}: ${c.name}`, c] as const))('refused: %s', (_label, c) => {
     expect(messages(validators[c.schema], c.data).length).toBeGreaterThan(0);
   });

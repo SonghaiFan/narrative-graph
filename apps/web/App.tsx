@@ -25,6 +25,7 @@ import { DAGView } from './components/DAGView';
 import { ForceView } from './components/ForceView';
 import { GraphProvider, useGraphContext } from './context/GraphContext';
 import { generateGraphFromPrompt } from './services/ai';
+import { parseGraphFile } from './utils/graphFile';
 
 const AppContent: React.FC = () => {
   const {
@@ -281,9 +282,9 @@ const AppContent: React.FC = () => {
             const reader = new FileReader();
             reader.onload = (e) => {
               try {
-                const json = JSON.parse(e.target?.result as string);
-                if (json.graph && Array.isArray(json.graph.nodes)) setGraphData(json.graph.nodes, json.graph.sources);
-                else if (Array.isArray(json.nodes)) setGraphData(json.nodes, json.sources);
+                const parsed = parseGraphFile(JSON.parse(e.target?.result as string));
+                if (parsed) setGraphData(parsed.nodes, parsed.sources);
+                else alert("Invalid file");
               } catch (err) { alert("Invalid file"); }
             };
             reader.readAsText(file);
