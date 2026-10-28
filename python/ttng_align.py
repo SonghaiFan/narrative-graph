@@ -13,7 +13,9 @@ What a node needs, and where the rest comes from:
 - Topic: exactly one value; it becomes the chapter's theme. The context entry with the same `theme`
   supplies the description and the pool, if the graph needs them.
 - Time: a "Time Period" attribute with two ISO dates, else the topic's date range cut into one slice per
-  time column, as the old aligner does.
+  time column, as the old aligner does, else a `period` given for the whole graph cut the same way. The
+  editor's own "Time Period" values are free text such as "Jan 2024", so a graph from the editor needs one
+  of the last two.
 - Parents: the graph's `edges` when it has them. Otherwise the editor's edge rule, which needs the nodes
   to carry entities already.
 """
@@ -56,8 +58,16 @@ def graph_from_structure(structure):
     return graph, structure["context"]
 
 
-def align_graph(graph, context=None, structure=None, seed=None, entity_attribute="Entity"):
-    """Align a graph. `structure` may carry `name`, `description` and `structure` for the prompt text."""
+def unwrap(document):
+    """The graph inside what the editor's JSON button wrote ({graph: {...}, layout, metadata}), or the bare graph."""
+    return document["graph"] if isinstance(document.get("graph"), dict) else document
+
+
+def align_graph(graph, context=None, structure=None, seed=None, entity_attribute="Entity", period=None):
+    """Align a graph. `structure` may carry `name`, `description` and `structure` for the prompt text.
+
+    `period` is [start, end] ISO dates, used for nodes that have no dates of their own and no topic range.
+    """
     nodes = [n for n in graph["nodes"] if n["track"] >= 0]  # off-grid nodes are not part of the story
     ids = [n["id"] for n in nodes]
     if len(set(ids)) != len(ids):
@@ -117,7 +127,7 @@ def align_graph(graph, context=None, structure=None, seed=None, entity_attribute
             "Theme": topic,
             "ThemeDescription": ctx["description"] if ctx else topic,
             "Entity": list(set(entities)),
-            "Time": _time_of(node, ctx, columns),
+            "Time": _time_of(node, ctx, columns, period),
             "Prev": parents.get(node_id, []),
             "StuctureInstruction": (  # misspelled on purpose: the writer reads this key
                 f"The narrative structure is {name}, where {description} (eg. {shape}). "
@@ -143,7 +153,7 @@ def _parents_first(ids, parents):
     return done
 
 
-def _time_of(node, ctx, columns):
+def _time_of(node, ctx, columns, period):
     given = node["attributes"].get(TIME_PERIOD, [])
     if len(given) == 2:
         for day in given:
@@ -151,35 +161,53 @@ def _time_of(node, ctx, columns):
         return list(given)
     if ctx is not None:
         return generate_time_periods(ctx["time"][0], ctx["time"][1], columns)[node["time"]]
+    if period is not None:
+        return generate_time_periods(period[0], period[1], columns)[node["time"]]
     raise ValueError(
-        f"node {node['id']!r} has no {TIME_PERIOD} of two ISO dates and the context has no dates for its topic"
+        f"node {node['id']!r} has no {TIME_PERIOD} of two ISO dates, and neither the context nor --period gives dates"
     )
+
+
+def load_context(path, structure_name=None):
+    """Read a context file. A list of structures needs `structure_name`; returns (context entries, structure)."""
+    with open(path) as file:
+        context = json.load(file)
+    if context and "context" in context[0]:  # a list of structures: take one, as storytale.py does
+        structure = next((s for s in context if s["name"] == structure_name), None)
+        if structure is None:
+            raise ValueError(f"--structure must name one of: {', '.join(s['name'] for s in context)}")
+        return structure["context"], structure
+    return context, None
+
+
+def add_graph_arguments(parser):
+    parser.add_argument("graph", help="graph JSON: the editor's file ({graph: {...}}) or a bare {nodes, edges?}")
+    parser.add_argument("--context", help="context JSON: a list of structures or of {theme, description, time, entities}")
+    parser.add_argument("--structure", help="when the context is a list of structures, the one to take themes from")
+    parser.add_argument("--period", nargs=2, metavar=("START", "END"), help="ISO dates for nodes that have none")
+    parser.add_argument("--seed", type=int)
+
+
+def read_inputs(args, parser):
+    with open(args.graph) as file:
+        document = json.load(file)
+    context, structure = None, None
+    if args.context:
+        try:
+            context, structure = load_context(args.context, args.structure)
+        except ValueError as error:
+            parser.error(str(error))
+    return document, context, structure
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="ttng_align", description="Align a TTNG graph for the chapter writer.")
-    parser.add_argument("graph", help="graph JSON: {nodes, edges?} or {graph: {...}}")
-    parser.add_argument("--context", help="context JSON: a list of structures or of {theme, description, time, entities}")
-    parser.add_argument("--structure", help="when the context is a list of structures, the one to take themes from")
-    parser.add_argument("--seed", type=int)
+    add_graph_arguments(parser)
     parser.add_argument("-o", "--output", help="write here instead of stdout")
     args = parser.parse_args(argv)
 
-    with open(args.graph) as file:
-        graph = json.load(file)
-    graph = graph.get("graph", graph)
-
-    context, structure = None, None
-    if args.context:
-        with open(args.context) as file:
-            context = json.load(file)
-        if context and "context" in context[0]:  # a list of structures: take one, as storytale.py does
-            structure = next((s for s in context if s["name"] == args.structure), None)
-            if structure is None:
-                parser.error(f"--structure must name one of: {', '.join(s['name'] for s in context)}")
-            context = structure["context"]
-
-    alignment = align_graph(graph, context=context, structure=structure, seed=args.seed)
+    document, context, structure = read_inputs(args, parser)
+    alignment = align_graph(unwrap(document), context=context, structure=structure, seed=args.seed, period=args.period)
     text = json.dumps(alignment, indent=2)
     if args.output:
         with open(args.output, "w") as file:

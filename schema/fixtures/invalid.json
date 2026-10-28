@@ -301,6 +301,53 @@
           }
         ]
       }
+    },
+    {
+      "schema": "file",
+      "name": "no graph key",
+      "data": {
+        "layout": {
+          "rows": 1,
+          "cols": 1
+        }
+      }
+    },
+    {
+      "schema": "file",
+      "name": "an unknown top-level key",
+      "data": {
+        "graph": {
+          "nodes": []
+        },
+        "edges": []
+      }
+    },
+    {
+      "schema": "file",
+      "name": "a node with no time inside the graph",
+      "data": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "a",
+              "track": 0,
+              "attributes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "schema": "file",
+      "name": "a layout without cols",
+      "data": {
+        "graph": {
+          "nodes": []
+        },
+        "layout": {
+          "rows": 2
+        }
+      }
     }
   ]
 }

@@ -11,7 +11,7 @@ def messages(validator, document):
     return [error.message for error in validator.iter_errors(document)]
 
 
-@pytest.mark.parametrize("name", ["graph", "story"])
+@pytest.mark.parametrize("name", ["graph", "graph-file", "story"])
 def test_the_schema_is_itself_valid(name):
     Draft202012Validator.check_schema(load_schema(name))
 
@@ -21,14 +21,19 @@ def test_valid_graphs_pass(entry, graph_validator):
     assert messages(graph_validator, entry["graph"]) == []
 
 
+@pytest.mark.parametrize("entry", load_fixture("files.json")["files"], ids=lambda e: e["name"])
+def test_valid_graph_files_pass(entry, file_validator):
+    assert messages(file_validator, entry["file"]) == []
+
+
 @pytest.mark.parametrize("entry", load_fixture("story.json")["stories"], ids=lambda e: e["name"])
 def test_valid_stories_pass(entry, story_validator):
     assert messages(story_validator, entry["story"]) == []
 
 
 @pytest.mark.parametrize("entry", load_fixture("invalid.json")["cases"], ids=lambda e: f"{e['schema']}: {e['name']}")
-def test_invalid_documents_are_refused(entry, graph_validator, story_validator):
-    validator = {"graph": graph_validator, "story": story_validator}[entry["schema"]]
+def test_invalid_documents_are_refused(entry, graph_validator, story_validator, file_validator):
+    validator = {"graph": graph_validator, "story": story_validator, "file": file_validator}[entry["schema"]]
     assert messages(validator, entry["data"]), "the schema accepted a document it must refuse"
 
 

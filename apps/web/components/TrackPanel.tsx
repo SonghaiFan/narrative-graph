@@ -7,6 +7,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useGraphContext } from '../context/GraphContext';
 import { TEMPORAL_KEYS, getTrackColor } from '../constants';
 import { toPng, toSvg } from 'html-to-image';
+import { buildGraphFile } from '../utils/graphFile';
 
 interface TrackPanelProps {
     onImport: (file: File) => void;
@@ -140,14 +141,8 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
     };
 
     const handleExportJSON = () => {
-        // Exclude edges from export as they are derived from rules
-        const { edges, ...graphData } = graph;
-
-        const exportObject = {
-            graph: graphData,
-            layout: { rows: gridConfig.rows, cols: gridConfig.cols },
-            metadata: { timestamp: new Date().toISOString(), version: '1.0' }
-        };
+        // Edges are left out of the file because they are derived from rules
+        const exportObject = buildGraphFile(graph, { rows: gridConfig.rows, cols: gridConfig.cols });
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);

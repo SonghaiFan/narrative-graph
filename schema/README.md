@@ -5,6 +5,7 @@ The contract between the Python engine and the graph editor: two JSON Schemas, o
 | File | What it describes |
 |---|---|
 | [graph.schema.json](graph.schema.json) | A narrative graph as the editor holds and imports it: nodes on a time-by-track grid, optional derived edges, optional sources |
+| [graph-file.schema.json](graph-file.schema.json) | The file the editor's JSON button downloads: a `graph` (without edges) plus `layout` and `metadata` |
 | [story.schema.json](story.schema.json) | A story as the Python writer produces it: one chapter per node of the narrative structure |
 | [fixtures/](fixtures) | Sample data. The Python and web test suites read the same files |
 
@@ -31,9 +32,10 @@ The rule exists twice, and both copies must agree:
 |---|---|
 | `edges.json` | 23 hand-written cases for the edge rule. The expected edges were typed by hand |
 | `edges.random.json` | 30 random graphs from a seeded generator. Expected edges come from the Python rule, and the web rule must match |
+| `files.json` | Files the editor's JSON button writes, which the file schema must accept |
 | `graphs.json` | Graphs the graph schema must accept |
 | `story.json` | Stories the story schema must accept |
-| `invalid.json` | 18 documents a schema must refuse, including a chapter in the old `event` / `topics` shape |
+| `invalid.json` | 22 documents a schema must refuse, including a chapter in the old `event` / `topics` shape |
 
 The fixtures are the reference. Changing the rule in one language fails that language's tests first; updating the fixtures to match then fails the other language until it follows.
 
