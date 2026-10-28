@@ -3,5 +3,6 @@
 # it no longer has langchain.output_parsers, which narrative_deducer.py imports.
 langchain==0.3.30
 langchain-community==0.3.31
+langchain-core==0.3.86
 openai==3.39.0
 python-dotenv==1.2.4
