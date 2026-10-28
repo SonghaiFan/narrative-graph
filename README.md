@@ -1,6 +1,6 @@
-# ttng
+# Narrative Graph
 
-Design a story as a graph, then let an LLM write it. ttng stands for Temporal Topic Narrative Graph.
+Design a story as a graph, then let an LLM write it. The graph is a Temporal Topic Narrative Graph (TTNG), which is what the `ttng_*` modules and files are named after.
 
 A narrative is laid out on a **time × track grid**, where tracks are topics or entities. Nodes are story beats, edges connect beats that share an attribute, and nine reusable **motifs** (Linear, Arch, Ladder, EarlyTurn, LateTurn, SharpBranch, WideBranch, SharpMerge, WideMerge) describe how a plot moves between tracks.
 
@@ -31,4 +31,4 @@ Python engine: see [python/README.md](python/README.md).
 
 ## License
 
-[MIT](LICENSE). The repository still lives at `SonghaiFan/gpt_storytale`.
+[MIT](LICENSE). The repository was called `gpt_storytale` until it was renamed to `SonghaiFan/narrative-graph`; the old address redirects.
