@@ -67,7 +67,7 @@ To rewrite `story.json` from the sample `alignment_results.json` (Arch, three ch
 python -m ttng_story narrative_graph.json --period 2024-01-01 2024-12-31 -o with_text.json
 ```
 
-Takes the file the editor's JSON button downloads, writes one chapter per node (one model call each) and saves the same file with each node's `content` filled in. The editor's Import button reads it and the story sidebar shows the text. `--period` gives the nodes their dates, since the editor's own "Time Period" values are free text; `--context` and `--structure` can be used instead, as below. Chapters are matched to nodes by position, not by the `id` in the model's reply. This calls the OpenAI API with the key from `.env`.
+Takes the file the editor's JSON button downloads, writes one chapter per node (one model call each) and saves the same file with each node's `content` filled in. The editor's Import button reads it and the story sidebar shows the text. `--period` gives the nodes their dates, since the editor's own "Time Period" values are free text; `--context` and `--structure` can be used instead, as below. Chapters are matched to nodes by position, not by the `id` in the model's reply. This calls the OpenAI API with the key from `.env`. To use OpenRouter instead, so one key reaches many models, set `OPENROUTER_API_KEY` in `.env` and add `--provider openrouter --model vendor/model` (the model defaults to `openai/gpt-4o-mini`; OpenAI keeps `gpt-4`). The OpenRouter client never falls back to `OPENAI_API_KEY`.
 
 ## Align a graph from the editor
 
@@ -145,7 +145,7 @@ The other context files hold different sets: `_b` (2 structures), `_train` (5), 
 | `narrative_alignmenter.py` | Rule-based alignment (step ②) |
 | `narrative_deducer.py` | LLM chapter writer (step ③) |
 | `prompts/chapter.md` | The chapter prompt, with `{placeholders}` |
-| `llm.py` | The client interface the writer calls, and `OpenAIClient` |
+| `llm.py` | The client interface the writer calls, and its two clients: `OpenAIClient` and `OpenRouterClient` |
 | `ttng_story.py` | Writes a graph's chapters into the editor's file; see above |
 | `ttng_align.py` | Aligns a TTNG graph (the web editor's shape) into the same alignment the writer takes; see below |
 | `ttng_edges.py` | The editor's edge rule in Python, tested against the same fixtures as the web version |

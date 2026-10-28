@@ -1,41 +1,40 @@
-import { GoogleGenAI, Type } from "@google/genai";
 import { NarrativeNode, Source } from "../types";
+
+// AI graph generation through OpenRouter: one key, many models, the OpenAI chat-completions protocol.
+export const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+export const DEFAULT_MODEL = "google/gemini-3-flash-preview";
+// A few ids to start from; any id on https://openrouter.ai/models can be typed in.
+export const SUGGESTED_MODELS = [
+  "google/gemini-3-flash-preview",
+  "google/gemini-2.5-flash",
+  "openai/gpt-4o-mini",
+  "anthropic/claude-haiku-5.5",
+  "meta-llama/llama-3.3-70b-instruct",
+  "deepseek/deepseek-chat",
+];
 
 // We use an intermediate type for AI generation to avoid dynamic key issues in Schema definition
 interface AIResponseNode {
   time: number;
   track: number;
   content: string;
-  attributes: { key: string; values: string[] }[];
+  attributes: { key: string; values: string[] }[] | Record<string, string[]>;
 }
 
-export const generateGraphFromPrompt = async (
-  userPrompt: string,
-  currentAttributes: string[],
-  gridRows: number,
-  gridCols: number,
-  useSearch: boolean,
-  apiKey: string
-): Promise<{
+export interface GenerateResult {
   nodes: NarrativeNode[];
   sources: Source[];
   recommendedRows: number;
   recommendedCols: number;
-}> => {
-  const key = apiKey.trim();
-  if (!key) throw new Error("Enter a Gemini API key to generate a graph.");
-  const ai = new GoogleGenAI({ apiKey: key });
+}
 
-  // Using gemini-3-flash-preview which supports search grounding
-  const modelId = "gemini-3-flash-preview";
-
-  const systemInstruction = `
+export const buildSystemInstruction = (gridRows: number, gridCols: number, useSearch: boolean): string => `
     You are an experienced journalist.
     Your task is to generate a narrative graph that fits strictly into a ${gridCols} (Time) x ${gridRows} (Track) grid.
     
     ${
       useSearch
-        ? "MODE: REAL NEWS. Use Google Search to find factual events."
+        ? "MODE: REAL NEWS. Use web search to find factual events."
         : "MODE: CREATIVE FICTION. Generate a coherent fictional story based on the prompt."
     }
 
@@ -97,100 +96,84 @@ export const generateGraphFromPrompt = async (
         - multiple values for 'Entity' is allowed and encouraged to create links.
        
     
-    Output strictly compliant JSON.
+    Output strictly compliant JSON and nothing else, in exactly this shape:
+    {"nodes": [{"time": 0, "track": 0, "content": "...", "attributes": [{"key": "Entity", "values": ["..."]}]}]}
   `;
 
-  const tools = useSearch ? [{ googleSearch: {} }] : undefined;
-
-  const response = await ai.models.generateContent({
-    model: modelId,
-    config: {
-      systemInstruction: systemInstruction,
-      tools: tools,
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
+const responseSchema = (gridRows: number, gridCols: number) => ({
+  type: "object",
+  additionalProperties: false,
+  required: ["nodes"],
+  properties: {
+    nodes: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["time", "track", "content", "attributes"],
         properties: {
-          nodes: {
-            type: Type.ARRAY,
+          time: { type: "integer", description: `Column index (0 to ${gridCols - 1})` },
+          track: { type: "integer", description: `Row index (0 to ${gridRows - 1})` },
+          content: { type: "string", description: "Simple 5W statement (Who, what, where, when, why)" },
+          attributes: {
+            type: "array",
             items: {
-              type: Type.OBJECT,
-              properties: {
-                time: {
-                  type: Type.INTEGER,
-                  description: `Column index (0 to ${gridCols - 1})`,
-                },
-                track: {
-                  type: Type.INTEGER,
-                  description: `Row index (0 to ${gridRows - 1})`,
-                },
-                content: {
-                  type: Type.STRING,
-                  description:
-                    "Simple 5W statement (Who, what, where, when, why)",
-                },
-                attributes: {
-                  type: Type.ARRAY,
-                  items: {
-                    type: Type.OBJECT,
-                    properties: {
-                      key: { type: Type.STRING },
-                      values: {
-                        type: Type.ARRAY,
-                        items: { type: Type.STRING },
-                      },
-                    },
-                  },
-                },
-              },
-              required: ["time", "track", "content", "attributes"],
+              type: "object",
+              additionalProperties: false,
+              required: ["key", "values"],
+              properties: { key: { type: "string" }, values: { type: "array", items: { type: "string" } } },
             },
           },
         },
       },
     },
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: userPrompt }],
-      },
-    ],
-  });
+  },
+});
 
-  const responseText = response.text;
-  if (!responseText) throw new Error("No response from AI");
+/** The body of the request. Real-news mode turns on OpenRouter's web search plugin. */
+export const buildRequestBody = (
+  userPrompt: string,
+  gridRows: number,
+  gridCols: number,
+  useSearch: boolean,
+  model: string
+) => ({
+  model,
+  messages: [
+    { role: "system", content: buildSystemInstruction(gridRows, gridCols, useSearch) },
+    { role: "user", content: userPrompt },
+  ],
+  response_format: {
+    type: "json_schema",
+    json_schema: { name: "narrative_graph", strict: true, schema: responseSchema(gridRows, gridCols) },
+  },
+  ...(useSearch ? { plugins: [{ id: "web" }] } : {}),
+});
 
-  const data = JSON.parse(responseText) as { nodes: AIResponseNode[] };
+/** Models do not all obey "JSON only": drop a code fence or a sentence around the object. */
+export const extractJson = (text: string): unknown => {
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start < 0 || end < start) throw new Error("The model did not return JSON.");
+  return JSON.parse(text.slice(start, end + 1));
+};
 
-  // Extract Grounding Metadata (Sources) - Only if search was used/available
-  const sources: Source[] = [];
-  if (useSearch) {
-    const groundingChunks =
-      response.candidates?.[0]?.groundingMetadata?.groundingChunks;
-    if (groundingChunks) {
-      groundingChunks.forEach((chunk) => {
-        if (chunk.web?.uri && chunk.web?.title) {
-          sources.push({
-            title: chunk.web.title,
-            uri: chunk.web.uri,
-          });
-        }
-      });
-    }
+/** Web pages the model cited, from OpenRouter's url_citation annotations, once each. */
+export const extractSources = (message: any): Source[] => {
+  const found = new Map<string, Source>();
+  for (const a of message?.annotations ?? []) {
+    const c = a?.type === "url_citation" ? a.url_citation : null;
+    if (c?.url && !found.has(c.url)) found.set(c.url, { title: c.title || c.url, uri: c.url });
   }
+  return Array.from(found.values());
+};
 
-  // Deduplicate sources by URI
-  const uniqueSources = Array.from(
-    new Map(sources.map((s) => [s.uri, s])).values()
-  );
-
-  // Transform AI response to App Type
-  const finalNodes: NarrativeNode[] = data.nodes.map((n) => {
-    const attrRecord: Record<string, string[]> = {};
-    n.attributes.forEach((a) => {
-      attrRecord[a.key] = a.values;
-    });
-
+export const toNodes = (data: { nodes?: AIResponseNode[] }, useSearch: boolean): NarrativeNode[] => {
+  if (!Array.isArray(data.nodes)) throw new Error("The model's JSON has no nodes list.");
+  return data.nodes.map((n) => {
+    const attrRecord: Record<string, string[]> = Array.isArray(n.attributes)
+      ? Object.fromEntries(n.attributes.map((a) => [a.key, a.values]))
+      : { ...(n.attributes ?? {}) };
     return {
       id: crypto.randomUUID(),
       time: n.time,
@@ -200,10 +183,41 @@ export const generateGraphFromPrompt = async (
       motifSource: useSearch ? "AI Search" : "AI Creative",
     };
   });
+};
+
+export const generateGraphFromPrompt = async (
+  userPrompt: string,
+  currentAttributes: string[],
+  gridRows: number,
+  gridCols: number,
+  useSearch: boolean,
+  apiKey: string,
+  model: string = DEFAULT_MODEL,
+  fetchImpl: typeof fetch = fetch
+): Promise<GenerateResult> => {
+  const key = apiKey.trim();
+  if (!key) throw new Error("Enter an OpenRouter API key to generate a graph.");
+  const modelId = model.trim();
+  if (!modelId) throw new Error("Enter a model id, for example " + DEFAULT_MODEL + ".");
+
+  const response = await fetchImpl(OPENROUTER_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify(buildRequestBody(userPrompt, gridRows, gridCols, useSearch, modelId)),
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || payload?.error) {
+    const reason = payload?.error?.message || response.statusText || "request failed";
+    throw new Error(`OpenRouter ${payload?.error?.code ?? response.status}: ${reason}`);
+  }
+
+  const message = payload?.choices?.[0]?.message;
+  const text: string | undefined = message?.content;
+  if (!text) throw new Error("No response from AI");
 
   return {
-    nodes: finalNodes,
-    sources: uniqueSources,
+    nodes: toNodes(extractJson(text) as { nodes?: AIResponseNode[] }, useSearch),
+    sources: useSearch ? extractSources(message) : [],
     recommendedRows: gridRows,
     recommendedCols: gridCols,
   };

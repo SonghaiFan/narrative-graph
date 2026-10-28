@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Sparkles, X, Loader2, Play, Globe, Feather } from 'lucide-react';
-import { loadApiKey, saveApiKey } from '../utils/apiKey';
+import { loadApiKey, saveApiKey, loadModel, saveModel } from '../utils/apiKey';
+import { DEFAULT_MODEL, SUGGESTED_MODELS } from '../services/ai';
 
 interface AIGeneratorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onGenerate: (prompt: string, useSearch: boolean, apiKey: string) => Promise<void>;
+  onGenerate: (prompt: string, useSearch: boolean, apiKey: string, model: string) => Promise<void>;
   isGenerating: boolean;
 }
 
@@ -18,6 +19,7 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({
   const [prompt, setPrompt] = useState('');
   const [useSearch, setUseSearch] = useState(true);
   const [apiKey, setApiKey] = useState(loadApiKey);
+  const [model, setModel] = useState(() => loadModel() || DEFAULT_MODEL);
 
   if (!isOpen) return null;
 
@@ -42,7 +44,7 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({
             </div>
             <div>
                 <h2 className="text-lg font-bold text-slate-800">AI Graph Generator</h2>
-                <p className="text-xs text-slate-500">Powered by Gemini 1.5 Flash</p>
+                <p className="text-xs text-slate-500">Powered by OpenRouter</p>
             </div>
           </div>
           <button 
@@ -104,19 +106,42 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({
             />
           </div>
 
-          <div className="mt-4 space-y-2">
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
-                Your Gemini API key
-            </label>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => { setApiKey(e.target.value); saveApiKey(e.target.value); }}
-              autoComplete="off"
-              placeholder="Paste your own key. It stays in this browser tab and goes only to Google."
-              className="w-full p-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-50/30"
-            />
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+                  Model
+              </label>
+              <input
+                type="text"
+                list="ttng-models"
+                value={model}
+                onChange={(e) => { setModel(e.target.value); saveModel(e.target.value); }}
+                autoComplete="off"
+                spellCheck={false}
+                placeholder="vendor/model"
+                className="w-full p-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-50/30"
+              />
+              <datalist id="ttng-models">
+                {SUGGESTED_MODELS.map((id) => <option key={id} value={id} />)}
+              </datalist>
+            </div>
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+                  Your OpenRouter API key
+              </label>
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => { setApiKey(e.target.value); saveApiKey(e.target.value); }}
+                autoComplete="off"
+                placeholder="sk-or-..."
+                className="w-full p-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-50/30"
+              />
+            </div>
           </div>
+          <p className="mt-1.5 text-[11px] text-slate-400">
+            Any model id from openrouter.ai/models. The key stays in this browser tab and goes only to OpenRouter.
+          </p>
 
           <div className="mt-4 bg-blue-50 text-blue-800 text-xs p-3 rounded border border-blue-100 flex items-start gap-2">
             <Sparkles className="w-4 h-4 shrink-0 mt-0.5" />
@@ -138,8 +163,8 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({
             Cancel
           </button>
           <button 
-            onClick={() => onGenerate(prompt, useSearch, apiKey)}
-            disabled={!prompt.trim() || !apiKey.trim() || isGenerating}
+            onClick={() => onGenerate(prompt, useSearch, apiKey, model)}
+            disabled={!prompt.trim() || !apiKey.trim() || !model.trim() || isGenerating}
             className="flex items-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-md shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isGenerating ? (

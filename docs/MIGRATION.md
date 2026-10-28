@@ -27,7 +27,7 @@ At the moment of import `apps/web` and `python` were byte-identical to the upstr
    - Python: `python/meta/types.py` uses `Topic`, `index`, `time_period`; `legacy/gpt_storyteller/graph.py` reads `themes`.
    - Web: `apps/web/types.ts` uses `track`, `time`, `attributes`.
    - Motif names also drifted: `ShortFork` / `LongFork` in `python/meta/narrative_context_*.json`, `EarlyTurn` / `LateTurn` in `apps/web/constants.ts`.
-5. **Fixed:** the web app no longer builds `GEMINI_API_KEY` into the client bundle. The AI dialog asks users for their own key, which stays in session storage. The Gemini call itself has not been run.
+5. **Fixed:** the web app no longer builds an API key into the client bundle. The AI dialog asks users for their own OpenRouter key, which stays in session storage, and a model id. The Gemini SDK is gone. No real OpenRouter call has been run from the editor.
 6. **Fixed:** `apps/web/README.md` was the AI Studio template; it now describes the editor.
 7. **Fixed:** MIT `LICENSE` added. Two commits in the history are by Simon D Angus; the license has not been checked with them.
 8. **More loose ends in `python/`:** `narrative_alignmenter.py` stops with `NameError` when run directly; `story_packer.py` runs on import and moves files into `arc/` folders; the root `story.json` uses an older schema (`event`/`topics` instead of `title`/`Topic`). The 276 files of earlier run output in `python/{alignment,stories,logs}/arc` were moved to the private `Frankfsh/ttng-run-archive` (copied byte for byte, checked by hash from a fresh clone, then deleted here); they remain in this repository's git history.
