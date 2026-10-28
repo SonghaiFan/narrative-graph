@@ -1,13 +1,13 @@
 # Load environment variables from .env file
 import warnings
 import json
-from typing import List
+from typing import List, Optional
 from meta.types import Chapter, Story
-from langchain.output_parsers import PydanticOutputParser
-from typing import Union, List
-from langchain.prompts import PromptTemplate
-from langchain_community.chat_models import ChatOpenAI
+from langchain_core.output_parsers import PydanticOutputParser
 from dotenv import load_dotenv, find_dotenv
+
+import prompts
+from llm import LLMClient, OpenAIClient
 
 load_dotenv(find_dotenv())
 
@@ -24,7 +24,8 @@ def make_chapter(
     narrative_structure: str,
     prev_content: str,
     model_name: str = "gpt-4",
-    temperature: int = 0,
+    temperature: float = 0,
+    client: Optional[LLMClient] = None,
 ) -> Chapter:
     """
     Function to generate a fictional news chapter continuing from a previous story.
@@ -36,39 +37,30 @@ def make_chapter(
 
     prev_content_str = prev_content if prev_content else "None"
 
-    # Create a prompt template
-    prompt_template = f"""
-    You are a senior reporter for The New York Times, your task is to write a fictional news report that continues from a previous one. 
-    - Your writing style is concise and clear, without rhetorical techniques, in plain english. 
-    - Avoid explicitly referencing the structure and themes; instead, integrate it subtly within the story.
-    - The story should be written in a style suitable for CEFR Level A1 and each chapter approximately take 1 minutes to read (100 words).
-    - The continuation chapter needs to be closely related to the previous one (intriguing and logically connected in narration),
-    - The theme of the story must be strikingly prominent, you can not make up new themes except the only one given below.
-    - All entities given below must be included in the story.
-    
-    Chapter ID: {id}
-    Time Period: {time_period_str}
-    Topic: {topic}
-    Theme Context: {theme_context}
-    Entity: {', '.join(entity)}
-
-    Narrative Sturcture: {narrative_structure}
-
-    Previous context: {prev_content_str}
-
-    {chapter_parser.get_format_instructions()}
-    """
+    # The prompt text lives in prompts/chapter.md
+    prompt_template = prompts.render(
+        "chapter",
+        id=id,
+        time_period=time_period_str,
+        topic=topic,
+        theme_context=theme_context,
+        entity=", ".join(entity),
+        narrative_structure=narrative_structure,
+        prev_content=prev_content_str,
+        format_instructions=chapter_parser.get_format_instructions(),
+    )
     print("-" * 50)
     print(prompt_template)
     print("-" * 50)
 
-    model = ChatOpenAI(model_name=model_name, temperature=temperature)
-    output = model.invoke(prompt_template).content
+    output = (client or OpenAIClient()).complete(
+        prompt_template, model=model_name, temperature=temperature)
 
     return chapter_parser.parse(output)
 
 
-def create_story(alignment):
+def create_story(alignment, client: Optional[LLMClient] = None):
+    client = client or OpenAIClient()
     story = Story(chapters=[])
 
     content_cache = {}
@@ -99,6 +91,7 @@ def create_story(alignment):
             narrative_structure=details["StuctureInstruction"],
             prev_content=prev_content,
             temperature=0.5,
+            client=client,
         )
 
         new_chapter_dict = new_chapter.dict()

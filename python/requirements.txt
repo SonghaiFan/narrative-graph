@@ -1,8 +1,6 @@
 # requirements.txt for GPT Storytale
-# Pinned to the versions this code was checked with. Do not move langchain to 1.x:
-# it no longer has langchain.output_parsers, which narrative_deducer.py imports.
-langchain==0.3.30
-langchain-community==0.3.31
+# Pinned to the versions this code was checked with.
+# langchain-core is only used for PydanticOutputParser, which builds the format instructions in the prompt.
 langchain-core==0.3.86
 openai==3.39.0
 python-dotenv==1.2.4

@@ -38,7 +38,28 @@ def test_a_merge_chapter_sees_every_parent(fake_chat, structure_of):
 
 def test_the_model_is_gpt4_at_temperature_half(fake_chat, sample_alignment):
     create_story(sample_alignment)
-    assert fake_chat.inits == [{"model_name": "gpt-4", "temperature": 0.5}] * len(sample_alignment)
+    assert fake_chat.calls == [{"model": "gpt-4", "temperature": 0.5}] * len(sample_alignment)
+
+
+def test_a_client_can_be_handed_in(fake_chat, sample_alignment):
+    class Recorder:
+        def __init__(self):
+            self.asked = []
+
+        def complete(self, prompt, *, model, temperature):
+            self.asked.append((model, temperature))
+            return fake_chat.client().complete(prompt, model=model, temperature=temperature)
+
+    mine = Recorder()
+    story = create_story(sample_alignment, client=mine)
+    assert len(story.chapters) == len(sample_alignment)
+    assert mine.asked == [("gpt-4", 0.5)] * len(sample_alignment)
+
+
+def test_the_prompt_comes_from_the_prompt_file(fake_chat, sample_alignment):
+    create_story(sample_alignment)
+    assert "You are a senior reporter for The New York Times" in fake_chat.prompts[0]
+    assert "\n    Previous context: None\n" in fake_chat.prompts[0]
 
 
 def test_the_result_is_a_valid_story(fake_chat, sample_alignment):
