@@ -8,9 +8,12 @@
 | `python` | `SonghaiFan/gpt_storytale` | `8d3ee69` | 8 |
 | `legacy/gpt_storyteller` | `SonghaiFan/gpt_storyteller` | `56ea6ca` | 31 |
 
-Each subtree was imported with its paths rewritten under the prefix, then joined with `git merge --allow-unrelated-histories`. `git log -- apps/web`, `git log -- python` and `git log -- legacy/gpt_storyteller` show each project's own history. The three subtrees were byte-identical to the upstream HEADs at the moment of import.
+`apps/web` and `legacy/gpt_storyteller` were imported with their paths rewritten under the prefix and joined with `git merge --allow-unrelated-histories`, so `git log -- apps/web` and `git log -- legacy/gpt_storyteller` show each project's own history. `python` is the original `gpt_storytale` history, unchanged: its files were moved into `python/` in a single rename commit, so older commits sit at the old root paths and `git log --follow python/<file>` follows a file across the move.
 
-- **`python` hashes differ from upstream.** A stray root `.env` in the first upstream commit was removed from the imported history, which changes every `python` commit hash.
+At the moment of import `apps/web` and `python` were byte-identical to the upstream HEADs, and so was `legacy/gpt_storyteller` apart from the exclusion below.
+
+- **Hashes:** `python` keeps its original commit hashes. `apps/web` and `legacy/gpt_storyteller` were rewritten by the path move, so their hashes differ from the upstream repos.
+- **`legacy/gpt_storyteller` leaves out `__archive__/`.** That folder was a scratch area holding a copy of a third-party course repository, which also sat at the repo root in early commits. Both locations were removed from the imported history on purpose.
 - **Authorship is preserved,** including two commits by Simon D Angus in `gpt_storytale`. Check with them before changing the name or the license.
 - **Not imported:** uncommitted working-tree edits in the original folders. The only real one was `ttng-constructor/package-lock.json` (9 lines of `peer` flags removed, probably npm noise); the rest were `.DS_Store` files.
 - `.DS_Store` and `.pyc` files that upstream had tracked were deleted in their own commit.
@@ -33,7 +36,7 @@ Each subtree was imported with its paths rewritten under the prefix, then joined
 
 - [ ] Define `schema/` and generate TS types and pydantic models from it.
 - [ ] Move `python/` into an installable package; replace LangChain with plain provider clients.
-- [ ] Lift `gpt_cartographer.py`, `gpt_journalist.py` and `graph.py` out of `legacy/gpt_storyteller`; drop `__archive__`, `narrative_deducer copy 2.py` and the notebooks.
+- [ ] Lift `gpt_cartographer.py`, `gpt_journalist.py` and `graph.py` out of `legacy/gpt_storyteller`; drop `narrative_deducer copy 2.py` and the notebooks.
 - [ ] Connect the editor to the writer: edit a graph in the browser, then generate the chapters.
 - [ ] Move curated stories and graphs into `examples/`.
 - [ ] Pick a license and a final name.
