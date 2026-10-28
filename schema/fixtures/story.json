@@ -1,0 +1,66 @@
+{
+  "description": "Stories that story.schema.json must accept.",
+  "stories": [
+    {
+      "name": "an empty story",
+      "story": {
+        "chapters": []
+      }
+    },
+    {
+      "name": "three chapters in an arch",
+      "story": {
+        "chapters": [
+          {
+            "id": "A1",
+            "title": "Council backs a new tax",
+            "time_period": [
+              "2023-01-01",
+              "2023-05-02"
+            ],
+            "Topic": [
+              "Economic Boom"
+            ],
+            "entity": [
+              "Mayor Lina",
+              "Economic Council"
+            ],
+            "content": "The city council voted on Monday to back a new tax. Mayor Lina said the money will help new shops."
+          },
+          {
+            "id": "B2",
+            "title": "River park closes after spill",
+            "time_period": [
+              "2023-07-01",
+              "2023-07-31"
+            ],
+            "Topic": [
+              "Ecological Crisis"
+            ],
+            "entity": [
+              "GreenLife",
+              "Mayor Lina"
+            ],
+            "content": "A spill closed Riverstone Park. GreenLife said workers will clean the water. Mayor Lina visited the park."
+          },
+          {
+            "id": "A3",
+            "title": "Shops grow as the park reopens",
+            "time_period": [
+              "2023-08-31",
+              "2023-12-31"
+            ],
+            "Topic": [
+              "Economic Boom"
+            ],
+            "entity": [
+              "Economic Council",
+              "GreenLife"
+            ],
+            "content": "The park reopened in the autumn. The Economic Council said that new shops opened near the river."
+          }
+        ]
+      }
+    }
+  ]
+}

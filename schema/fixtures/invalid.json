@@ -1,0 +1,306 @@
+{
+  "description": "Documents that must fail validation against the named schema.",
+  "cases": [
+    {
+      "schema": "graph",
+      "name": "no nodes key",
+      "data": {}
+    },
+    {
+      "schema": "graph",
+      "name": "a node without attributes",
+      "data": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 0,
+            "track": 0
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "a node without an id",
+      "data": {
+        "nodes": [
+          {
+            "time": 0,
+            "track": 0,
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "an empty node id",
+      "data": {
+        "nodes": [
+          {
+            "id": "",
+            "time": 0,
+            "track": 0,
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "a fractional time",
+      "data": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 1.5,
+            "track": 0,
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "a negative time",
+      "data": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": -1,
+            "track": 0,
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "a track given as text",
+      "data": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 0,
+            "track": "top",
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "an attribute value that is not a list",
+      "data": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 0,
+            "track": 0,
+            "attributes": {
+              "Entity": "Ana"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "an attribute list holding a number",
+      "data": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 0,
+            "track": 0,
+            "attributes": {
+              "Entity": [
+                1
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "an unknown node field",
+      "data": {
+        "nodes": [
+          {
+            "id": "a",
+            "time": 0,
+            "track": 0,
+            "attributes": {
+              "Entity": [
+                "Ana"
+              ]
+            },
+            "colour": "red"
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "an edge without a target",
+      "data": {
+        "nodes": [],
+        "edges": [
+          {
+            "id": "e",
+            "sourceId": "a"
+          }
+        ]
+      }
+    },
+    {
+      "schema": "graph",
+      "name": "a source without a uri",
+      "data": {
+        "nodes": [],
+        "sources": [
+          {
+            "title": "x"
+          }
+        ]
+      }
+    },
+    {
+      "schema": "story",
+      "name": "no chapters key",
+      "data": {}
+    },
+    {
+      "schema": "story",
+      "name": "a chapter without content",
+      "data": {
+        "chapters": [
+          {
+            "id": "A1",
+            "title": "A title",
+            "time_period": [
+              "2023-01-01",
+              "2023-05-02"
+            ],
+            "Topic": [
+              "Economic Boom"
+            ],
+            "entity": [
+              "Mayor Lina"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "schema": "story",
+      "name": "a time period with one date",
+      "data": {
+        "chapters": [
+          {
+            "id": "A1",
+            "title": "A title",
+            "time_period": [
+              "2023-01-01"
+            ],
+            "Topic": [
+              "Economic Boom"
+            ],
+            "entity": [
+              "Mayor Lina"
+            ],
+            "content": "Text."
+          }
+        ]
+      }
+    },
+    {
+      "schema": "story",
+      "name": "a time period that is not a date",
+      "data": {
+        "chapters": [
+          {
+            "id": "A1",
+            "title": "A title",
+            "time_period": [
+              "last spring",
+              "2023-05-02"
+            ],
+            "Topic": [
+              "Economic Boom"
+            ],
+            "entity": [
+              "Mayor Lina"
+            ],
+            "content": "Text."
+          }
+        ]
+      }
+    },
+    {
+      "schema": "story",
+      "name": "Topic given as a string",
+      "data": {
+        "chapters": [
+          {
+            "id": "A1",
+            "title": "A title",
+            "time_period": [
+              "2023-01-01",
+              "2023-05-02"
+            ],
+            "Topic": "Economic Boom",
+            "entity": [
+              "Mayor Lina"
+            ],
+            "content": "Text."
+          }
+        ]
+      }
+    },
+    {
+      "schema": "story",
+      "name": "a chapter in the old event/topics shape",
+      "data": {
+        "chapters": [
+          {
+            "id": "A1",
+            "event": "Council backs a new tax",
+            "time_period": [
+              "2023-01-01",
+              "2023-05-02"
+            ],
+            "topics": [
+              "Economic Boom"
+            ],
+            "entity": [
+              "Mayor Lina"
+            ],
+            "content": "The council voted."
+          }
+        ]
+      }
+    }
+  ]
+}

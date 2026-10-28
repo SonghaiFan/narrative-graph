@@ -7,12 +7,22 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from jsonschema import Draft202012Validator
 
 # Set before any test module imports narrative_deducer. Its load_dotenv() never overrides an existing
 # variable, so a real key sitting in python/.env cannot reach a test run.
 os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
 
 PYTHON_DIR = Path(__file__).resolve().parent.parent
+SCHEMA_DIR = PYTHON_DIR.parent / "schema"  # the JSON Schemas and the fixtures the web tests read too
+
+
+def load_fixture(name):
+    return json.loads((SCHEMA_DIR / "fixtures" / name).read_text())
+
+
+def load_schema(name):
+    return json.loads((SCHEMA_DIR / f"{name}.schema.json").read_text())
 
 
 @pytest.fixture(autouse=True)
@@ -34,6 +44,16 @@ def context_a():
 @pytest.fixture(scope="session")
 def structure_of(context_a):
     return lambda name: next(s for s in context_a if s["name"] == name)
+
+
+@pytest.fixture(scope="session")
+def graph_validator():
+    return Draft202012Validator(load_schema("graph"))
+
+
+@pytest.fixture(scope="session")
+def story_validator():
+    return Draft202012Validator(load_schema("story"))
 
 
 @pytest.fixture(scope="session")

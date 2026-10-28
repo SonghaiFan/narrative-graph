@@ -126,6 +126,7 @@ The other context files hold different sets: `_b` (2 structures), `_train` (5), 
 | `storytale.py` | Entry point: align, write, save for each structure |
 | `narrative_alignmenter.py` | Rule-based alignment (step ②) |
 | `narrative_deducer.py` | LLM chapter writer (step ③) |
+| `ttng_edges.py` | The editor's edge rule in Python, tested against the same fixtures as the web version |
 | `meta/types.py` | Pydantic models for chapters and stories (also `Node`, `Edge`, `Graph`, `Article` from the earlier pipeline) |
 | `meta/narrative_context_*.json` | Structures with themes and entities |
 | `story_packer.py` | Bundles story files; see the warning below |

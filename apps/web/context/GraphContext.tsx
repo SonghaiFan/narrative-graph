@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
-import { NarrativeGraph, NarrativeNode, NarrativeEdge, Motif, Source } from '../types';
+import { NarrativeGraph, NarrativeNode, Motif, Source } from '../types';
 import {
     DEFAULT_ROWS_COUNT,
     DEFAULT_COLS_COUNT,
@@ -8,6 +8,7 @@ import {
     INITIAL_AXIS,
     INITIAL_LINKING
 } from '../constants';
+import { computeEdges } from '../utils/computeEdges';
 
 interface GridConfig {
     rows: number;
@@ -162,47 +163,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         cols: gridCols
     }), [visibleRowLabels.length, gridCols]);
 
-    // 2. Compute Edges (Beta Rule)
-    const computeEdges = useCallback((nodes: NarrativeNode[], linkingAttr: string, maxTime: number): NarrativeEdge[] => {
-        const edges: NarrativeEdge[] = [];
-        const nodesByTime: Record<number, NarrativeNode[]> = {};
-
-        nodes.forEach(n => {
-            if (n.track < 0 || n.time >= maxTime) return;
-            if (!nodesByTime[n.time]) nodesByTime[n.time] = [];
-            nodesByTime[n.time].push(n);
-        });
-
-        const times = Object.keys(nodesByTime).map(Number).sort((a, b) => a - b);
-
-        for (let i = 0; i < times.length; i++) {
-            const t = times[i];
-            if (!nodesByTime[t + 1]) continue;
-
-            const currentNodes = nodesByTime[t];
-            const nextNodes = nodesByTime[t + 1];
-
-            currentNodes.forEach(u => {
-                nextNodes.forEach(v => {
-                    const isAdjacentTrack = Math.abs(u.track - v.track) <= 1;
-                    if (!isAdjacentTrack) return;
-
-                    const uAttrs = u.attributes[linkingAttr] || [];
-                    const vAttrs = v.attributes[linkingAttr] || [];
-                    const isConnected = uAttrs.some(val => vAttrs.includes(val));
-
-                    if (isConnected) {
-                        edges.push({
-                            id: `edge-${u.id}-${v.id}`,
-                            sourceId: u.id,
-                            targetId: v.id
-                        });
-                    }
-                });
-            });
-        }
-        return edges;
-    }, []);
+    // 2. Edges come from the Beta rule in utils/computeEdges.ts (a pure function, shared with the Python engine's tests)
 
     // 3. Update Graph Edges Effect & Persistent Labels
     useEffect(() => {
@@ -247,7 +208,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 }
             });
         }
-    }, [linkingAttribute, computeEdges, graph.nodes, gridCols, graph.edges, replaceState]); // Added dependencies
+    }, [linkingAttribute, graph.nodes, gridCols, graph.edges, replaceState]); // Added dependencies
 
     // 4. Alpha Rule Effect (Track Assignment)
     useEffect(() => {
