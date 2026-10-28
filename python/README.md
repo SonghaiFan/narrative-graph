@@ -24,7 +24,7 @@ pip install -r requirements.txt
 cp .env-template .env            # then put your key after OPENAI_API_KEY=
 ```
 
-The versions in `requirements.txt` are pinned on purpose. A plain `pip install langchain` now installs 1.x, which no longer has `langchain.output_parsers`, so `narrative_deducer.py` would fail on import.
+The versions in `requirements.txt` are pinned to the ones the code was checked with. LangChain is down to `langchain-core`, used only to build the JSON format instructions in the prompt; the model is called through the `openai` SDK.
 
 `.env` is git-ignored. Do not commit it.
 
@@ -78,7 +78,7 @@ pip install -r requirements-dev.txt
 python -m pytest
 ```
 
-The tests never reach the network. Sockets and DNS are blocked, the writer runs against a fake chat model, and one test sends the real `ChatOpenAI` request through a faked HTTP layer to check the endpoint, the model name (`gpt-4`) and the temperature. What they cover, and what they do not, is listed in [../docs/REFACTOR.md](../docs/REFACTOR.md).
+The tests never reach the network. Sockets and DNS are blocked, the writer runs against a fake client, and one test sends the real request (the writer, `OpenAIClient` and the openai SDK) through a faked HTTP layer to check the endpoint, the model name (`gpt-4`), the temperature and the parent chapter's text. What they cover, and what they do not, is listed in [../docs/REFACTOR.md](../docs/REFACTOR.md).
 
 ## Data formats
 
@@ -136,6 +136,8 @@ The other context files hold different sets: `_b` (2 structures), `_train` (5), 
 | `storytale.py` | Entry point: align, write, save for each structure |
 | `narrative_alignmenter.py` | Rule-based alignment (step ②) |
 | `narrative_deducer.py` | LLM chapter writer (step ③) |
+| `prompts/chapter.md` | The chapter prompt, with `{placeholders}` |
+| `llm.py` | The client interface the writer calls, and `OpenAIClient` |
 | `ttng_align.py` | Aligns a TTNG graph (the web editor's shape) into the same alignment the writer takes; see below |
 | `ttng_edges.py` | The editor's edge rule in Python, tested against the same fixtures as the web version |
 | `meta/types.py` | Pydantic models for chapters and stories (also `Node`, `Edge`, `Graph`, `Article` from the earlier pipeline) |
@@ -150,11 +152,12 @@ The other context files hold different sets: `_b` (2 structures), `_train` (5), 
 - **Don't run `narrative_alignmenter.py` directly.** Its `__main__` block uses `narrative_context`, which that file never loads, so it stops with a `NameError`. Use it through `storytale.py`.
 - **The committed samples use an older schema.** 80 of the `story_*.json` files in `stories/arc` use the fields `event` and `topics`; the current writer produces `title` and `Topic`. The root `story.json` is the same older shape. Don't build on them without checking.
 - **Node ids are one letter and one digit.** The aligner reads only the last character as the chapter number, so a chapter 10 or later would break.
-- **Keep `ChatOpenAI`; don't go back to `langchain.llms.OpenAI`.** With `model_name="gpt-4"` the old call turned into langchain-community's `OpenAIChat`, which ignores the model name: it sent `gpt-3.5-turbo` plus a stray `model_name` field, and on openai 1.x or newer it fails on the first call. `langchain_community.chat_models.ChatOpenAI` sends `gpt-4` correctly but is itself deprecated; the maintained replacement is `langchain-openai`.
+- **Don't go back to a LangChain model wrapper.** `langchain.llms.OpenAI(model_name="gpt-4")` turned into langchain-community's `OpenAIChat`, which ignores the model name: it sent `gpt-3.5-turbo` plus a stray `model_name` field, and on openai 1.x or newer it fails on the first call. The community `ChatOpenAI` that replaced it is deprecated. The writer now takes any client with `complete(prompt, *, model, temperature)` (see `llm.py`), and `OpenAIClient` is the default.
+- **The prompt is `prompts/chapter.md`.** Edit the text there. The `{...}` words are placeholders; the file has no other braces, so write a literal brace as `{{` and `}}`.
 
 ## What has been checked
 
-On Python 3.13, with the versions in `requirements.txt` installed into a clean virtual environment (`pip check` is clean), the repo's own code ran unmodified against a stand-in network with sockets blocked. The request that `ChatOpenAI` and the openai SDK build was inspected: `POST /v1/chat/completions`, `model` `gpt-4`, temperature 0.5, no stray fields. Replies were parsed into chapters, each prompt carried its parent chapter's text, and `storytale.py` wrote the alignment, story and log files for four structures (12 requests). **A real call to the OpenAI API is still untried**, so run one structure before launching a full run.
+On Python 3.13, with the versions in `requirements.txt` installed into a clean virtual environment (`pip check` is clean), the tests run with sockets blocked and the HTTP layer faked. The request that `OpenAIClient` and the openai SDK build is inspected: `POST /v1/chat/completions`, `model` `gpt-4`, temperature 0.5, no stray fields. Replies are parsed into chapters, each prompt carries its parent chapter's text, and `storytale.py` writes the alignment, story and log files for every structure. Before Stage 3 the same was checked once by hand against a stand-in server with the old `ChatOpenAI` code. **A real call to the OpenAI API is still untried**, so run one structure before launching a full run.
 
 ## License
 
