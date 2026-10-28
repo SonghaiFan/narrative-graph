@@ -1,6 +1,6 @@
-# Narrative Graph
+# ttng
 
-Design a story as a graph, then let an LLM write it. The graph is a Temporal Topic Narrative Graph (TTNG), which is what the `ttng_*` modules and files are named after.
+Design a story as a graph, then let an LLM write it. ttng stands for Time Track Narrative Graph: a narrative laid out on a time-by-track grid. The repository is called `narrative-graph`.
 
 A narrative is laid out on a **time × track grid**, where tracks are topics or entities. Nodes are story beats, edges connect beats that share an attribute, and nine reusable **motifs** (Linear, Arch, Ladder, EarlyTurn, LateTurn, SharpBranch, WideBranch, SharpMerge, WideMerge) describe how a plot moves between tracks.
 

@@ -1,6 +1,6 @@
 # TTNG Constructor
 
-A visual editor for Temporal Topic Narrative Graphs: drag narrative motifs onto a time-by-track grid, give the nodes attributes such as Topic and Entity, and see how they connect.
+A visual editor for Time Track Narrative Graphs (ttng): drag narrative motifs onto a time-by-track grid, give the nodes attributes such as Topic and Entity, and see how they connect.
 
 ## Run
 

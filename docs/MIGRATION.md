@@ -42,4 +42,4 @@ The staged plan for these moves, and the checks that keep the repo working while
 - [ ] Lift `gpt_cartographer.py`, `gpt_journalist.py` and `graph.py` out of `legacy/gpt_storyteller`; drop `narrative_deducer copy 2.py` and the notebooks.
 - [x] Connect the editor to the writer by file: export from the editor, `python -m ttng_story`, import the result. A button inside the editor is not built.
 - [ ] Move curated stories and graphs into `examples/`.
-- [x] Pick a license (MIT) and a name. The project is Narrative Graph; its data structure keeps the name TTNG. The GitHub repository was renamed from `gpt_storytale` to `narrative-graph` (open pull requests and the old address survive the rename).
+- [x] Pick a license (MIT) and a name. The project is called ttng (Time Track Narrative Graph). The GitHub repository was renamed from `gpt_storytale` to `narrative-graph` (open pull requests and the old address survive the rename).
