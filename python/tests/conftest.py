@@ -94,6 +94,10 @@ def fake_chat(monkeypatch):
             }
             return json.dumps(reply)
 
+    import ttng_story
+
     monkeypatch.setattr(narrative_deducer, "OpenAIClient", FakeChat)
+    rec.providers = []
+    monkeypatch.setattr(ttng_story, "make_client", lambda provider: (rec.providers.append(provider), FakeChat())[1])
     rec.client = FakeChat  # for tests that hand a client to the writer themselves
     return rec

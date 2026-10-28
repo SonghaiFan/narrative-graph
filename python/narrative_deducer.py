@@ -59,7 +59,7 @@ def make_chapter(
     return chapter_parser.parse(output)
 
 
-def create_story(alignment, client: Optional[LLMClient] = None):
+def create_story(alignment, client: Optional[LLMClient] = None, model_name: str = "gpt-4"):
     client = client or OpenAIClient()
     story = Story(chapters=[])
 
@@ -90,6 +90,7 @@ def create_story(alignment, client: Optional[LLMClient] = None):
             time_period=details["Time"],
             narrative_structure=details["StuctureInstruction"],
             prev_content=prev_content,
+            model_name=model_name,
             temperature=0.5,
             client=client,
         )
