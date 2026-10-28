@@ -34,6 +34,8 @@ At the moment of import `apps/web` and `python` were byte-identical to the upstr
 
 ## Planned moves
 
+The staged plan for these moves, and the checks that keep the repo working while they happen, is in [REFACTOR.md](REFACTOR.md).
+
 - [ ] Define `schema/` and generate TS types and pydantic models from it.
 - [ ] Move `python/` into an installable package; replace LangChain with plain provider clients.
 - [ ] Lift `gpt_cartographer.py`, `gpt_journalist.py` and `graph.py` out of `legacy/gpt_storyteller`; drop `narrative_deducer copy 2.py` and the notebooks.
