@@ -153,13 +153,13 @@ The other context files hold different sets: `_b` (2 structures), `_train` (5), 
 | `meta/narrative_context_*.json` | Structures with themes and entities |
 | `story_packer.py` | Bundles story files; see the warning below |
 | `alignment_results.json`, `story.json` | Sample input and output for `narrative_deducer.py` |
-| `alignment/arc`, `stories/arc`, `logs/arc` | Results of earlier runs |
 
 ## Gotchas
 
-- **`story_packer.py` moves files.** It runs as soon as it is imported. It writes `stories/combined_stories.json`, then *moves* every file in `stories/`, `logs/` and `alignment/` into an `arc/` subfolder of each. Run it only on a folder you can afford to reshuffle.
+- **`story_packer.py` moves files.** It runs as soon as it is imported. It writes `stories/combined_stories.json`, then *moves* every file in `stories/`, `logs/` and `alignment/` into an `arc/` subfolder of each, which is how the archived output came about. Run it only on a folder you can afford to reshuffle.
 - **Don't run `narrative_alignmenter.py` directly.** Its `__main__` block uses `narrative_context`, which that file never loads, so it stops with a `NameError`. Use it through `storytale.py`.
-- **The committed samples use an older schema.** 80 of the `story_*.json` files in `stories/arc` use the fields `event` and `topics`; the current writer produces `title` and `Topic`. The root `story.json` is the same older shape. Don't build on them without checking.
+- **`story.json` uses an older schema.** The root `story.json` has the fields `event` and `topics`; the current writer produces `title` and `Topic`. Earlier run output (276 files, 80 of the stories in the old shape) was moved out of this repository into a private archive.
+- **Run output is git-ignored.** `alignment/`, `stories/` and `logs/` are created by a run and not tracked.
 - **Node ids are one letter and one digit.** The aligner reads only the last character as the chapter number, so a chapter 10 or later would break.
 - **Don't go back to a LangChain model wrapper.** `langchain.llms.OpenAI(model_name="gpt-4")` turned into langchain-community's `OpenAIChat`, which ignores the model name: it sent `gpt-3.5-turbo` plus a stray `model_name` field, and on openai 1.x or newer it fails on the first call. The community `ChatOpenAI` that replaced it is deprecated. The writer now takes any client with `complete(prompt, *, model, temperature)` (see `llm.py`), and `OpenAIClient` is the default.
 - **The prompt is `prompts/chapter.md`.** Edit the text there. The `{...}` words are placeholders; the file has no other braces, so write a literal brace as `{{` and `}}`.
@@ -170,4 +170,4 @@ On Python 3.13, with the versions in `requirements.txt` installed into a clean v
 
 ## License
 
-Not chosen yet. An earlier version of this README claimed MIT, but no `LICENSE` file exists. See [../docs/MIGRATION.md](../docs/MIGRATION.md).
+MIT, see [../LICENSE](../LICENSE).
