@@ -40,6 +40,6 @@ The staged plan for these moves, and the checks that keep the repo working while
 - [ ] Generate TS types and pydantic models from the schemas.
 - [ ] Move `python/` into an installable package; replace LangChain with plain provider clients.
 - [ ] Lift `gpt_cartographer.py`, `gpt_journalist.py` and `graph.py` out of `legacy/gpt_storyteller`; drop `narrative_deducer copy 2.py` and the notebooks.
-- [ ] Connect the editor to the writer: edit a graph in the browser, then generate the chapters.
+- [x] Connect the editor to the writer by file: export from the editor, `python -m ttng_story`, import the result. A button inside the editor is not built.
 - [ ] Move curated stories and graphs into `examples/`.
 - [ ] Pick a license and a final name.

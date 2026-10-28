@@ -61,6 +61,14 @@ The seed fixes which entities are sampled. It does not make the LLM output repea
 
 To rewrite `story.json` from the sample `alignment_results.json` (Arch, three chapters), run `python narrative_deducer.py`. This overwrites the committed `story.json`.
 
+## Write a graph from the editor
+
+```bash
+python -m ttng_story narrative_graph.json --period 2024-01-01 2024-12-31 -o with_text.json
+```
+
+Takes the file the editor's JSON button downloads, writes one chapter per node (one model call each) and saves the same file with each node's `content` filled in. The editor's Import button reads it and the story sidebar shows the text. `--period` gives the nodes their dates, since the editor's own "Time Period" values are free text; `--context` and `--structure` can be used instead, as below. Chapters are matched to nodes by position, not by the `id` in the model's reply. This calls the OpenAI API with the key from `.env`.
+
 ## Align a graph from the editor
 
 `ttng_align.py` does step ② for a graph instead of a context file. Nodes keep the entities they carry; a node without any is sampled from its topic's pool in a context file.
@@ -69,7 +77,7 @@ To rewrite `story.json` from the sample `alignment_results.json` (Arch, three ch
 python -m ttng_align graph.json --context meta/narrative_context_a.json --structure Arch --seed 42 -o alignment.json
 ```
 
-The output has the shape of `alignment_results.json`, so `narrative_deducer.create_story` accepts it. Each node needs exactly one `Topic`. Its dates come from a `Time Period` attribute holding two ISO dates, or else from slicing the topic's range in the context. Parents are the graph's `edges`, or else the editor's edge rule (which only works when the nodes already carry entities). In Python, `ttng_align.graph_from_structure(structure)` turns an old-style structure into such a graph. Nothing calls this from `storytale.py` yet.
+The output has the shape of `alignment_results.json`, so `narrative_deducer.create_story` accepts it. Each node needs exactly one `Topic`. Its dates come from a `Time Period` attribute holding two ISO dates, or else from slicing the topic's range in the context, or else from `--period START END`. Parents are the graph's `edges`, or else the editor's edge rule (which only works when the nodes already carry entities). In Python, `ttng_align.graph_from_structure(structure)` turns an old-style structure into such a graph. Nothing calls this from `storytale.py` yet.
 
 ## Tests
 
@@ -138,6 +146,7 @@ The other context files hold different sets: `_b` (2 structures), `_train` (5), 
 | `narrative_deducer.py` | LLM chapter writer (step ③) |
 | `prompts/chapter.md` | The chapter prompt, with `{placeholders}` |
 | `llm.py` | The client interface the writer calls, and `OpenAIClient` |
+| `ttng_story.py` | Writes a graph's chapters into the editor's file; see above |
 | `ttng_align.py` | Aligns a TTNG graph (the web editor's shape) into the same alignment the writer takes; see below |
 | `ttng_edges.py` | The editor's edge rule in Python, tested against the same fixtures as the web version |
 | `meta/types.py` | Pydantic models for chapters and stories (also `Node`, `Edge`, `Graph`, `Article` from the earlier pipeline) |
