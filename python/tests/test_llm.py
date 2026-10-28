@@ -51,3 +51,45 @@ def test_a_key_and_a_base_url_can_be_given(server):
 def test_building_the_client_needs_no_key_and_no_network(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY")
     OpenAIClient()  # nothing is built until the first call
+
+
+# --- OpenRouter: the same protocol at another address, with its own key ---
+
+from llm import DEFAULT_MODELS, OPENROUTER_BASE_URL, OpenRouterClient, make_client  # noqa: E402
+
+
+def test_openrouter_sends_to_openrouter_with_its_own_key(server, monkeypatch):
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test")
+    reply = OpenRouterClient().complete("write", model="anthropic/claude-haiku-5.5", temperature=0.2)
+    assert reply == "the reply"
+    [(method, url, headers, body)] = server
+    assert url == f"{OPENROUTER_BASE_URL}/chat/completions"
+    assert headers["authorization"] == "Bearer sk-or-test"
+    assert body["model"] == "anthropic/claude-haiku-5.5" and body["temperature"] == 0.2
+    assert body["messages"] == [{"role": "user", "content": "write"}]
+
+
+def test_openrouter_never_sends_the_openai_key(server, monkeypatch):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-openai-secret")
+    with pytest.raises(RuntimeError, match="OPENROUTER_API_KEY"):
+        OpenRouterClient().complete("p", model="openai/gpt-4o-mini", temperature=0)
+    assert server == []  # nothing was sent anywhere
+
+
+def test_openrouter_takes_a_key_given_directly(server, monkeypatch):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    OpenRouterClient(api_key="sk-or-direct").complete("p", model="m/x", temperature=0)
+    assert server[0][2]["authorization"] == "Bearer sk-or-direct"
+
+
+def test_a_provider_name_makes_the_right_client(monkeypatch):
+    monkeypatch.setenv("OPENROUTER_API_KEY", "k")
+    assert type(make_client("openai")) is OpenAIClient
+    assert type(make_client("openrouter")) is OpenRouterClient
+    with pytest.raises(ValueError, match="unknown provider"):
+        make_client("nope")
+
+
+def test_the_default_models():
+    assert DEFAULT_MODELS == {"openai": "gpt-4", "openrouter": "openai/gpt-4o-mini"}

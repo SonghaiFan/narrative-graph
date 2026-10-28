@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/SonghaiFan/gpt_storytale/main/schema/story.schema.json",
+  "$id": "https://raw.githubusercontent.com/SonghaiFan/narrative-graph/main/schema/story.schema.json",
   "title": "Generated story",
   "description": "What the writer in python/narrative_deducer.py produces: one chapter per node of the narrative structure. It matches the Story and Chapter models in python/meta/types.py. Story files written by older versions of the code use the fields event and topics instead of title and Topic and do not match.",
   "type": "object",

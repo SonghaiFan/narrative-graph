@@ -41,6 +41,11 @@ def test_the_model_is_gpt4_at_temperature_half(fake_chat, sample_alignment):
     assert fake_chat.calls == [{"model": "gpt-4", "temperature": 0.5}] * len(sample_alignment)
 
 
+def test_the_model_can_be_chosen(fake_chat, sample_alignment):
+    create_story(sample_alignment, model_name="vendor/some-model")
+    assert fake_chat.calls == [{"model": "vendor/some-model", "temperature": 0.5}] * len(sample_alignment)
+
+
 def test_a_client_can_be_handed_in(fake_chat, sample_alignment):
     class Recorder:
         def __init__(self):

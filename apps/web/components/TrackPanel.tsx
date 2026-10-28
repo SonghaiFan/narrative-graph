@@ -1,90 +1,14 @@
 import React, { useRef } from 'react';
-import { Layers, Eye, EyeOff, Settings2, Upload, Download, Trash2, GripVertical, Image as ImageIcon, PenTool, FileJson } from 'lucide-react';
+import { Settings2, Upload, Trash2, Image as ImageIcon, PenTool, FileJson } from 'lucide-react';
 import { Dropdown } from './Dropdown';
-import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors, KeyboardSensor } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { useGraphContext } from '../context/GraphContext';
-import { TEMPORAL_KEYS, getTrackColor } from '../constants';
+import { TEMPORAL_KEYS } from '../constants';
 import { toPng, toSvg } from 'html-to-image';
 import { buildGraphFile } from '../utils/graphFile';
 
 interface TrackPanelProps {
     onImport: (file: File) => void;
 }
-
-interface SortableTrackItemProps {
-    label: string;
-    isHidden: boolean;
-    onToggle: (l: string) => void;
-    onDelete: (l: string) => void;
-}
-
-const SortableTrackItem: React.FC<SortableTrackItemProps> = ({ label, isHidden, onToggle, onDelete }) => {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: label });
-
-    const style = {
-        transform: CSS.Translate.toString(transform),
-        transition,
-        zIndex: isDragging ? 50 : 'auto',
-        position: 'relative' as 'relative'
-    };
-
-    // Wrapper to stop propagation prevents parent DnD context from hijacking the event
-    const handlePointerDown = (e: React.PointerEvent) => {
-        e.stopPropagation();
-        listeners?.onPointerDown?.(e);
-    };
-
-    return (
-        <div
-            ref={setNodeRef}
-            style={style}
-            className={`
-                flex items-center justify-between p-2 rounded-lg border mb-2 select-none touch-none
-                ${isHidden ? 'bg-slate-50 border-slate-200 text-slate-400' : 'bg-white border-slate-200 shadow-sm'}
-                ${isDragging ? 'shadow-lg opacity-80 ring-1 ring-blue-400 border-blue-400 z-50' : 'hover:border-slate-300'}
-            `}
-        >
-            <div className="flex items-center gap-2 overflow-hidden flex-1">
-                <div
-                    {...attributes}
-                    {...listeners}
-                    onPointerDown={handlePointerDown}
-                    className="cursor-grab hover:text-slate-600 text-slate-300 flex-shrink-0 p-1 hover:bg-slate-100 rounded transition-colors active:cursor-grabbing outline-none"
-                >
-                    <GripVertical className="w-4 h-4" />
-                </div>
-                <div
-                    className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: getTrackColor(label) }}
-                />
-                <span
-                    onClick={() => onToggle(label)}
-                    className={`text-sm font-medium truncate cursor-pointer flex-1 ${isHidden ? 'line-through decoration-slate-300' : 'text-slate-700'}`}
-                >
-                    {label}
-                </span>
-            </div>
-            <div className="flex items-center gap-1">
-                <button
-                    onClick={(e) => { e.stopPropagation(); onToggle(label); }}
-                    className={`p-1 rounded-full hover:bg-slate-100 ${isHidden ? 'text-slate-400' : 'text-blue-500'}`}
-                    title={isHidden ? "Show Track" : "Hide Track"}
-                >
-                    {isHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                </button>
-                <button
-                    onClick={(e) => { e.stopPropagation(); onDelete(label); }}
-                    className="p-1 rounded-full hover:bg-red-50 text-slate-300 hover:text-red-500 transition-colors"
-                    title="Delete Track"
-                >
-                    <Trash2 className="w-3.5 h-3.5" />
-                </button>
-            </div>
-        </div>
-    );
-};
 
 export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
     const {
@@ -95,11 +19,6 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
         deleteAttribute,
         linkingAttribute,
         setLinkingAttribute,
-        rowLabelMap,
-        hiddenLabels,
-        toggleTrackVisibility,
-        deleteTrack,
-        reorderTracks,
         clearGraph,
         graph,
         gridConfig
@@ -107,32 +26,7 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Filter unique labels for display
-    const currentLabels = rowLabelMap[activeAttribute] || [];
-    // Ensure uniqueness and filter out empties for stable IDs
-    const uniqueLabels = React.useMemo(() => {
-        return Array.from(new Set(currentLabels.filter(Boolean)));
-    }, [currentLabels]);
-
     const nonTemporalAttributes = availableAttributes.filter(attr => !TEMPORAL_KEYS.includes(attr));
-
-    const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-    );
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (over && active.id !== over.id) {
-            const oldIndex = uniqueLabels.indexOf(active.id as string);
-            const newIndex = uniqueLabels.indexOf(over.id as string);
-
-            if (oldIndex !== -1 && newIndex !== -1) {
-                const newOrder = arrayMove(uniqueLabels, oldIndex, newIndex);
-                reorderTracks(newOrder);
-            }
-        }
-    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -212,40 +106,8 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
                 />
             </div>
 
-            <div className="px-5 py-3 border-b border-slate-200 bg-white flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-slate-500" />
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Tracks</span>
-                </div>
-                <span className="text-[10px] text-slate-400 font-mono bg-slate-100 px-1.5 py-0.5 rounded">
-                    {uniqueLabels.length}
-                </span>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4 bg-white scrollbar-thin scrollbar-thumb-slate-200">
-                {uniqueLabels.length === 0 ? (
-                    <div className="text-center p-4 text-slate-400 italic text-xs">
-                        No tracks defined. Add nodes to create tracks.
-                    </div>
-                ) : (
-                    <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                    >
-                        <SortableContext items={uniqueLabels} strategy={verticalListSortingStrategy}>
-                            {uniqueLabels.map(label => (
-                                <SortableTrackItem
-                                    key={label}
-                                    label={label}
-                                    isHidden={hiddenLabels.includes(label)}
-                                    onToggle={toggleTrackVisibility}
-                                    onDelete={deleteTrack}
-                                />
-                            ))}
-                        </SortableContext>
-                    </DndContext>
-                )}
+            <div className="flex-1 px-5 py-4 text-xs text-slate-400 leading-relaxed bg-white">
+                Tracks are edited beside the graph: hover a track name to drag, hide or delete it.
             </div>
 
             <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col gap-3">

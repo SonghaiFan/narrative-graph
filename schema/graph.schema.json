@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/SonghaiFan/gpt_storytale/main/schema/graph.schema.json",
-  "title": "Temporal Topic Narrative Graph",
+  "$id": "https://raw.githubusercontent.com/SonghaiFan/narrative-graph/main/schema/graph.schema.json",
+  "title": "Time Track Narrative Graph",
   "description": "A narrative laid out on a grid: time runs along the columns, tracks (topics or entities) down the rows. The graph editor (apps/web) reads and edits this shape. It also accepts the same object wrapped as {\"graph\": {...}}; this schema describes the unwrapped form. The editor ignores any edges in a file and derives them again with the rule in apps/web/utils/computeEdges.ts.",
   "type": "object",
   "required": ["nodes"],

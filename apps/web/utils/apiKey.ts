@@ -1,19 +1,26 @@
-const STORAGE_KEY = 'ttng.geminiApiKey';
+const KEY = 'ttng.openrouterApiKey';
+const MODEL = 'ttng.model';
 
-// The key is kept in sessionStorage: it lasts as long as the tab and is never written to a file or the bundle.
-// Storage can be missing or blocked, so every access is allowed to fail.
-export const loadApiKey = (): string => {
+// The API key is kept in sessionStorage: it lasts as long as the tab and is never written to a file or the bundle.
+// The model id is not secret, so it is remembered across visits. Storage can be missing or blocked, so every
+// access is allowed to fail.
+const read = (store: 'sessionStorage' | 'localStorage', name: string): string => {
     try {
-        return globalThis.sessionStorage?.getItem(STORAGE_KEY) ?? '';
+        return (globalThis as any)[store]?.getItem(name) ?? '';
     } catch {
         return '';
     }
 };
 
-export const saveApiKey = (key: string): void => {
+const write = (store: 'sessionStorage' | 'localStorage', name: string, value: string): void => {
     try {
-        globalThis.sessionStorage?.setItem(STORAGE_KEY, key);
+        (globalThis as any)[store]?.setItem(name, value);
     } catch {
         // not remembered, which is fine
     }
 };
+
+export const loadApiKey = (): string => read('sessionStorage', KEY);
+export const saveApiKey = (key: string): void => write('sessionStorage', KEY, key);
+export const loadModel = (): string => read('localStorage', MODEL);
+export const saveModel = (model: string): void => write('localStorage', MODEL, model);

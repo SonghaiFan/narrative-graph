@@ -1,6 +1,6 @@
 # ttng
 
-Design a story as a graph, then let an LLM write it. ttng stands for Temporal Topic Narrative Graph.
+Design a story as a graph, then let an LLM write it. ttng stands for Time Track Narrative Graph: a narrative laid out on a time-by-track grid. The repository is called `narrative-graph`.
 
 A narrative is laid out on a **time × track grid**, where tracks are topics or entities. Nodes are story beats, edges connect beats that share an attribute, and nine reusable **motifs** (Linear, Arch, Ladder, EarlyTurn, LateTurn, SharpBranch, WideBranch, SharpMerge, WideMerge) describe how a plot moves between tracks.
 
@@ -10,7 +10,7 @@ A narrative is laid out on a **time × track grid**, where tracks are topics or 
 
 | Path | What it is | Came from |
 |---|---|---|
-| [apps/web](apps/web) | Graph editor: drag motifs onto the grid, DAG and force views, undo/redo, AI graph generation (React 19, Vite, Cytoscape, Gemini) | `ttng-constructor` |
+| [apps/web](apps/web) | Graph editor: drag motifs onto the grid, DAG and force views, undo/redo, AI graph generation through OpenRouter (React 19, Vite, Cytoscape) | `ttng-constructor` |
 | [python](python) | Generation engine: narrative structure → aligned themes, entities and time periods → LLM writes one chapter per node | `gpt_storytale` |
 | [legacy/gpt_storyteller](legacy/gpt_storyteller) | Earlier pipeline. Kept only to lift cartographer, journalist and graph code into `python/`, then to be deleted | `gpt_storyteller` |
 | [schema](schema) | The graph, graph-file and story JSON Schemas, with the fixtures both test suites read | – |
@@ -24,11 +24,11 @@ Web editor:
 ```bash
 cd apps/web
 npm install
-npm run dev    # the AI dialog asks for your own Gemini key; none is needed to edit
+npm run dev    # the AI dialog asks for your own OpenRouter key; none is needed to edit
 ```
 
 Python engine: see [python/README.md](python/README.md).
 
 ## License
 
-[MIT](LICENSE). The repository still lives at `SonghaiFan/gpt_storytale`.
+[MIT](LICENSE). The repository was called `gpt_storytale` until it was renamed to `SonghaiFan/narrative-graph`; the old address redirects.

@@ -21,6 +21,9 @@ import { GhostLayer } from "./GhostLayer";
 import { GraphInspector } from "./GraphInspector";
 import { useGraphContext } from "../context/GraphContext";
 import { getStackLabel } from "../utils/graphUtils";
+import { reorderVisible } from "../utils/trackOrder";
+import { TrackLabelColumn } from "./TrackLabelColumn";
+import { Eye } from "lucide-react";
 
 interface NarrativeGridProps {
   hoverCell: { t: number; h: number } | null;
@@ -68,6 +71,11 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
     availableAttributes,
     linkingAttribute,
     createTrack,
+    rowLabelMap,
+    hiddenLabels,
+    reorderTracks,
+    toggleTrackVisibility,
+    deleteTrack,
   } = useGraphContext();
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -105,8 +113,8 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
       })
     );
 
-    // Add padding: pl-6 (24px) + pr-6 (24px) + some extra buffer
-    const padding = 24 + 24 + 16; // left + right + buffer
+    // Add padding: pl-2 (8px) + pr-6 (24px) + the track controls (about 72px) + some extra buffer
+    const padding = 8 + 24 + 72 + 16;
     return Math.max(maxWidth + padding, LABEL_WIDTH); // Ensure minimum width
   }, [visibleRowLabels]);
 
@@ -425,6 +433,18 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                 })}
               </div>
 
+              {/* Layer 4.5: Track names with their controls (move, hide, delete) */}
+              <TrackLabelColumn
+                labels={visibleRowLabels}
+                width={dynamicLabelWidth}
+                onRename={updateRowLabel}
+                onReorder={(from, to) =>
+                  reorderTracks(reorderVisible(rowLabelMap[activeAttribute] || [], hiddenLabels, from, to))
+                }
+                onHide={toggleTrackVisibility}
+                onDelete={deleteTrack}
+              />
+
               {/* Layer 5: Interaction Grid - Synced to Visible Labels */}
               {visibleRowLabels.map((label, h) => (
                 <div
@@ -432,19 +452,8 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                   className="flex items-center relative z-10"
                   style={{ height: CELL_HEIGHT }}
                 >
-                  {/* Row Label Input */}
-                  <div
-                    style={{ width: dynamicLabelWidth }}
-                    className="shrink-0 pr-6 pl-6 flex items-center justify-end h-full pointer-events-auto"
-                  >
-                    <input
-                      type="text"
-                      value={label}
-                      onChange={(e) => updateRowLabel(h, e.target.value)}
-                      placeholder={`Track ${h + 1}`}
-                      className="text-right font-bold text-slate-600 bg-transparent border-b-2 border-transparent hover:border-slate-200 focus:border-blue-500 focus:outline-none w-full px-1 py-1 transition-all placeholder:text-slate-300 placeholder:font-normal text-sm"
-                    />
-                  </div>
+                  {/* Space for the track names, which are drawn by TrackLabelColumn */}
+                  <div style={{ width: dynamicLabelWidth }} className="shrink-0 h-full" />
 
                   {/* Cell Grid */}
                   <div className="flex">
@@ -474,6 +483,28 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
               ))}
 
             </div>
+            {/* Tracks that are hidden: they have no row, so they are listed here to be shown again */}
+            {(() => {
+              const hiddenHere = Array.from(new Set((rowLabelMap[activeAttribute] || []).filter((l) => l && hiddenLabels.includes(l))));
+              if (hiddenHere.length === 0) return null;
+              return (
+                <div className="flex flex-wrap items-center gap-2 mt-3" style={{ maxWidth: totalWidth }}>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hidden</span>
+                  {hiddenHere.map((label) => (
+                    <button
+                      key={label}
+                      onClick={() => toggleTrackVisibility(label)}
+                      className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 bg-white border border-slate-200 hover:border-slate-300 rounded-full pl-2 pr-2.5 py-1 transition-colors"
+                      title="Show track"
+                    >
+                      <Eye className="w-3 h-3" />
+                      <span style={{ textDecoration: 'line-through', textDecorationColor: '#CBD5E1' }}>{label}</span>
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
+
             {/* --- Time Axis --- */}
             <div
               className="pointer-events-none"

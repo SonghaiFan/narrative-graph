@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/SonghaiFan/gpt_storytale/main/schema/graph-file.schema.json",
+  "$id": "https://raw.githubusercontent.com/SonghaiFan/narrative-graph/main/schema/graph-file.schema.json",
   "title": "Graph file",
   "description": "The file the editor's JSON button downloads (narrative_graph.json). The graph inside has no edges, because the editor derives them. Importing reads only `graph`; `layout` and `metadata` are information for people. The editor also imports the bare graph without this wrapper.",
   "type": "object",

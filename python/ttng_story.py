@@ -12,6 +12,7 @@ import copy
 import json
 import sys
 
+from llm import DEFAULT_MODELS, make_client
 from narrative_deducer import create_story
 from ttng_align import add_graph_arguments, align_graph, read_inputs, unwrap
 
@@ -25,10 +26,10 @@ def fill_content(document, texts):
     return result
 
 
-def write_story(document, context=None, structure=None, period=None, seed=None, client=None):
+def write_story(document, context=None, structure=None, period=None, seed=None, client=None, model_name="gpt-4"):
     """Returns the document with the chapters written into it, and the story."""
     alignment = align_graph(unwrap(document), context=context, structure=structure, seed=seed, period=period)
-    story = create_story(alignment, client=client)
+    story = create_story(alignment, client=client, model_name=model_name)
     # The chapters come out in alignment order. Match by position: the id in a reply is the model's to write.
     texts = {node: chapter.content for node, chapter in zip(alignment, story.chapters)}
     return fill_content(document, texts), story
@@ -37,12 +38,19 @@ def write_story(document, context=None, structure=None, period=None, seed=None, 
 def main(argv=None, client=None):
     parser = argparse.ArgumentParser(prog="ttng_story", description="Write a graph's chapters into its nodes.")
     add_graph_arguments(parser)
+    parser.add_argument("--provider", choices=list(DEFAULT_MODELS), default="openai",
+                        help="openai (OPENAI_API_KEY) or openrouter (OPENROUTER_API_KEY, many models)")
+    parser.add_argument("--model", help="the provider's name for the model; default gpt-4 for openai, "
+                        "openai/gpt-4o-mini for openrouter")
     parser.add_argument("-o", "--output", required=True, help="the graph file with the text filled in")
     parser.add_argument("--story-out", help="also save the story as the writer returned it")
     args = parser.parse_args(argv)
 
     document, context, structure = read_inputs(args, parser)
-    filled, story = write_story(document, context, structure, args.period, args.seed, client)
+    if client is None:
+        client = make_client(args.provider)
+    model_name = args.model or DEFAULT_MODELS[args.provider]
+    filled, story = write_story(document, context, structure, args.period, args.seed, client, model_name)
     with open(args.output, "w") as file:
         json.dump(filled, file, indent=2)
         file.write("\n")

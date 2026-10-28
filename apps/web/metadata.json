@@ -1,5 +1,5 @@
 {
   "name": "Narrative Graph Constructor",
-  "description": "A visual tool to construct Temporal Topic Narrative Graphs (TTNG) by dragging and dropping narrative motifs onto a time-track grid.",
+  "description": "A visual tool to construct Time Track Narrative Graphs (TTNG) by dragging and dropping narrative motifs onto a time-track grid.",
   "requestFramePermissions": []
 }

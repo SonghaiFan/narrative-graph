@@ -94,3 +94,31 @@ def test_the_command_line_needs_somewhere_to_write(tmp_path):
     (tmp_path / "in.json").write_text(json.dumps(EXPORT))
     with pytest.raises(SystemExit):
         ttng_story.main([str(tmp_path / "in.json")])
+
+
+def test_the_command_line_defaults_to_openai_and_gpt4(tmp_path, fake_chat):
+    (tmp_path / "in.json").write_text(json.dumps(EXPORT))
+    ttng_story.main([str(tmp_path / "in.json"), "--period", *PERIOD, "-o", str(tmp_path / "out.json")])
+    assert fake_chat.providers == ["openai"]
+    assert {c["model"] for c in fake_chat.calls} == {"gpt-4"}
+
+
+def test_the_command_line_can_use_openrouter_and_any_model(tmp_path, fake_chat):
+    (tmp_path / "in.json").write_text(json.dumps(EXPORT))
+    ttng_story.main([str(tmp_path / "in.json"), "--period", *PERIOD, "-o", str(tmp_path / "out.json"),
+                     "--provider", "openrouter", "--model", "google/gemini-2.5-flash"])
+    assert fake_chat.providers == ["openrouter"]
+    assert {c["model"] for c in fake_chat.calls} == {"google/gemini-2.5-flash"}
+
+
+def test_openrouter_without_a_model_gets_its_default(tmp_path, fake_chat):
+    (tmp_path / "in.json").write_text(json.dumps(EXPORT))
+    ttng_story.main([str(tmp_path / "in.json"), "--period", *PERIOD, "-o", str(tmp_path / "out.json"),
+                     "--provider", "openrouter"])
+    assert {c["model"] for c in fake_chat.calls} == {"openai/gpt-4o-mini"}
+
+
+def test_an_unknown_provider_is_refused(tmp_path):
+    (tmp_path / "in.json").write_text(json.dumps(EXPORT))
+    with pytest.raises(SystemExit):
+        ttng_story.main([str(tmp_path / "in.json"), "-o", str(tmp_path / "o.json"), "--provider", "nope"])

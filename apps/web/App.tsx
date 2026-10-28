@@ -112,7 +112,7 @@ const AppContent: React.FC = () => {
     setHoverCell(null);
   };
 
-  const handleAIGenerate = async (prompt: string, useSearch: boolean, apiKey: string) => {
+  const handleAIGenerate = async (prompt: string, useSearch: boolean, apiKey: string, model: string) => {
     setIsGeneratingAI(true);
     try {
       const { nodes, sources, recommendedRows, recommendedCols } = await generateGraphFromPrompt(
@@ -121,7 +121,8 @@ const AppContent: React.FC = () => {
         gridConfig.rows,
         gridConfig.cols,
         useSearch,
-        apiKey
+        apiKey,
+        model
       );
 
       // Adjust grid if needed
