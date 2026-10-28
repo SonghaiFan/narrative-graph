@@ -17,5 +17,10 @@ myvenv/
 .env.*
 !.env.example
 
+# Output of pipeline runs (an earlier batch is archived in a private repo)
+python/alignment/
+python/stories/
+python/logs/
+
 # Test caches
 .pytest_cache/

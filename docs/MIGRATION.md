@@ -27,10 +27,10 @@ At the moment of import `apps/web` and `python` were byte-identical to the upstr
    - Python: `python/meta/types.py` uses `Topic`, `index`, `time_period`; `legacy/gpt_storyteller/graph.py` reads `themes`.
    - Web: `apps/web/types.ts` uses `track`, `time`, `attributes`.
    - Motif names also drifted: `ShortFork` / `LongFork` in `python/meta/narrative_context_*.json`, `EarlyTurn` / `LateTurn` in `apps/web/constants.ts`.
-5. **Key exposure in the web app.** `apps/web/vite.config.ts` inlines `GEMINI_API_KEY` into the client bundle. Do not deploy publicly until users bring their own key or a proxy holds it.
-6. **`apps/web/README.md`** is still the AI Studio template.
-7. **No LICENSE.** The old `python/README.md` claimed MIT.
-8. **More loose ends in `python/`:** `narrative_alignmenter.py` stops with `NameError` when run directly; `story_packer.py` runs on import and moves files into `arc/` folders; 80 of the committed sample stories use an older schema (`event`/`topics` instead of `title`/`Topic`).
+5. **Fixed:** the web app no longer builds `GEMINI_API_KEY` into the client bundle. The AI dialog asks users for their own key, which stays in session storage. The Gemini call itself has not been run.
+6. **Fixed:** `apps/web/README.md` was the AI Studio template; it now describes the editor.
+7. **Fixed:** MIT `LICENSE` added. Two commits in the history are by Simon D Angus; the license has not been checked with them.
+8. **More loose ends in `python/`:** `narrative_alignmenter.py` stops with `NameError` when run directly; `story_packer.py` runs on import and moves files into `arc/` folders; the root `story.json` uses an older schema (`event`/`topics` instead of `title`/`Topic`). The 276 files of earlier run output in `python/{alignment,stories,logs}/arc` were moved to the private `Frankfsh/ttng-run-archive` (copied byte for byte, checked by hash from a fresh clone, then deleted here); they remain in this repository's git history.
 
 ## Planned moves
 
@@ -42,4 +42,4 @@ The staged plan for these moves, and the checks that keep the repo working while
 - [ ] Lift `gpt_cartographer.py`, `gpt_journalist.py` and `graph.py` out of `legacy/gpt_storyteller`; drop `narrative_deducer copy 2.py` and the notebooks.
 - [x] Connect the editor to the writer by file: export from the editor, `python -m ttng_story`, import the result. A button inside the editor is not built.
 - [ ] Move curated stories and graphs into `examples/`.
-- [ ] Pick a license and a final name.
+- [x] Pick a license (MIT) and a name (ttng). Renaming the GitHub repository from `gpt_storytale` to `ttng` is not done.

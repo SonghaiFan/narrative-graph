@@ -1,14 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { NarrativeNode, Source } from "../types";
 
-if (!process.env.API_KEY) {
-  console.error(
-    "API_KEY is missing. Please set GEMINI_API_KEY in your .env file."
-  );
-}
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 // We use an intermediate type for AI generation to avoid dynamic key issues in Schema definition
 interface AIResponseNode {
   time: number;
@@ -22,13 +14,18 @@ export const generateGraphFromPrompt = async (
   currentAttributes: string[],
   gridRows: number,
   gridCols: number,
-  useSearch: boolean
+  useSearch: boolean,
+  apiKey: string
 ): Promise<{
   nodes: NarrativeNode[];
   sources: Source[];
   recommendedRows: number;
   recommendedCols: number;
 }> => {
+  const key = apiKey.trim();
+  if (!key) throw new Error("Enter a Gemini API key to generate a graph.");
+  const ai = new GoogleGenAI({ apiKey: key });
+
   // Using gemini-3-flash-preview which supports search grounding
   const modelId = "gemini-3-flash-preview";
 
