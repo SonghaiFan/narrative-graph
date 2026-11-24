@@ -16,19 +16,19 @@ export const MotifSidebar: React.FC<MotifSidebarProps> = ({ onDragStart }) => {
       key={motif.id}
       draggable
       onDragStart={(e) => onDragStart(e, motif)}
-      className="bg-white border border-slate-200 rounded-md p-3 mb-3 cursor-grab hover:shadow-md transition-shadow active:cursor-grabbing group relative"
+      className="bg-white border border-neutral-200 rounded-md p-3 mb-3 cursor-grab hover:shadow-md transition-shadow active:cursor-grabbing group relative"
     >
       <div className="flex items-center justify-between mb-2">
-        <span className="font-semibold text-sm text-slate-800">{motif.name}</span>
-        <GripVertical className="w-4 h-4 text-slate-400" />
+        <span className="font-semibold text-sm text-neutral-800">{motif.name}</span>
+        <GripVertical className="w-4 h-4 text-neutral-400" />
       </div>
       
       {/* Mini Visual Representation */}
-      <div className="h-16 w-full bg-slate-50 rounded border border-slate-100 relative overflow-hidden">
+      <div className="h-16 w-full bg-neutral-50 rounded border border-neutral-100 relative overflow-hidden">
         {renderMiniPreview(motif)}
       </div>
 
-      <div className="mt-2 text-xs text-slate-500 line-clamp-2">{motif.description}</div>
+      <div className="mt-2 text-xs text-neutral-500 line-clamp-2">{motif.description}</div>
     </div>
   );
 
@@ -49,7 +49,7 @@ export const MotifSidebar: React.FC<MotifSidebarProps> = ({ onDragStart }) => {
       <svg className="w-full h-full" viewBox="-10 -10 80 60" preserveAspectRatio="xMidYMid meet">
         <defs>
             <marker id={`arrow-${motif.id}`} markerWidth="6" markerHeight="6" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+              <path d="M0,0 L0,6 L9,3 z" fill="#737373" />
             </marker>
         </defs>
         {motif.edges.map((e, idx) => {
@@ -62,7 +62,7 @@ export const MotifSidebar: React.FC<MotifSidebarProps> = ({ onDragStart }) => {
               y1={start.relTrack * h + marginY}
               x2={end.relTime * w + marginX}
               y2={end.relTrack * h + marginY}
-              stroke="#94a3b8"
+              stroke="#a3a3a3"
               strokeWidth="1.5"
               markerEnd={`url(#arrow-${motif.id})`}
             />
@@ -74,7 +74,7 @@ export const MotifSidebar: React.FC<MotifSidebarProps> = ({ onDragStart }) => {
             cx={n.relTime * w + marginX}
             cy={n.relTrack * h + marginY}
             r="4"
-            className="fill-slate-600"
+            className="fill-neutral-600"
           />
         ))}
       </svg>
@@ -82,25 +82,25 @@ export const MotifSidebar: React.FC<MotifSidebarProps> = ({ onDragStart }) => {
   };
 
   return (
-    <div className="w-72 bg-slate-50 border-r border-slate-200 h-full flex flex-col shadow-xl z-10">
-      <div className="p-5 border-b border-slate-200 bg-white">
-        <h1 className="text-xl font-bold serif text-slate-900">Narrative Motifs</h1>
-        <p className="text-xs text-slate-500 mt-1">Drag patterns to the grid</p>
+    <div className="w-72 bg-neutral-50 border-r border-neutral-200 h-full flex flex-col shadow-xl z-10">
+      <div className="p-5 border-b border-neutral-200 bg-white">
+        <h1 className="text-xl font-bold serif text-neutral-900">Narrative Motifs</h1>
+        <p className="text-xs text-neutral-500 mt-1">Drag patterns to the grid</p>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-slate-200">
+      <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-neutral-200">
         <div className="mb-6">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 ml-1">Sequential</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3 ml-1">Sequential</h3>
           {sequential.map(renderMotifCard)}
         </div>
         
         <div className="mb-6">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 ml-1">Non-Sequential</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3 ml-1">Non-Sequential</h3>
           {nonSequential.map(renderMotifCard)}
         </div>
       </div>
       
-      <div className="p-4 bg-slate-100 border-t border-slate-200 text-xs text-slate-500 flex items-start gap-2">
+      <div className="p-4 bg-neutral-100 border-t border-neutral-200 text-xs text-neutral-500 flex items-start gap-2">
          <Info className="w-4 h-4 mt-0.5 shrink-0" />
          <p>Tracks (H) represent entities or topics. Time (T) flows left to right.</p>
       </div>

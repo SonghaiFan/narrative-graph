@@ -86,8 +86,8 @@ def test_time_slices_stay_inside_the_theme_range_and_advance(aligned):
 def test_instruction_names_the_structure_and_the_node(aligned):
     structure, alignment = aligned
     for node, details in alignment.items():
-        assert structure["name"] in details["StuctureInstruction"]  # key is misspelled in the data
-        assert node in details["StuctureInstruction"]
+        assert structure["name"] in details["StructureInstruction"]
+        assert node in details["StructureInstruction"]
 
 
 @pytest.mark.parametrize("name", STRUCTURES)

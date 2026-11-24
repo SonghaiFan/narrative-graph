@@ -348,6 +348,129 @@
           "rows": 2
         }
       }
+    },
+    {
+      "schema": "file",
+      "name": "a structure whose organising attribute is not a string",
+      "data": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "a",
+              "time": 0,
+              "track": 0,
+              "attributes": {
+                "Entity": [
+                  "Ana"
+                ]
+              }
+            }
+          ]
+        },
+        "structure": {
+          "organising": 3
+        }
+      }
+    },
+    {
+      "schema": "file",
+      "name": "a priority that is not a list of values",
+      "data": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "a",
+              "time": 0,
+              "track": 0,
+              "attributes": {
+                "Entity": [
+                  "Ana"
+                ]
+              }
+            }
+          ]
+        },
+        "structure": {
+          "priority": {
+            "Topic": "Journey"
+          }
+        }
+      }
+    },
+    {
+      "schema": "file",
+      "name": "a priority that repeats a value",
+      "data": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "a",
+              "time": 0,
+              "track": 0,
+              "attributes": {
+                "Entity": [
+                  "Ana"
+                ]
+              }
+            }
+          ]
+        },
+        "structure": {
+          "priority": {
+            "Topic": [
+              "A",
+              "A"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "schema": "file",
+      "name": "a structure with an unknown key",
+      "data": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "a",
+              "time": 0,
+              "track": 0,
+              "attributes": {
+                "Entity": [
+                  "Ana"
+                ]
+              }
+            }
+          ]
+        },
+        "structure": {
+          "organising": "Topic",
+          "colour": "red"
+        }
+      }
+    },
+    {
+      "schema": "file",
+      "name": "a link predicate this model does not have",
+      "data": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "a",
+              "time": 0,
+              "track": 0,
+              "attributes": {
+                "Entity": [
+                  "Ana"
+                ]
+              }
+            }
+          ]
+        },
+        "structure": {
+          "predicate": "similar"
+        }
+      }
     }
   ]
 }

@@ -29,21 +29,21 @@ const ChapterCard: React.FC<ChapterCardProps> = ({
     const trackLabel = currentNode.attributes[activeAttribute]?.[0] || `Track ${currentNode.track + 1}`;
 
     return (
-        <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 mb-6 flex flex-col overflow-hidden group">
-            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+        <div className="bg-white border border-neutral-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 mb-6 flex flex-col overflow-hidden group">
+            <div className="px-4 py-3 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <span className="font-serif font-bold text-lg text-slate-800">Chapter {timeIndex + 1}</span>
-                    <span className="text-[10px] font-mono text-slate-400 pt-1">t={timeIndex}</span>
+                    <span className="font-serif font-bold text-lg text-neutral-800">Chapter {timeIndex + 1}</span>
+                    <span className="text-[10px] font-mono text-neutral-400 pt-1">t={timeIndex}</span>
                 </div>
                 
                 {hasMultiple && (
-                    <div className="flex items-center gap-1 bg-white rounded-md border border-slate-200 p-0.5 shadow-sm">
-                        <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-1 hover:bg-slate-100 rounded disabled:opacity-30 disabled:hover:bg-transparent">
-                            <ChevronLeft className="w-3 h-3 text-slate-600" />
+                    <div className="flex items-center gap-1 bg-white rounded-md border border-neutral-200 p-0.5 shadow-sm">
+                        <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-1 hover:bg-neutral-100 rounded disabled:opacity-30 disabled:hover:bg-transparent">
+                            <ChevronLeft className="w-3 h-3 text-neutral-600" />
                         </button>
-                        <span className="text-[10px] font-medium text-slate-500 w-8 text-center select-none">{page + 1} / {nodes.length}</span>
-                        <button disabled={page === nodes.length - 1} onClick={() => setPage(p => p + 1)} className="p-1 hover:bg-slate-100 rounded disabled:opacity-30 disabled:hover:bg-transparent">
-                            <ChevronRight className="w-3 h-3 text-slate-600" />
+                        <span className="text-[10px] font-medium text-neutral-500 w-8 text-center select-none">{page + 1} / {nodes.length}</span>
+                        <button disabled={page === nodes.length - 1} onClick={() => setPage(p => p + 1)} className="p-1 hover:bg-neutral-100 rounded disabled:opacity-30 disabled:hover:bg-transparent">
+                            <ChevronRight className="w-3 h-3 text-neutral-600" />
                         </button>
                     </div>
                 )}
@@ -57,20 +57,20 @@ const ChapterCard: React.FC<ChapterCardProps> = ({
                     </span>
                 </div>
 
-                <div className="font-serif text-slate-700 leading-relaxed text-sm">
+                <div className="font-serif text-neutral-700 leading-relaxed text-sm">
                     {currentNode.content ? (
                         <p>{currentNode.content}</p>
                     ) : (
-                        <p className="text-slate-400 italic">No narrative content provided for this story unit.</p>
+                        <p className="text-neutral-400 italic">No narrative content provided for this story unit.</p>
                     )}
                 </div>
 
-                <div className="mt-2 pt-3 border-t border-slate-50 flex flex-wrap gap-2">
+                <div className="mt-2 pt-3 border-t border-neutral-50 flex flex-wrap gap-2">
                     {Object.entries(currentNode.attributes)
                         .filter(([k]) => k !== activeAttribute)
                         .map(([k, vals]) => (
-                            <div key={k} className="text-[10px] text-slate-500">
-                                <span className="font-semibold text-slate-600">{k}:</span> {vals.join(', ')}
+                            <div key={k} className="text-[10px] text-neutral-500">
+                                <span className="font-semibold text-neutral-600">{k}:</span> {vals.join(', ')}
                             </div>
                         ))
                     }
@@ -101,27 +101,27 @@ export const StorySidebar: React.FC = () => {
     }, [graph.nodes]);
 
     return (
-        <div className="w-96 bg-white border-l border-slate-200 h-full flex flex-col shadow-xl z-20 shrink-0">
-            <div className="px-6 py-5 border-b border-slate-200 bg-white">
+        <div className="w-72 min-[1400px]:w-96 bg-white border-l border-neutral-200 h-full flex flex-col shadow-xl z-20 shrink-0">
+            <div className="px-6 py-5 border-b border-neutral-200 bg-white">
                 <div className="flex items-center gap-2 mb-1">
-                    <BookOpen className="w-4 h-4 text-slate-800" />
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Story View</span>
+                    <BookOpen className="w-4 h-4 text-neutral-800" />
+                    <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Story View</span>
                 </div>
-                <h2 className="font-serif text-2xl font-bold text-slate-900">Narrative Arc</h2>
+                <h2 className="font-serif text-2xl font-bold text-neutral-900">Narrative Arc</h2>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50 scrollbar-thin scrollbar-thumb-slate-200">
+            <div className="flex-1 overflow-y-auto p-6 bg-neutral-50/50 scrollbar-thin scrollbar-thumb-neutral-200">
                 {timeline.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-center p-4 opacity-60">
-                        <BookOpen className="w-12 h-12 text-slate-300 mb-4" />
-                        <h3 className="font-serif text-lg font-medium text-slate-700 mb-1">Empty Story</h3>
-                        <p className="text-xs text-slate-500 max-w-[200px]">
+                        <BookOpen className="w-12 h-12 text-neutral-300 mb-4" />
+                        <h3 className="font-serif text-lg font-medium text-neutral-700 mb-1">Empty Story</h3>
+                        <p className="text-xs text-neutral-500 max-w-[200px]">
                             Drag motifs onto the grid to begin writing your narrative chapters.
                         </p>
                     </div>
                 ) : (
                     <div className="max-w-md mx-auto relative">
-                        <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-slate-200 -z-10 hidden"></div>
+                        <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-neutral-200 -z-10 hidden"></div>
                         {timeline.map((step) => (
                             <ChapterCard 
                                 key={step.time} 
@@ -131,15 +131,15 @@ export const StorySidebar: React.FC = () => {
                             />
                         ))}
                         <div className="text-center mt-8 mb-4">
-                            <span className="font-serif italic text-slate-400 text-sm">End of Narrative</span>
+                            <span className="font-serif italic text-neutral-400 text-sm">End of Narrative</span>
                         </div>
                     </div>
                 )}
             </div>
 
             {graph.sources && graph.sources.length > 0 && (
-                <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 text-xs">
-                     <div className="flex items-center gap-1.5 mb-2 text-slate-500 font-bold uppercase tracking-wider">
+                <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-200 text-xs">
+                     <div className="flex items-center gap-1.5 mb-2 text-neutral-500 font-bold uppercase tracking-wider">
                         <Globe className="w-3.5 h-3.5" />
                         Research Sources
                      </div>

@@ -7,9 +7,10 @@ export default defineConfig(() => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        fs: { allow: ['../..'] }, // the sample graphs in examples/ sit above this folder
       },
       plugins: [react()],
-      // No API key is built into the bundle. The AI generator asks the user for their own Gemini key.
+      // No API key is built into the bundle. The AI generator asks the user for their own OpenRouter key.
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

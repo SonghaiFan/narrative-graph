@@ -10,14 +10,18 @@ either.
 What a node needs, and where the rest comes from:
 
 - Entity: kept as the graph has it. A node without any is sampled from its topic's pool in the context.
-- Topic: exactly one value; it becomes the chapter's theme. The context entry with the same `theme`
-  supplies the description and the pool, if the graph needs them.
+- Topic: the chapter's theme, one value. A node with several values goes to the one that the track priority
+  lists first; without a priority, several values are an error. The context entry with the same `theme`
+  supplies the description and the pool, if the graph needs them. A file from the editor says in its
+  `structure` which attribute organises the tracks and which links the nodes, so those need not be Topic and
+  Entity.
 - Time: a "Time Period" attribute with two ISO dates, else the topic's date range cut into one slice per
   time column, as the old aligner does, else a `period` given for the whole graph cut the same way. The
   editor's own "Time Period" values are free text such as "Jan 2024", so a graph from the editor needs one
   of the last two.
-- Parents: the graph's `edges` when it has them. Otherwise the editor's edge rule, which needs the nodes
-  to carry entities already.
+- Parents: the graph's `edges` when it has them; each must go forward in time, which is the one hard
+  constraint of the thesis model. Otherwise the editor's edge rule, which needs the nodes to carry entities
+  already.
 """
 import argparse
 import datetime
@@ -26,7 +30,7 @@ import random
 import sys
 
 from narrative_alignmenter import generate_time_periods
-from ttng_edges import derive_edges
+from ttng_edges import DEFAULT_PREDICATE, derive_edges
 
 TOPIC = "Topic"
 TIME_PERIOD = "Time Period"
@@ -63,10 +67,50 @@ def unwrap(document):
     return document["graph"] if isinstance(document.get("graph"), dict) else document
 
 
-def align_graph(graph, context=None, structure=None, seed=None, entity_attribute="Entity", period=None):
+def structure_of(document):
+    """The options of `align_graph` that the file's `structure` sets: organising and linking attribute, the link predicate, priority.
+
+    A bare graph, or a file without a structure, gives no options. Values of the wrong type are ignored, as the
+    editor ignores them.
+    """
+    declared = document.get("structure") if isinstance(document.get("structure"), dict) else {}
+    options = {}
+    if isinstance(declared.get("organising"), str):
+        options["organising"] = declared["organising"]
+    if isinstance(declared.get("linking"), str):
+        options["linking"] = declared["linking"]
+    if isinstance(declared.get("predicate"), str):
+        options["predicate"] = declared["predicate"]
+    priority = declared.get("priority")
+    organising = options.get("organising", TOPIC)
+    if isinstance(priority, dict) and isinstance(priority.get(organising), list):
+        options["priority"] = [v for v in priority[organising] if isinstance(v, str)]
+    return options
+
+
+def resolve_track_value(values, priority):
+    """Alpha with track priority: the value that decides a node's track, or None if there is no single answer.
+
+    One value is its own answer. Several need a priority, and the first of them in that list wins; values the
+    priority does not list come after all that it lists, and among those the first wins (the editor does the same).
+    """
+    if len(values) == 1:
+        return values[0]
+    if len(values) > 1 and priority:
+        rank = {value: i for i, value in enumerate(priority)}
+        return min(values, key=lambda v: rank.get(v, len(rank)))
+    return None
+
+
+def align_graph(graph, context=None, structure=None, seed=None, entity_attribute="Entity", period=None,
+                organising=TOPIC, priority=None, linking=None, predicate=DEFAULT_PREDICATE):
     """Align a graph. `structure` may carry `name`, `description` and `structure` for the prompt text.
 
     `period` is [start, end] ISO dates, used for nodes that have no dates of their own and no topic range.
+    `organising` is the attribute whose value is the theme; `priority` lists its values, highest priority first,
+    and settles which one a node with several values takes. `linking` is the attribute whose shared values give
+    the edges when the graph has none, and `predicate` (a name from ttng_edges.PREDICATES) says what links two
+    nodes by it; `linking` defaults to `entity_attribute`, which is also where entities are read.
     """
     nodes = [n for n in graph["nodes"] if n["track"] >= 0]  # off-grid nodes are not part of the story
     ids = [n["id"] for n in nodes]
@@ -80,12 +124,18 @@ def align_graph(graph, context=None, structure=None, seed=None, entity_attribute
     if "edges" in graph:
         edges = [(e["sourceId"], e["targetId"]) for e in graph["edges"]]
     else:
-        edges = [(e["sourceId"], e["targetId"]) for e in derive_edges(nodes, entity_attribute, columns)]
+        edges = [(e["sourceId"], e["targetId"]) for e in derive_edges(nodes, linking or entity_attribute, columns, predicate)]
     parents = {}
     for source, target in edges:
         for end in (source, target):
             if end not in by_id:
                 raise ValueError(f"edge refers to {end!r}, which is not a node on the grid")
+        if by_id[target]["time"] <= by_id[source]["time"]:
+            # the thesis's hard constraint: edges follow temporal order, so a graph has no cycles and no links within a time
+            raise ValueError(
+                f"edge {source!r} -> {target!r} does not go forward in time "
+                f"(time {by_id[source]['time']} -> {by_id[target]['time']})"
+            )
         parents.setdefault(target, []).append(source)
 
     pools = {}
@@ -103,10 +153,13 @@ def align_graph(graph, context=None, structure=None, seed=None, entity_attribute
     alignment = {}
     for node_id in _parents_first(ids, parents):
         node = by_id[node_id]
-        topics = node["attributes"].get(TOPIC, [])
-        if len(topics) != 1:
-            raise ValueError(f"node {node_id!r} needs exactly one {TOPIC} value, has {len(topics)}")
-        topic = topics[0]
+        topics = node["attributes"].get(organising, [])
+        topic = resolve_track_value(topics, priority)
+        if topic is None:
+            raise ValueError(
+                f"node {node_id!r} needs exactly one {organising} value, or a track priority to choose from several; "
+                f"it has {len(topics)}"
+            )
         ctx = pools.get(topic)
 
         entities = list(node["attributes"].get(entity_attribute, []))
@@ -129,7 +182,7 @@ def align_graph(graph, context=None, structure=None, seed=None, entity_attribute
             "Entity": list(set(entities)),
             "Time": _time_of(node, ctx, columns, period),
             "Prev": parents.get(node_id, []),
-            "StuctureInstruction": (  # misspelled on purpose: the writer reads this key
+            "StructureInstruction": (  # the writer also reads the old misspelling, StuctureInstruction
                 f"The narrative structure is {name}, where {description} (eg. {shape}). "
                 f"The current chapter node is {node_id}, which is the {node['time'] + 1}th chapter node in the narrative structure."
             ),
@@ -207,7 +260,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     document, context, structure = read_inputs(args, parser)
-    alignment = align_graph(unwrap(document), context=context, structure=structure, seed=args.seed, period=args.period)
+    alignment = align_graph(
+        unwrap(document), context=context, structure=structure, seed=args.seed, period=args.period, **structure_of(document)
+    )
     text = json.dumps(alignment, indent=2)
     if args.output:
         with open(args.output, "w") as file:

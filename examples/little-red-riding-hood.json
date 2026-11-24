@@ -1,0 +1,183 @@
+{
+  "graph": {
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "v1",
+        "time": 0,
+        "track": 0,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Journey"
+          ],
+          "Entity": [
+            "Red"
+          ]
+        },
+        "content": "Red departs her home for Grandma's cottage carrying a basket of food through the woods."
+      },
+      {
+        "id": "n2",
+        "label": "v2",
+        "time": 0,
+        "track": 0,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Journey"
+          ],
+          "Entity": [
+            "Wolf"
+          ]
+        },
+        "content": "The Wolf watches Red from the bushes near the dark forest entrance to plan his hunt."
+      },
+      {
+        "id": "n3",
+        "label": "v3",
+        "time": 1,
+        "track": 0,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Journey"
+          ],
+          "Entity": [
+            "Red",
+            "Wolf"
+          ]
+        },
+        "content": "Red stops to chat with the Wolf on the wooded path because he seems friendly."
+      },
+      {
+        "id": "n4",
+        "label": "v4",
+        "time": 1,
+        "track": 1,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Deception"
+          ],
+          "Entity": [
+            "Wolf",
+            "Red"
+          ]
+        },
+        "content": "The Wolf encourages Red to pick wild flowers to delay the girl from reaching the cottage."
+      },
+      {
+        "id": "n5",
+        "label": "v5",
+        "time": 2,
+        "track": 1,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Deception"
+          ],
+          "Entity": [
+            "Wolf"
+          ]
+        },
+        "content": "The Wolf eats Grandma and dons her nightcap at the cottage to trick the girl."
+      },
+      {
+        "id": "n6",
+        "label": "v6",
+        "time": 2,
+        "track": 2,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Rescue"
+          ],
+          "Entity": [
+            "Hunter",
+            "Wolf"
+          ]
+        },
+        "content": "The Hunter tracks the Wolf across the forest floor after hearing a suspicious disturbance."
+      },
+      {
+        "id": "n7",
+        "label": "v7",
+        "time": 3,
+        "track": 1,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Deception"
+          ],
+          "Entity": [
+            "Wolf",
+            "Red"
+          ]
+        },
+        "content": "The Wolf lunges at Red to eat her inside Grandma's quiet bedroom after revealing himself."
+      },
+      {
+        "id": "n8",
+        "label": "v8",
+        "time": 3,
+        "track": 1,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Deception"
+          ],
+          "Entity": [
+            "Red",
+            "Wolf"
+          ]
+        },
+        "content": "Red enters the cottage and remarks on the Wolf's large ears while standing by the bed."
+      },
+      {
+        "id": "n9",
+        "label": "v9",
+        "time": 4,
+        "track": 2,
+        "motifSource": "Manual",
+        "attributes": {
+          "Topic": [
+            "Rescue"
+          ],
+          "Entity": [
+            "Hunter",
+            "Red",
+            "Wolf"
+          ]
+        },
+        "content": "The Hunter kills the Wolf to rescue Red and Grandma from danger inside the house."
+      }
+    ],
+    "sources": []
+  },
+  "layout": {
+    "rows": 3,
+    "cols": 5
+  },
+  "metadata": {
+    "timestamp": "2026-10-28T00:00:00.000Z",
+    "version": "1.0"
+  },
+  "structure": {
+    "organising": "Topic",
+    "linking": "Entity",
+    "predicate": "share",
+    "priority": {
+      "Topic": [
+        "Journey",
+        "Deception",
+        "Rescue"
+      ],
+      "Entity": [
+        "Hunter",
+        "Red",
+        "Wolf"
+      ]
+    }
+  }
+}

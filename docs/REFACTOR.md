@@ -82,7 +82,7 @@ Stage 2 was checked by planting seven deviations in `ttng_align.py` (sample size
 
 ## Facts that shape the next stages
 
-- **The web derives its edges; it does not read them.** Importing a graph reads `nodes` and `sources` only. An edge `u -> v` exists when `v.time == u.time + 1`, the tracks differ by at most 1, and the two nodes share a value of the linking attribute (default `Entity`) (`apps/web/context/GraphContext.tsx`, `computeEdges`).
+- **The web derives its edges; it does not read them.** Importing a graph reads `nodes` and `sources` only. An edge `u -> v` exists when `v.time == u.time + 1`, the tracks differ by at most 1, and the two nodes share a value of the linking attribute (default `Entity`) (`apps/web/context/GraphContext.tsx`, `computeEdges`). *Changed after Stage 6: the condition on the tracks was removed and the shared value became a predicate; see `schema/README.md`.*
 - **Python declares its edges.** The structure lists them, and the aligner makes each child share at least one entity with the union of its parents.
 - **Node ids line up.** In the nine structures of `narrative_context_a.json` the letter is the theme (a track in the editor) and the digit is the time column.
 - **Time periods do not line up yet.** The aligner cuts each theme's own date range into slices. The editor has one period per column, and only when the generator adds a `Time Period` attribute.

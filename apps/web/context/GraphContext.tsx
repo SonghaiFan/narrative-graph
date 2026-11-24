@@ -9,6 +9,8 @@ import {
     INITIAL_LINKING
 } from '../constants';
 import { computeEdges } from '../utils/computeEdges';
+import { assignTracks, orderLabels, type Structure } from '../utils/structure';
+import { DEFAULT_LINK_PREDICATE, type LinkPredicateName } from '../utils/linkPredicates';
 
 interface GridConfig {
     rows: number;
@@ -24,12 +26,13 @@ interface GraphContextType {
     availableAttributes: string[];
     activeAttribute: string; // The 'Alpha' Axis
     linkingAttribute: string; // The 'Beta' Rule
+    linkingPredicate: LinkPredicateName; // what the Beta Rule asks of the linking attribute's values
     rowLabelMap: Record<string, string[]>; // Master list of track labels per attribute
     hiddenLabels: string[]; // Visibility filter
     visibleRowLabels: string[]; // Computed visible labels
 
     // Actions
-    setGraphData: (nodes: NarrativeNode[], sources?: Source[]) => void;
+    setGraphData: (nodes: NarrativeNode[], sources?: Source[], structure?: Structure) => void;
     addMotifToGraph: (motif: Motif, startT: number, startH: number) => void;
     addManualNode: (t: number, h: number) => void;
     moveNode: (nodeId: string, t: number, h: number) => void;
@@ -39,6 +42,7 @@ interface GraphContextType {
     // Config Actions
     setActiveAttribute: (attr: string) => void;
     setLinkingAttribute: (attr: string) => void;
+    setLinkingPredicate: (predicate: LinkPredicateName) => void;
     addAttribute: (attr: string) => void;
     deleteAttribute: (attr: string) => void;
 
@@ -69,6 +73,7 @@ interface AppState {
     availableAttributes: string[];
     activeAttribute: string;
     linkingAttribute: string;
+    linkingPredicate: LinkPredicateName;
     hiddenLabels: string[];
     rowLabelMap: Record<string, string[]>;
 }
@@ -79,6 +84,7 @@ const INITIAL_STATE: AppState = {
     availableAttributes: DEFAULT_ATTRIBUTES,
     activeAttribute: INITIAL_AXIS,
     linkingAttribute: INITIAL_LINKING,
+    linkingPredicate: DEFAULT_LINK_PREDICATE,
     hiddenLabels: [],
     rowLabelMap: (() => {
         const initialMap: Record<string, string[]> = {};
@@ -106,7 +112,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     // Derived values for backward compatibility and ease of use
     const {
-        graph, gridCols, availableAttributes, activeAttribute, linkingAttribute, hiddenLabels, rowLabelMap
+        graph, gridCols, availableAttributes, activeAttribute, linkingAttribute, linkingPredicate, hiddenLabels, rowLabelMap
     } = present;
 
     const pushState = useCallback((updates: Partial<AppState>) => {
@@ -196,7 +202,7 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             nodesToUse = labeledNodes;
         }
 
-        const newEdges = computeEdges(nodesToUse, linkingAttribute, gridCols);
+        const newEdges = computeEdges(nodesToUse, linkingAttribute, gridCols, linkingPredicate);
 
         // Only update if something changed
         if (labelsChanged || JSON.stringify(newEdges) !== JSON.stringify(graph.edges)) {
@@ -208,45 +214,12 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 }
             });
         }
-    }, [linkingAttribute, graph.nodes, gridCols, graph.edges, replaceState]); // Added dependencies
+    }, [linkingAttribute, linkingPredicate, graph.nodes, gridCols, graph.edges, replaceState]); // Added dependencies
 
-    // 4. Alpha Rule Effect (Track Assignment)
+    // 4. Alpha Rule Effect (Track Assignment): the row labels are in priority order, see utils/structure.ts
     useEffect(() => {
-        const priorityOrder = rowLabelMap[activeAttribute] || [];
-        const priorityLookup = new Map<string, number>();
-        priorityOrder.forEach((label, idx) => {
-            if (label) priorityLookup.set(label, idx);
-        });
-
-        const visibleIndexLookup = new Map<string, number>();
-        visibleRowLabels.forEach((label, idx) => {
-            if (label) visibleIndexLookup.set(label, idx);
-        });
-
-        let changed = false;
-        const newNodes = graph.nodes.map(node => {
-            const vals = node.attributes[activeAttribute] || [];
-            let bestLabel: string | null = null;
-            let bestPriority = Infinity;
-            let newTrack = -1;
-
-            vals.forEach(val => {
-                const p = priorityLookup.has(val) ? priorityLookup.get(val)! : Infinity;
-                if (p < bestPriority) {
-                    bestPriority = p;
-                    bestLabel = val;
-                }
-            });
-
-            if (bestLabel !== null && visibleIndexLookup.has(bestLabel)) {
-                newTrack = visibleIndexLookup.get(bestLabel)!;
-            }
-
-            if (node.track !== newTrack) changed = true;
-            return { ...node, track: newTrack };
-        });
-
-        if (changed) {
+        const newNodes = assignTracks(graph.nodes, activeAttribute, rowLabelMap[activeAttribute] || [], visibleRowLabels);
+        if (newNodes.some((node, i) => node !== graph.nodes[i])) {
             replaceState({
                 graph: {
                     ...graph,
@@ -259,28 +232,29 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     // --- ACTIONS ---
 
-    const setGraphData = (nodes: NarrativeNode[], sources: Source[] = []) => {
+    const setGraphData = (nodes: NarrativeNode[], sources: Source[] = [], structure?: Structure) => {
         const nextAvailableAttributes = new Set(availableAttributes);
         const nextRowLabelMap = { ...rowLabelMap };
 
-        const incomingAttrValues: Record<string, Set<string>> = {};
         nodes.forEach(node => {
-            Object.entries(node.attributes).forEach(([attr, values]) => {
-                nextAvailableAttributes.add(attr);
-                if (!incomingAttrValues[attr]) incomingAttrValues[attr] = new Set();
-                values.forEach(v => incomingAttrValues[attr].add(v));
-            });
+            Object.keys(node.attributes).forEach(attr => nextAvailableAttributes.add(attr));
         });
-
-        Object.entries(incomingAttrValues).forEach(([attr, valueSet]) => {
-            nextRowLabelMap[attr] = Array.from(valueSet);
+        // Track priority: what the file declares first, then the values in the order the nodes show them
+        nextAvailableAttributes.forEach(attr => {
+            if (nodes.some(n => attr in n.attributes) || structure?.priority?.[attr]) {
+                nextRowLabelMap[attr] = orderLabels(nodes, attr, structure?.priority?.[attr]);
+            }
         });
 
         const maxTime = nodes.length > 0 ? Math.max(...nodes.map(n => n.time)) : 0;
+        const known = (attr?: string) => (attr && nextAvailableAttributes.has(attr) ? attr : undefined);
 
         pushState({
             availableAttributes: Array.from(nextAvailableAttributes),
             rowLabelMap: nextRowLabelMap,
+            activeAttribute: known(structure?.organising) ?? activeAttribute,
+            linkingAttribute: known(structure?.linking) ?? linkingAttribute,
+            linkingPredicate: structure?.predicate ?? DEFAULT_LINK_PREDICATE,
             hiddenLabels: [],
             gridCols: Math.max(maxTime + 1, DEFAULT_COLS_COUNT),
             graph: { nodes, edges: [], sources }
@@ -583,6 +557,10 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         pushState({ linkingAttribute: attr });
     }
 
+    const setLinkingPredicate = (predicate: LinkPredicateName) => {
+        pushState({ linkingPredicate: predicate });
+    }
+
     const deleteAttribute = (attr: string) => {
         if (availableAttributes.length <= 1) return;
         const newAttrs = availableAttributes.filter(a => a !== attr);
@@ -657,10 +635,10 @@ export const GraphProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     return (
         <GraphContext.Provider value={{
-            graph, gridConfig, availableAttributes, activeAttribute, linkingAttribute,
+            graph, gridConfig, availableAttributes, activeAttribute, linkingAttribute, linkingPredicate,
             rowLabelMap, hiddenLabels, visibleRowLabels,
             setGraphData, addMotifToGraph, addManualNode, moveNode, updateNode, deleteNode,
-            setActiveAttribute, setLinkingAttribute, addAttribute, deleteAttribute,
+            setActiveAttribute, setLinkingAttribute, setLinkingPredicate, addAttribute, deleteAttribute,
             updateRowLabel, reorderTracks, toggleTrackVisibility, createTrack, deleteTrack,
             adjustGrid, clearGraph,
             undo, redo, canUndo: past.length > 0, canRedo: future.length > 0

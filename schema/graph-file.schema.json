@@ -2,12 +2,30 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/SonghaiFan/narrative-graph/main/schema/graph-file.schema.json",
   "title": "Graph file",
-  "description": "The file the editor's JSON button downloads (narrative_graph.json). The graph inside has no edges, because the editor derives them. Importing reads only `graph`; `layout` and `metadata` are information for people. The editor also imports the bare graph without this wrapper.",
+  "description": "The file the editor's JSON button downloads (narrative_graph.json). The graph inside has no edges, because the editor derives them. Importing reads `graph` and `structure`; `layout` and `metadata` are information for people. The editor also imports the bare graph without this wrapper.",
   "type": "object",
   "required": ["graph"],
   "additionalProperties": false,
   "properties": {
     "graph": { "$ref": "graph.schema.json" },
+    "structure": {
+      "description": "The structure S = (alpha, beta) of the graph, as the thesis defines it: the attribute that organises nodes into tracks (alpha), the attribute that links them and the predicate that decides (beta), and the track priority of each attribute. Without it an importer orders tracks by the order in which values first appear.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "organising": { "description": "Attribute whose values are the tracks (alpha).", "type": "string" },
+        "linking": { "description": "Attribute whose shared values link nodes (beta).", "type": "string" },
+        "predicate": {
+          "description": "What links two nodes in neighbouring columns by the linking attribute (beta): `share` for at least one value in common, `equal` for the same set of values. Without it, `share`.",
+          "enum": ["share", "equal"]
+        },
+        "priority": {
+          "description": "For each attribute, its values from the highest-priority track to the lowest. A node with several values on the organising attribute goes to the first of them listed here.",
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+        }
+      }
+    },
     "layout": {
       "description": "The grid size at export time.",
       "type": "object",

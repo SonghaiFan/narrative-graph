@@ -1,5 +1,5 @@
 {
-  "description": "Hand-written cases for the edge rule (apps/web/utils/computeEdges.ts and python/ttng_edges.py). The expected edges were typed by hand, as [sourceId, targetId] pairs in the order the rule emits them: by time column, then by the input order of the nodes. Edge ids are 'edge-<sourceId>-<targetId>'.",
+  "description": "Hand-written cases for the Linking Rule (apps/web/utils/computeEdges.ts and python/ttng_edges.py). The expected edges were typed by hand, as [sourceId, targetId] pairs in the order the rule emits them: by time column, then by the input order of the nodes. Edge ids are 'edge-<sourceId>-<targetId>'. A case may name a `predicate` (share or equal); without one it is share. The tracks play no part in whether two nodes are linked.",
   "cases": [
     {
       "name": "chain across consecutive columns",
@@ -33,14 +33,14 @@
       "expectedEdges": [["a", "b"]]
     },
     {
-      "name": "tracks two rows apart are not linked",
+      "name": "tracks two rows apart are linked: the rule does not look at tracks",
       "linkingAttribute": "Entity",
       "maxTime": 5,
       "nodes": [
         {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
         {"id": "b", "time": 1, "track": 2, "attributes": {"Entity": ["Ana"]}}
       ],
-      "expectedEdges": []
+      "expectedEdges": [["a", "b"]]
     },
     {
       "name": "an empty column breaks the chain",
@@ -241,6 +241,95 @@
         {"id": "e", "time": 2, "track": 2, "attributes": {"Entity": ["Ana"]}}
       ],
       "expectedEdges": [["a", "c"], ["b", "c"], ["c", "d"], ["c", "e"]]
+    },
+    {
+      "name": "tracks far apart and in reverse order are linked",
+      "linkingAttribute": "Entity",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 4, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "share: one value in common is enough",
+      "linkingAttribute": "Entity",
+      "predicate": "share",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana", "Ben"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "equal: the same values in another order are linked",
+      "linkingAttribute": "Entity",
+      "predicate": "equal",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana", "Ben"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ben", "Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "equal: one value in common is not enough",
+      "linkingAttribute": "Entity",
+      "predicate": "equal",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana", "Ben"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "equal: a repeated value counts once",
+      "linkingAttribute": "Entity",
+      "predicate": "equal",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana", "Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["Ana"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
+    },
+    {
+      "name": "equal: an empty list links nothing, not even another empty list",
+      "linkingAttribute": "Entity",
+      "predicate": "equal",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": []}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": []}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "equal: values are case sensitive",
+      "linkingAttribute": "Entity",
+      "predicate": "equal",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Entity": ["ana"]}}
+      ],
+      "expectedEdges": []
+    },
+    {
+      "name": "equal: only the very next column counts, and only equal sets",
+      "linkingAttribute": "Entity",
+      "predicate": "equal",
+      "maxTime": 5,
+      "nodes": [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Entity": ["Ana"]}},
+        {"id": "b", "time": 1, "track": 3, "attributes": {"Entity": ["Ana"]}},
+        {"id": "c", "time": 1, "track": 0, "attributes": {"Entity": ["Ben"]}},
+        {"id": "d", "time": 2, "track": 1, "attributes": {"Entity": ["Ana", "Ben"]}}
+      ],
+      "expectedEdges": [["a", "b"]]
     }
   ]
 }

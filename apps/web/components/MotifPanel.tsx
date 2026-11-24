@@ -64,7 +64,7 @@ const MotifThumbnail = ({ motif }: { motif: Motif }) => {
                             cx={c * cellSize}
                             cy={r * cellSize}
                             r={1.5}
-                            fill="#cbd5e1" // slate-300 dots
+                            fill="#d4d4d4" // neutral-300 dots
                         />
                     ))
                 ))}
@@ -90,7 +90,7 @@ const MotifThumbnail = ({ motif }: { motif: Motif }) => {
                             key={`edge-${i}`}
                             x1={sx} y1={sy}
                             x2={sx + dx * ratio} y2={sy + dy * ratio}
-                            stroke="#334155"
+                            stroke="#404040"
                             strokeWidth="1.5"
                         />
                     )
@@ -148,7 +148,7 @@ const DraggableMotifCard: React.FC<DraggableMotifCardProps> = ({
                     flex items-center justify-center cursor-grab active:cursor-grabbing overflow-hidden
                     ${isDragging
                         ? 'opacity-40 ring-2 ring-blue-500 border-transparent shadow-none'
-                        : 'border-slate-200 shadow-sm hover:shadow-md hover:border-slate-400 hover:-translate-y-1'
+                        : 'border-neutral-200 shadow-sm hover:shadow-md hover:border-neutral-400 hover:-translate-y-1'
                     }
                 `}
             >
@@ -158,8 +158,8 @@ const DraggableMotifCard: React.FC<DraggableMotifCardProps> = ({
                 </div>
 
                 {/* Global Index Badge */}
-                <div className="absolute bottom-1.5 right-1.5 w-4 h-4 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center">
-                    <span className="text-[9px] font-bold text-slate-400">{globalIndex}</span>
+                <div className="absolute bottom-1.5 right-1.5 w-4 h-4 rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center">
+                    <span className="text-[9px] font-bold text-neutral-400">{globalIndex}</span>
                 </div>
 
                 {/* Flip Button Overlay */}
@@ -175,7 +175,7 @@ const DraggableMotifCard: React.FC<DraggableMotifCardProps> = ({
                             border transition-all duration-200
                             ${isFlipped
                                 ? 'bg-blue-50 text-blue-600 border-blue-200 opacity-100'
-                                : 'bg-white text-slate-400 border-slate-200 opacity-0 group-hover:opacity-100 hover:text-blue-600 hover:border-blue-200'
+                                : 'bg-white text-neutral-400 border-neutral-200 opacity-0 group-hover:opacity-100 hover:text-blue-600 hover:border-blue-200'
                             }
                         `}
                         title="Flip Vertically"
@@ -187,7 +187,7 @@ const DraggableMotifCard: React.FC<DraggableMotifCardProps> = ({
 
             {/* Label outside the card for cleaner look */}
             <div className="text-center">
-                <span className="text-[10px] font-semibold text-slate-600 block leading-tight">{effectiveMotif.name}</span>
+                <span className="text-[10px] font-semibold text-neutral-600 block leading-tight">{effectiveMotif.name}</span>
                 {isFlipped && <span className="text-[8px] text-blue-500 font-medium block">Flipped</span>}
             </div>
         </div>
@@ -214,23 +214,23 @@ export const MotifPanel: React.FC<MotifPanelProps> = () => {
     };
 
     return (
-        <div className="bg-white border-t border-slate-200 flex flex-col shrink-0 z-40 h-[190px] shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.05)]">
+        <div className="bg-white border-t border-neutral-200 flex flex-col shrink-0 z-40 h-[190px] shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.05)]">
 
             {/* Header Bar */}
-            <div className="px-6 py-2 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="px-6 py-2 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
                 <div className="flex items-center gap-2">
-                    <span className="font-serif font-bold italic text-slate-800 text-sm">Motif Library</span>
-                    <span className="text-[10px] font-medium text-slate-400 px-2 py-0.5 bg-slate-100 rounded-full border border-slate-200">Drag to Grid</span>
+                    <span className="font-serif font-bold italic text-neutral-800 text-sm">Motif Library</span>
+                    <span className="text-[10px] font-medium text-neutral-400 px-2 py-0.5 bg-neutral-100 rounded-full border border-neutral-200">Drag to Grid</span>
                 </div>
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 px-8 py-3 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+            <div className="flex-1 px-8 py-3 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent">
                 <div className="flex gap-12 min-w-max h-full items-start">
 
                     {/* Sequential Section */}
                     <div className="flex flex-col gap-2 h-full">
-                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Sequential</h3>
+                        <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest text-center">Sequential</h3>
                         <div className="flex gap-4">
                             {sequential.map(motif => (
                                 <DraggableMotifCard
@@ -245,11 +245,11 @@ export const MotifPanel: React.FC<MotifPanelProps> = () => {
                     </div>
 
                     {/* Vertical Divider */}
-                    <div className="w-px bg-slate-200 h-2/3 my-auto"></div>
+                    <div className="w-px bg-neutral-200 h-2/3 my-auto"></div>
 
                     {/* Non-Sequential Section */}
                     <div className="flex flex-col gap-2 h-full">
-                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Non-Sequential</h3>
+                        <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest text-center">Non-Sequential</h3>
                         <div className="flex gap-4">
                             {nonSequential.map(motif => (
                                 <DraggableMotifCard

@@ -47,7 +47,7 @@ const TrackLabelRow: React.FC<RowProps> = ({ id, index, label, onRename, onHide,
                     {...listeners}
                     // Stops the editor's own drag-and-drop from taking the gesture
                     onPointerDown={(e) => { e.stopPropagation(); listeners?.onPointerDown?.(e); }}
-                    className="cursor-grab active:cursor-grabbing p-1 rounded text-slate-300 hover:text-slate-600 hover:bg-slate-100 outline-none touch-none"
+                    className="cursor-grab active:cursor-grabbing p-1 rounded text-neutral-300 hover:text-neutral-600 hover:bg-neutral-100 outline-none touch-none"
                     title="Drag to reorder"
                 >
                     <GripVertical className="w-3.5 h-3.5" />
@@ -55,7 +55,7 @@ const TrackLabelRow: React.FC<RowProps> = ({ id, index, label, onRename, onHide,
                 <button
                     onClick={() => onHide(label)}
                     disabled={!named}
-                    className="p-1 rounded-full text-blue-500 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="p-1 rounded-full text-blue-500 hover:bg-neutral-100 disabled:opacity-30 disabled:cursor-not-allowed"
                     title="Hide track"
                 >
                     <Eye className="w-3.5 h-3.5" />
@@ -63,7 +63,7 @@ const TrackLabelRow: React.FC<RowProps> = ({ id, index, label, onRename, onHide,
                 <button
                     onClick={() => onDelete(label)}
                     disabled={!named}
-                    className="p-1 rounded-full text-slate-300 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="p-1 rounded-full text-neutral-300 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     title="Delete track"
                 >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -74,7 +74,7 @@ const TrackLabelRow: React.FC<RowProps> = ({ id, index, label, onRename, onHide,
                 value={label}
                 onChange={(e) => onRename(index, e.target.value)}
                 placeholder={`Track ${index + 1}`}
-                className="text-right font-bold text-slate-600 bg-transparent border-b-2 border-transparent hover:border-slate-200 focus:border-blue-500 focus:outline-none flex-1 min-w-0 px-1 py-1 transition-all placeholder:text-slate-300 placeholder:font-normal text-sm"
+                className="text-right font-bold text-neutral-600 bg-transparent border-b-2 border-transparent hover:border-neutral-200  focus:outline-none flex-1 min-w-0 px-1 py-1 transition-all placeholder:text-neutral-300 placeholder:font-normal text-sm"
             />
         </div>
     );

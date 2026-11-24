@@ -85,7 +85,7 @@ export const EdgeLayer: React.FC<EdgeLayerProps> = ({
           <path d="M0,0 L0,10 L12,5 z" fill="#3b82f6" />
         </marker>
         <marker id="edge-arrow-ghost" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto" markerUnits="userSpaceOnUse">
-          <path d="M0,0 L0,10 L12,5 z" fill="#94a3b8" />
+          <path d="M0,0 L0,10 L12,5 z" fill="#a3a3a3" />
         </marker>
       </defs>
 
@@ -122,7 +122,7 @@ export const EdgeLayer: React.FC<EdgeLayerProps> = ({
               y1={coords.y1}
               x2={coords.x2}
               y2={coords.y2}
-              stroke={isGhost ? "#94a3b8" : (isSelected ? "#3b82f6" : "#000000")}
+              stroke={isGhost ? "#a3a3a3" : (isSelected ? "#3b82f6" : "#000000")}
               strokeWidth={isGhost ? 2 : (isSelected ? 5 : 3)}
               strokeDasharray={isGhost ? "4 4" : (edge.subtype === 'cross' ? "6 4" : undefined)}
               markerEnd={

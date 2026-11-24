@@ -265,50 +265,50 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
 
   return (
     <div
-      className="flex flex-col h-full w-full bg-slate-50/50"
+      className="flex flex-col h-full w-full bg-neutral-50/50"
       onClick={() => {
         setSelectedNodeId(null);
         setSelectedEdgeId(null);
       }}
     >
       <div ref={scrollContainerRef} className="flex-1 overflow-auto relative">
-        <div className="min-h-full min-w-fit px-12 pb-12 pt-16 flex flex-col items-center justify-center bg-slate-50/50">
+        <div className="min-h-full min-w-fit px-12 pb-12 pt-16 flex flex-col items-center justify-center bg-neutral-50/50">
           <div id="narrative-export-root" className="flex flex-col items-center p-4">
             {/* Legend Bar */}
-            <div className="mb-6 flex items-center gap-6 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-full shadow-sm px-6 py-2 z-50">
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mr-2">
+            <div className="mb-6 flex items-center gap-6 bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-full shadow-sm px-6 py-2 z-50">
+              <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.2em] mr-2">
                 Legend
               </div>
-              <div className="flex items-center gap-6 text-[11px] text-slate-600">
+              <div className="flex items-center gap-6 text-[11px] text-neutral-600">
                 <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-slate-900" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-neutral-900" />
                   <div className="flex items-center gap-1">
-                    <span className="font-semibold text-slate-800">Organising (α):</span>
-                    <span>Tracks ordered by <span className="font-semibold text-slate-800">{activeAttribute}</span></span>
+                    <span className="font-semibold text-neutral-800">Organising (α):</span>
+                    <span>Tracks ordered by <span className="font-semibold text-neutral-800">{activeAttribute}</span></span>
                   </div>
                 </div>
-                <div className="h-4 w-px bg-slate-200" />
+                <div className="h-4 w-px bg-neutral-200" />
                 <div className="flex items-center gap-1">
-                  <span className="font-semibold text-slate-800">Linking (β):</span>
-                  <span><span className="font-semibold text-slate-800">{linkingAttribute}</span></span>
+                  <span className="font-semibold text-neutral-800">Linking (β):</span>
+                  <span><span className="font-semibold text-neutral-800">{linkingAttribute}</span></span>
                 </div>
 
                 {/* Same Track (Solid) */}
                 <div className="flex items-center gap-1 pl-2">
                   <div className="relative w-8 h-3">
-                    <div className="absolute left-0 top-1.5 right-0 h-0.5 bg-slate-700 rounded" />
-                    <div className="absolute right-0 top-[2px] border-l-[7px] border-l-slate-700 border-y-[5px] border-y-transparent" />
+                    <div className="absolute left-0 top-1.5 right-0 h-0.5 bg-neutral-700 rounded" />
+                    <div className="absolute right-0 top-[2px] border-l-[7px] border-l-neutral-700 border-y-[5px] border-y-transparent" />
                   </div>
-                  <span className="text-[10px] text-slate-500">Within Track</span>
+                  <span className="text-[10px] text-neutral-500">Within Track</span>
                 </div>
 
                 {/* Cross Track (Dashed) */}
                 <div className="flex items-center gap-1">
                   <div className="relative w-8 h-3">
-                    <div className="absolute left-0 top-1.5 right-0 h-0.5 border-t border-dashed border-slate-700" />
-                    <div className="absolute right-0 top-[2px] border-l-[7px] border-l-slate-700 border-y-[5px] border-y-transparent" />
+                    <div className="absolute left-0 top-1.5 right-0 h-0.5 border-t border-dashed border-neutral-700" />
+                    <div className="absolute right-0 top-[2px] border-l-[7px] border-l-neutral-700 border-y-[5px] border-y-transparent" />
                   </div>
-                  <span className="text-[10px] text-slate-500">Cross Track</span>
+                  <span className="text-[10px] text-neutral-500">Cross Track</span>
                 </div>
 
               </div>
@@ -317,13 +317,13 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
             <div
               ref={graphCardRef}
               id="narrative-graph-card"
-              className="relative shadow-sm bg-white rounded-xl border border-slate-200 transition-all duration-300 ease-out"
+              className="relative shadow-sm bg-white rounded-xl border border-neutral-200 transition-all duration-300 ease-out"
               style={{ width: totalWidth, height: Math.max(totalHeight, 100) }} // Ensure min height if 0 rows
             >
 
               {/* Empty State Prompt */}
               {gridConfig.rows === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-sm font-medium">
+                <div className="absolute inset-0 flex items-center justify-center text-neutral-400 text-sm font-medium">
                   No tracks visible. Add or unhide tracks to continue.
                 </div>
               )}
@@ -340,7 +340,7 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                     height: CELL_HEIGHT - 20,
                     zIndex: 0,
                     backgroundColor: "#FAFAFA",
-                    border: "1px dashed #E2E8F0",
+                    border: "1px dashed #e5e5e5",
                   }}
                 />
               ))}
@@ -355,7 +355,7 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                         cx={dynamicLabelWidth + t * CELL_WIDTH + CELL_WIDTH / 2}
                         cy={h * CELL_HEIGHT + CELL_HEIGHT / 2}
                         r={2}
-                        fill="#CBD5E1"
+                        fill="#d4d4d4"
                       />
                     ))
                   )}
@@ -489,16 +489,16 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
               if (hiddenHere.length === 0) return null;
               return (
                 <div className="flex flex-wrap items-center gap-2 mt-3" style={{ maxWidth: totalWidth }}>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hidden</span>
+                  <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Hidden</span>
                   {hiddenHere.map((label) => (
                     <button
                       key={label}
                       onClick={() => toggleTrackVisibility(label)}
-                      className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 bg-white border border-slate-200 hover:border-slate-300 rounded-full pl-2 pr-2.5 py-1 transition-colors"
+                      className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-800 bg-white border border-neutral-200 hover:border-neutral-300 rounded-full pl-2 pr-2.5 py-1 transition-colors"
                       title="Show track"
                     >
                       <Eye className="w-3 h-3" />
-                      <span style={{ textDecoration: 'line-through', textDecorationColor: '#CBD5E1' }}>{label}</span>
+                      <span style={{ textDecoration: 'line-through', textDecorationColor: '#d4d4d4' }}>{label}</span>
                     </button>
                   ))}
                 </div>
@@ -531,9 +531,9 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                         style={{ width: CELL_WIDTH }}
                         className="flex flex-col items-center"
                       >
-                        <div className="h-2 w-px bg-slate-300 mb-2"></div>
+                        <div className="h-2 w-px bg-neutral-300 mb-2"></div>
                         <span
-                          className="text-[10px] font-mono font-bold text-slate-400 text-center w-full px-1 truncate block"
+                          className="text-[10px] font-mono font-bold text-neutral-400 text-center w-full px-1 truncate block"
                           title={label}
                         >
                           {label}
@@ -542,7 +542,7 @@ export const NarrativeGrid: React.FC<NarrativeGridProps> = ({
                     );
                   })}
                 </div>
-                <div className="text-center font-bold text-slate-300 uppercase tracking-[0.2em] text-[10px] mt-4">
+                <div className="text-center font-bold text-neutral-300 uppercase tracking-[0.2em] text-[10px] mt-4">
                   Time (T)
                 </div>
               </div>

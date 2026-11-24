@@ -1,4 +1,6 @@
 """The LLM chapter writer (step 3), driven through a fake chat model."""
+import pytest
+
 from meta.types import Story
 from narrative_alignmenter import align_theme_entity
 from narrative_deducer import create_story
@@ -72,3 +74,25 @@ def test_the_result_is_a_valid_story(fake_chat, sample_alignment):
     dumped = story.dict()
     assert Story.model_validate(dumped) == story
     assert set(dumped["chapters"][0]) == {"id", "title", "time_period", "Topic", "entity", "content"}
+
+
+def _with_old_key(alignment):
+    return {n: {("StuctureInstruction" if k == "StructureInstruction" else k): v for k, v in d.items()}
+            for n, d in alignment.items()}
+
+
+def test_an_alignment_with_the_old_misspelled_key_still_gives_the_same_prompts(fake_chat, sample_alignment):
+    # the 276 archived runs, and any file written before the key was corrected, spell it StuctureInstruction
+    create_story(sample_alignment)
+    corrected = list(fake_chat.prompts)
+    fake_chat.prompts.clear()
+    old = _with_old_key(sample_alignment)
+    assert all("StuctureInstruction" in d and "StructureInstruction" not in d for d in old.values())
+    create_story(old)
+    assert fake_chat.prompts == corrected
+
+
+def test_an_alignment_without_any_instruction_is_refused_by_name(fake_chat, sample_alignment):
+    broken = {n: {k: v for k, v in d.items() if k != "StructureInstruction"} for n, d in sample_alignment.items()}
+    with pytest.raises(KeyError, match="StructureInstruction"):
+        create_story(broken)

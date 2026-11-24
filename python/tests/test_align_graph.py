@@ -61,7 +61,7 @@ def test_the_graph_of_a_structure_is_laid_out_on_the_grid(structure_of, name):
     by_id = {n["id"]: n for n in graph["nodes"]}
     for e in graph["edges"]:
         s, t = by_id[e["sourceId"]], by_id[e["targetId"]]
-        assert t["time"] == s["time"] + 1 and abs(t["track"] - s["track"]) <= 1
+        assert t["time"] == s["time"] + 1
 
 
 def test_the_same_seed_gives_the_same_alignment():
@@ -112,11 +112,12 @@ def test_a_node_without_entities_is_sampled_from_its_topic_and_shares_with_the_p
 
 
 def test_parents_come_from_the_edge_rule_when_the_graph_declares_none():
-    nodes = [node("a", 0, 0, Entity=["Ana"], **DATES), node("b", 1, 1, Entity=["Ana"], **DATES), node("c", 1, 5, Entity=["Ana"], **DATES)]
+    # the rule looks at the next column and the shared Entity, not at the tracks: c is five rows away and is linked
+    nodes = [node("a", 0, 0, Entity=["Ana"], **DATES), node("b", 1, 1, Entity=["Ana"], **DATES),
+             node("c", 1, 5, Entity=["Ana"], **DATES), node("d", 1, 1, Entity=["Ben"], **DATES)]
     result = align_graph({"nodes": nodes}, seed=1)
-    expected = derive_edges(nodes, "Entity", 2)
-    assert [e["sourceId"] for e in expected] == ["a"]  # the rule links a to b only: c is too far away
-    assert result["b"]["Prev"] == ["a"] and result["c"]["Prev"] == []
+    assert [(e["sourceId"], e["targetId"]) for e in derive_edges(nodes, "Entity", 2)] == [("a", "b"), ("a", "c")]
+    assert result["b"]["Prev"] == ["a"] and result["c"]["Prev"] == ["a"] and result["d"]["Prev"] == []
 
 
 def test_declared_edges_beat_the_edge_rule():
@@ -161,7 +162,9 @@ def test_an_empty_graph_aligns_to_nothing():
     ({"nodes": [{"id": "a", "time": 0, "track": 0, "attributes": {"Topic": ["A", "B"], "Entity": ["Ana"]}}]}, POOL, "exactly one Topic"),
     ({"nodes": [node("a", 0, 0, Entity=["Ana"])], "edges": [{"id": "e", "sourceId": "a", "targetId": "zz"}]}, POOL, "not a node"),
     ({"nodes": [node("a", 0, 0, Entity=["Ana"]), node("b", 1, 0, Entity=["Ana"])],
-      "edges": [{"id": "1", "sourceId": "a", "targetId": "b"}, {"id": "2", "sourceId": "b", "targetId": "a"}]}, POOL, "cycle"),
+      "edges": [{"id": "1", "sourceId": "a", "targetId": "b"}, {"id": "2", "sourceId": "b", "targetId": "a"}]}, POOL, "forward in time"),
+    ({"nodes": [node("a", 1, 0, Entity=["Ana"]), node("b", 1, 1, Entity=["Ana"])],
+      "edges": [{"id": "1", "sourceId": "a", "targetId": "b"}]}, POOL, "forward in time"),
     ({"nodes": [node("a", 0, 0, Entity=["Ana"], **{"Time Period": ["Jan 2024", "Feb 2024"]})]}, None, "does not match"),
 ])
 def test_bad_input_is_refused_with_a_reason(graph, context, message):
@@ -200,3 +203,74 @@ def test_the_command_line_names_the_structures_when_asked_for_a_missing_one(tmp_
         ttng_align.main([str(tmp_path / "graph.json"), "--context",
                          str(PYTHON_DIR / "meta" / "narrative_context_a.json"), "--structure", "Nope"])
     assert "Arch" in capsys.readouterr().err
+
+
+# --- structure S = (alpha, beta) and track priority (thesis, chapter "The Time-Track Narrative Graph Model") ---
+
+from ttng_align import resolve_track_value, structure_of  # noqa: E402
+
+
+def test_one_value_is_its_own_track_value():
+    assert resolve_track_value(["A"], None) == "A" and resolve_track_value(["A"], ["B"]) == "A"
+
+
+def test_several_values_need_a_priority_and_the_first_listed_wins():
+    assert resolve_track_value(["A", "B"], None) is None
+    assert resolve_track_value([], ["A"]) is None
+    assert resolve_track_value(["B", "A"], ["A", "B"]) == "A"
+    assert resolve_track_value(["A", "B"], ["B", "A"]) == "B"
+
+
+def test_values_the_priority_does_not_list_come_last_and_the_first_of_them_wins():
+    assert resolve_track_value(["X", "B"], ["A", "B"]) == "B"
+    assert resolve_track_value(["Y", "X"], ["A"]) == "Y"
+
+
+def test_a_node_with_two_topics_takes_the_one_with_priority():
+    graph = {"nodes": [node("a", 0, 0, topic=None, Topic=["Tax", "Budget"], Entity=["Ana"])]}
+    period = ["2024-01-01", "2024-12-31"]
+    assert align_graph(graph, period=period, priority=["Budget", "Tax"])["a"]["Theme"] == "Budget"
+    assert align_graph(graph, period=period, priority=["Tax", "Budget"])["a"]["Theme"] == "Tax"
+    with pytest.raises(ValueError, match="track priority"):
+        align_graph(graph, period=period)
+
+
+def test_the_organising_attribute_need_not_be_topic():
+    graph = {"nodes": [{"id": "a", "time": 0, "track": 0, "attributes": {"Place": ["Oslo"], "Entity": ["Ana"]}}]}
+    assert align_graph(graph, period=["2024-01-01", "2024-02-01"], organising="Place")["a"]["Theme"] == "Oslo"
+
+
+def test_the_linking_attribute_gives_the_edges_but_not_the_entities():
+    nodes = [
+        {"id": "a", "time": 0, "track": 0, "attributes": {"Topic": ["T"], "Entity": ["Ana"], "Place": ["Oslo"]}},
+        {"id": "b", "time": 1, "track": 0, "attributes": {"Topic": ["T"], "Entity": ["Ben"], "Place": ["Oslo"]}},
+    ]
+    period = ["2024-01-01", "2024-02-01"]
+    assert align_graph({"nodes": nodes}, period=period)["b"]["Prev"] == []  # no shared Entity
+    linked = align_graph({"nodes": nodes}, period=period, linking="Place", seed=1)
+    assert linked["b"]["Prev"] == ["a"]
+    assert "Oslo" not in linked["b"]["Entity"] and set(linked["b"]["Entity"]) >= {"Ben"}
+
+
+def test_the_structure_of_a_file_sets_the_options():
+    assert structure_of({"graph": {"nodes": []}}) == {}
+    assert structure_of({"structure": {"organising": "Place", "linking": "Topic", "priority": {"Place": ["A"], "Topic": ["B"]}}}) == {
+        "organising": "Place", "linking": "Topic", "priority": ["A"]}
+    assert structure_of({"structure": {"priority": {"Topic": ["T1", 3, "T2"]}}}) == {"priority": ["T1", "T2"]}
+    assert structure_of({"structure": {"predicate": "equal"}}) == {"predicate": "equal"}
+    assert structure_of({"structure": {"organising": 3, "linking": None, "predicate": 1, "priority": []}}) == {}
+    assert structure_of({"structure": "oops"}) == {}
+
+
+def test_the_predicate_decides_which_parents_the_edge_rule_gives():
+    nodes = [node("a", 0, 0, Entity=["Ana", "Ben"], **DATES), node("b", 1, 0, Entity=["Ana"], **DATES),
+             node("c", 1, 1, Entity=["Ben", "Ana"], **DATES)]
+    assert align_graph({"nodes": nodes}, seed=1)["b"]["Prev"] == ["a"]  # share: one value in common is enough
+    assert align_graph({"nodes": nodes}, seed=1, predicate="equal")["b"]["Prev"] == []
+    assert align_graph({"nodes": nodes}, seed=1, predicate="equal")["c"]["Prev"] == ["a"]
+
+
+def test_a_predicate_the_model_does_not_have_is_refused_by_name():
+    nodes = [node("a", 0, 0, Entity=["Ana"], **DATES), node("b", 1, 0, Entity=["Ana"], **DATES)]
+    with pytest.raises(ValueError, match="unknown link predicate 'similar'"):
+        align_graph({"nodes": nodes}, seed=1, predicate="similar")

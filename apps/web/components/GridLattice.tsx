@@ -35,7 +35,7 @@ export const GridLattice: React.FC<GridLatticeProps> = ({ rows, cols, cellWidth,
                             y1={y1}
                             x2={x2}
                             y2={y2}
-                            stroke="#e2e8f0" // slate-200
+                            stroke="#e5e5e5" // neutral-200
                             strokeWidth="1.5"
                             // No markerEnd
                         />

@@ -106,7 +106,7 @@ def align_theme_entity(narrative_obj, seed=None):
             # Use the pre-calculated time period for the node
             "Time": time_periods[node],
             "Prev": parent_mapping.get(node, []),
-            "StuctureInstruction": f"The narrative structure is {narrative_obj['name']}, where {narrative_obj['description']} (eg. {narrative_obj['structure']}). The current chapter node is {node}, which is the {node[-1]}th chapter node in the narrative structure."
+            "StructureInstruction": f"The narrative structure is {narrative_obj['name']}, where {narrative_obj['description']} (eg. {narrative_obj['structure']}). The current chapter node is {node}, which is the {node[-1]}th chapter node in the narrative structure."
         }
 
     return alignment

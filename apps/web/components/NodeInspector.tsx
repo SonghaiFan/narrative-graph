@@ -132,20 +132,20 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
   if (mode === 'preview') {
       return (
         <div 
-            className="absolute z-[60] pointer-events-none bg-slate-900/95 backdrop-blur text-white text-[10px] p-3 rounded-lg shadow-2xl flex flex-col gap-2 max-w-[240px] border border-slate-700 animate-in fade-in zoom-in-95 duration-150"
+            className="absolute z-[60] pointer-events-none bg-neutral-900/95 backdrop-blur text-white text-[10px] p-3 rounded-lg shadow-2xl flex flex-col gap-2 max-w-[240px] border border-neutral-700 animate-in fade-in zoom-in-95 duration-150"
             style={{ left: position.x, top: position.y }}
         >
             <div className="flex justify-between items-center border-b border-white/20 pb-1">
                 <span className="font-bold uppercase tracking-wider text-[#EDC948]">Fabula</span>
-                <span className="text-[9px] text-slate-400 font-mono">Click to Edit</span>
+                <span className="text-[9px] text-neutral-400 font-mono">Click to Edit</span>
             </div>
             <div className="text-white/90 text-xs italic leading-relaxed border-b border-white/10 pb-2">
-                {node.content ? `"${node.content}"` : <span className="text-slate-500">(No statement)</span>}
+                {node.content ? `"${node.content}"` : <span className="text-neutral-500">(No statement)</span>}
             </div>
             <div className="flex flex-col gap-1">
                 {Object.entries(node.attributes).map(([k, vals]) => (
                     <div key={k} className="flex gap-2 justify-between items-start">
-                        <span className="text-slate-400 font-medium shrink-0">{k}:</span>
+                        <span className="text-neutral-400 font-medium shrink-0">{k}:</span>
                         <span className="text-right text-white break-words">
                             {(vals as string[]).join(', ') || '-'}
                         </span>
@@ -159,23 +159,23 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
   // --- RENDER: EDIT MODE (Interactive Card - Draggable) ---
   return (
     <div 
-        className="absolute z-[70] w-80 bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 ring-1 ring-slate-900/5"
+        className="absolute z-[70] w-80 bg-white rounded-xl shadow-2xl border border-neutral-200 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 ring-1 ring-neutral-900/5"
         style={{ left: position.x, top: position.y }}
         onClick={(e) => e.stopPropagation()}
     >
         {/* Header - Drag Handle */}
         <div 
-            className="h-9 bg-slate-50/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-3 shrink-0 cursor-move active:cursor-grabbing select-none"
+            className="h-9 bg-neutral-50/80 backdrop-blur border-b border-neutral-200 flex items-center justify-between px-3 shrink-0 cursor-move active:cursor-grabbing select-none"
             onPointerDown={handlePointerDown}
         >
             <div className="flex items-center gap-2">
-                <GripHorizontal className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Edit Node</span>
+                <GripHorizontal className="w-3.5 h-3.5 text-neutral-400" />
+                <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Edit Node</span>
             </div>
             <button 
                 onPointerDown={(e) => e.stopPropagation()} 
                 onClick={onClose} 
-                className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
+                className="p-1 rounded hover:bg-neutral-200 text-neutral-400 hover:text-neutral-600 transition-colors"
             >
                 <X className="w-3.5 h-3.5" />
             </button>
@@ -185,30 +185,30 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
             
             {/* Source Info */}
             <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-slate-400">Source Motif</label>
-                <div className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">{node.motifSource || 'Manual'}</div>
+                <label className="text-xs font-medium text-neutral-400">Source Motif</label>
+                <div className="text-xs font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded-full">{node.motifSource || 'Manual'}</div>
             </div>
 
             {/* Content Input */}
             <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                    <AlignLeft className="w-3 h-3 text-slate-400" />
-                    <label className="text-xs font-bold text-slate-800 uppercase tracking-wide">Statement</label>
+                    <AlignLeft className="w-3 h-3 text-neutral-400" />
+                    <label className="text-xs font-bold text-neutral-800 uppercase tracking-wide">Statement</label>
                 </div>
                 <textarea 
                     autoFocus
                     value={localContent}
                     onChange={(e) => setLocalContent(e.target.value)}
                     placeholder="Write the narrative..."
-                    className="w-full h-24 text-sm px-3 py-2 border border-slate-200 rounded-lg focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-50/50 resize-none leading-relaxed text-slate-700 bg-white placeholder:text-slate-300 transition-all"
+                    className="w-full h-24 text-sm px-3 py-2 border border-neutral-200 rounded-lg  focus:outline-none resize-none leading-relaxed text-neutral-700 bg-white placeholder:text-neutral-300 transition-all"
                 />
             </div>
 
-            <div className="h-px bg-slate-100 w-full"></div>
+            <div className="h-px bg-neutral-100 w-full"></div>
 
             {/* Attributes Input */}
             <div className="space-y-3">
-                <label className="text-xs font-bold text-slate-800 block uppercase tracking-wide">Attributes</label>
+                <label className="text-xs font-bold text-neutral-800 block uppercase tracking-wide">Attributes</label>
                 
                 {availableAttributes.map(attr => {
                     const isActive = attr === activeAttribute;
@@ -218,7 +218,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
                     return (
                         <div key={attr} className="space-y-1">
                             <div className="flex items-center justify-between">
-                                <label className="text-xs text-slate-500 font-medium">{attr}</label>
+                                <label className="text-xs text-neutral-500 font-medium">{attr}</label>
                                 {isActive && (
                                     <span className="text-[9px] px-1.5 py-px bg-blue-50 text-blue-600 rounded border border-blue-100 font-bold uppercase">
                                         &alpha; Axis
@@ -249,7 +249,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
                                             <button onClick={submitNewTrack} className="bg-blue-600 text-white p-1.5 rounded hover:bg-blue-700 shrink-0">
                                                 <Plus className="w-3.5 h-3.5" />
                                             </button>
-                                            <button onClick={() => setIsAddingTrack(false)} className="bg-slate-100 text-slate-500 p-1.5 rounded hover:bg-slate-200 shrink-0">
+                                            <button onClick={() => setIsAddingTrack(false)} className="bg-neutral-100 text-neutral-500 p-1.5 rounded hover:bg-neutral-200 shrink-0">
                                                 <X className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
@@ -260,12 +260,12 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
                                     type="text"
                                     value={valStr}
                                     onChange={(e) => handleAttrChange(attr, e.target.value)}
-                                    className="w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-100 transition-all text-slate-700 font-medium"
+                                    className="w-full text-xs px-2.5 py-1.5 border border-neutral-200 rounded-md  focus:outline-none transition-all text-neutral-700 font-medium"
                                     placeholder="Value 1, Value 2..."
                                 />
                             )}
                             {isActive && !isAddingTrack && (
-                                <div className="flex items-center gap-1.5 text-[9px] text-slate-400 mt-0.5">
+                                <div className="flex items-center gap-1.5 text-[9px] text-neutral-400 mt-0.5">
                                     <AlertCircle className="w-2.5 h-2.5" />
                                     <span>Changing this moves the node.</span>
                                 </div>
@@ -289,7 +289,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = ({
                 </button>
                 <button 
                     onClick={handleDone}
-                    className="flex-[2] bg-slate-900 text-white text-xs font-semibold py-2 rounded-lg hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-slate-200"
+                    className="flex-[2] bg-neutral-900 text-white text-xs font-semibold py-2 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-neutral-200"
                 >
                     <Check className="w-3.5 h-3.5" />
                     Save Changes

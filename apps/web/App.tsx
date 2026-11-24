@@ -17,7 +17,7 @@ import { StorySidebar } from './components/StorySidebar';
 import { TrackPanel } from './components/TrackPanel';
 import { NarrativeNode, Motif } from './types';
 import { CELL_WIDTH, CELL_HEIGHT } from './constants';
-import { ChartNetwork, Columns, Rows, Plus, Minus, Sparkles, Undo, Redo } from 'lucide-react';
+import { Columns, Rows, Plus, Minus, Sparkles, Undo, Redo } from 'lucide-react';
 import { EdgeLayer } from './components/GraphVisual';
 import { NarrativeNodeItem } from './components/NarrativeNodeItem';
 import { AIGeneratorModal } from './components/AIGeneratorModal';
@@ -26,6 +26,7 @@ import { ForceView } from './components/ForceView';
 import { GraphProvider, useGraphContext } from './context/GraphContext';
 import { generateGraphFromPrompt } from './services/ai';
 import { parseGraphFile } from './utils/graphFile';
+import redRidingHood from '../../examples/little-red-riding-hood.json';
 
 const AppContent: React.FC = () => {
   const {
@@ -184,29 +185,27 @@ const AppContent: React.FC = () => {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex flex-col h-screen w-full bg-slate-50 text-slate-900 font-sans overflow-hidden">
+      <div className="flex flex-col h-screen w-full bg-neutral-50 text-neutral-900 font-sans overflow-hidden">
 
         {/* Header */}
-        <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shadow-sm z-30 shrink-0">
+        <header className="h-16 bg-white border-b border-neutral-200 px-6 flex items-center justify-between shadow-sm z-30 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-slate-900 text-white p-2 rounded-lg">
-              <ChartNetwork className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold serif text-slate-800 tracking-tight leading-none">TTNG Constructor</h1>
-              <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-1 font-medium">Time-Track Narrative Graph</p>
-            </div>
+            {/* The tt·ng wordmark: the shared crossbar is a track, the dot a story beat. */}
+            <h1 className="m-0 leading-none">
+              <img src="/brand/ttng-wordmark.svg" alt="ttng" className="block h-9 w-auto" />
+            </h1>
+            <p className="border-l border-neutral-200 pl-3 text-[10px] text-neutral-400 uppercase tracking-widest font-medium">Time-Track Narrative Graph</p>
           </div>
 
           <div className="flex items-center gap-6">
 
             {/* Undo / Redo */}
-            <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 gap-0.5">
+            <div className="flex bg-neutral-100 p-1 rounded-lg border border-neutral-200 gap-0.5">
               <button
                 onClick={undo}
                 disabled={!canUndo}
                 title="Undo (Ctrl+Z)"
-                className={`p-1.5 rounded-md transition-all ${!canUndo ? 'text-slate-300 cursor-not-allowed' : 'text-slate-500 hover:bg-white hover:text-slate-800 hover:shadow-sm'}`}
+                className={`p-1.5 rounded-md transition-all ${!canUndo ? 'text-neutral-300 cursor-not-allowed' : 'text-neutral-500 hover:bg-white hover:text-neutral-800 hover:shadow-sm'}`}
               >
                 <Undo className="w-3.5 h-3.5" />
               </button>
@@ -214,7 +213,7 @@ const AppContent: React.FC = () => {
                 onClick={redo}
                 disabled={!canRedo}
                 title="Redo (Ctrl+Shift+Z)"
-                className={`p-1.5 rounded-md transition-all ${!canRedo ? 'text-slate-300 cursor-not-allowed' : 'text-slate-500 hover:bg-white hover:text-slate-800 hover:shadow-sm'}`}
+                className={`p-1.5 rounded-md transition-all ${!canRedo ? 'text-neutral-300 cursor-not-allowed' : 'text-neutral-500 hover:bg-white hover:text-neutral-800 hover:shadow-sm'}`}
               >
                 <Redo className="w-3.5 h-3.5" />
               </button>
@@ -223,69 +222,75 @@ const AppContent: React.FC = () => {
             {/* AI Button */}
             <button
               onClick={() => setIsAIModalOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm shadow-indigo-200 transition-all font-medium text-xs animate-in fade-in"
+              className="flex items-center gap-2 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg shadow-sm  transition-all font-medium text-xs animate-in fade-in"
             >
               <Sparkles className="w-3.5 h-3.5 fill-white/20" />
               AI Generate
             </button>
 
-            <div className="w-px h-6 bg-slate-100"></div>
+            <div className="w-px h-6 bg-neutral-100"></div>
 
             {/* View Toggle */}
-            <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+            <div className="flex bg-neutral-100 p-1 rounded-lg border border-neutral-200">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'grid' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'grid' ? 'bg-white text-neutral-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
               >
                 Grid
               </button>
               <button
                 onClick={() => setViewMode('dag')}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'dag' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'dag' ? 'bg-white text-neutral-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
               >
                 DAG
               </button>
               <button
                 onClick={() => setViewMode('cola')}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'cola' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'cola' ? 'bg-white text-neutral-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
               >
                 Cola
               </button>
             </div>
 
-            <div className="w-px h-6 bg-slate-100"></div>
+            <div className="w-px h-6 bg-neutral-100"></div>
 
-            <div className="flex items-center gap-4 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+            <div className="flex items-center gap-4 bg-neutral-50 px-3 py-1.5 rounded-lg border border-neutral-100">
               <div className="flex items-center gap-2">
-                <Columns className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-xs font-mono text-slate-500 w-4 font-bold">{gridConfig.cols}</span>
+                <Columns className="w-3.5 h-3.5 text-neutral-400" />
+                <span className="text-xs font-mono text-neutral-500 w-4 font-bold">{gridConfig.cols}</span>
                 <div className="flex gap-0.5">
-                  <button onClick={() => adjustGrid('cols', -1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Minus className="w-3 h-3" /></button>
-                  <button onClick={() => adjustGrid('cols', 1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Plus className="w-3 h-3" /></button>
+                  <button onClick={() => adjustGrid('cols', -1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-neutral-500"><Minus className="w-3 h-3" /></button>
+                  <button onClick={() => adjustGrid('cols', 1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-neutral-500"><Plus className="w-3 h-3" /></button>
                 </div>
               </div>
-              <div className="w-px h-3 bg-slate-200"></div>
+              <div className="w-px h-3 bg-neutral-200"></div>
               <div className="flex items-center gap-2">
-                <Rows className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-xs font-mono text-slate-500 w-4 font-bold">{gridConfig.rows}</span>
+                <Rows className="w-3.5 h-3.5 text-neutral-400" />
+                <span className="text-xs font-mono text-neutral-500 w-4 font-bold">{gridConfig.rows}</span>
                 <div className="flex gap-0.5">
-                  <button onClick={() => adjustGrid('rows', -1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Minus className="w-3 h-3" /></button>
-                  <button onClick={() => adjustGrid('rows', 1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-slate-500"><Plus className="w-3 h-3" /></button>
+                  <button onClick={() => adjustGrid('rows', -1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-neutral-500"><Minus className="w-3 h-3" /></button>
+                  <button onClick={() => adjustGrid('rows', 1)} className="p-1 hover:bg-white hover:shadow-sm rounded transition-all text-neutral-500"><Plus className="w-3 h-3" /></button>
                 </div>
               </div>
             </div>
+
+            {/* Frank's signature signs off at the right end of the header. */}
+            <span role="img" aria-label="Frank" className="block h-5 w-12 bg-neutral-400" style={{ mask: 'url(/brand/frank-signature.svg) center / contain no-repeat', WebkitMask: 'url(/brand/frank-signature.svg) center / contain no-repeat' }} />
           </div>
         </header>
 
         {/* Main Content Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left: Track Panel */}
-          <TrackPanel onImport={(file) => {
+          <TrackPanel onLoadExample={() => {
+            const parsed = parseGraphFile(redRidingHood);
+            if (parsed) setGraphData(parsed.nodes, parsed.sources, parsed.structure);
+          }} onImport={(file) => {
             const reader = new FileReader();
             reader.onload = (e) => {
               try {
                 const parsed = parseGraphFile(JSON.parse(e.target?.result as string));
-                if (parsed) setGraphData(parsed.nodes, parsed.sources);
+                if (parsed) setGraphData(parsed.nodes, parsed.sources, parsed.structure);
                 else alert("Invalid file");
               } catch (err) { alert("Invalid file"); }
             };
@@ -293,7 +298,7 @@ const AppContent: React.FC = () => {
           }} />
 
           {/* Center: Grid Workspace */}
-          <div className="flex-1 flex flex-col min-w-0 bg-slate-100/50">
+          <div className="flex-1 flex flex-col min-w-0 bg-neutral-100/50">
             {viewMode === 'grid' ? (
               <NarrativeGrid
                 hoverCell={hoverCell}

@@ -14,8 +14,8 @@ A narrative is laid out on a **time × track grid**, where tracks are topics or 
 | [python](python) | Generation engine: narrative structure → aligned themes, entities and time periods → LLM writes one chapter per node | `gpt_storytale` |
 | [legacy/gpt_storyteller](legacy/gpt_storyteller) | Earlier pipeline. Kept only to lift cartographer, journalist and graph code into `python/`, then to be deleted | `gpt_storyteller` |
 | [schema](schema) | The graph, graph-file and story JSON Schemas, with the fixtures both test suites read | – |
-| [examples](examples) | Planned sample graphs and stories | – |
-| [docs](docs) | Notes | – |
+| [examples](examples) | A finished sample: Little Red Riding Hood, nine chapters on three tracks (load it from the editor's left panel) | – |
+| [docs](docs) | Notes, including [how the code maps to the thesis](docs/THESIS.md) | – |
 
 ## Running the pieces today
 

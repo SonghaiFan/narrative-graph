@@ -77,7 +77,43 @@ Takes the file the editor's JSON button downloads, writes one chapter per node (
 python -m ttng_align graph.json --context meta/narrative_context_a.json --structure Arch --seed 42 -o alignment.json
 ```
 
-The output has the shape of `alignment_results.json`, so `narrative_deducer.create_story` accepts it. Each node needs exactly one `Topic`. Its dates come from a `Time Period` attribute holding two ISO dates, or else from slicing the topic's range in the context, or else from `--period START END`. Parents are the graph's `edges`, or else the editor's edge rule (which only works when the nodes already carry entities). In Python, `ttng_align.graph_from_structure(structure)` turns an old-style structure into such a graph. Nothing calls this from `storytale.py` yet.
+The output has the shape of `alignment_results.json`, so `narrative_deducer.create_story` accepts it. Each node needs one value of the organising attribute (`Topic` unless the file's `structure` names another); a node with several takes the first of them in the file's track priority, and without a priority several are an error. The linking attribute that gives the edges (`Entity` unless the `structure` says otherwise) is read the same way. Its dates come from a `Time Period` attribute holding two ISO dates, or else from slicing the topic's range in the context, or else from `--period START END`. Parents are the graph's `edges`, or else the editor's edge rule (which only works when the nodes already carry entities). In Python, `ttng_align.graph_from_structure(structure)` turns an old-style structure into such a graph. Nothing calls this from `storytale.py` yet.
+
+## Build a graph from text, and plug in your own extractor
+
+A TTNG organises and links nodes by their attributes. `ttng_extract.py` makes those attributes from text: each passage becomes a node, and an **extractor** reads its attributes, f(text) = attributes.
+
+```bash
+python -m ttng_extract passages.json --extractor "lexicon?lexicon=words.json" -o graph.json
+python -m ttng_extract passages.json --extractor "llm?spec=spec.json&provider=openrouter&model=openai/gpt-4o-mini" -o graph.json
+```
+
+`passages.json` is a list of texts, or of `{"text", "id", "time"}`; a passage without a `time` gets the next column. The result is a graph file with `structure` set, so the editor's Import button reads it, and `ttng_align` and `ttng_story` take it from there. `--organising` (default `Topic`) and `--linking` (default `Entity`) name the attributes of the model's α and β, and `--priority` lists the tracks, highest first; without it the tracks come in the order in which values first appear. `--extractor` may be repeated, so Entity can come from a word list and Polarity from a model, as long as no two give the same attribute.
+
+Built in: `lexicon` (a JSON file `{attribute: {value: [trigger words]}}`, deterministic, no key) and `llm` (a JSON spec `{attribute: {"description", "values", "single"}}`; a reply that is not one of `values`, or has several values where `single` is set, is an error, not a guess).
+
+**Your own extractor** is an object with `name`, `attributes` and `extract(text) -> {attribute: [values]}`:
+
+```python
+# my_tone.py
+class Tone:
+    name = "tone"
+    attributes = ("Tone",)
+
+    def __init__(self, loud="excited"):
+        self.loud = loud
+
+    def extract(self, text):
+        return {"Tone": [self.loud if "!" in text else "calm"]}
+```
+
+```bash
+python -m ttng_extract passages.json --extractor "my_tone:Tone?loud=shouting" ...
+```
+
+The name is `module:attribute` for a file on the path, or a name registered in the entry-point group `ttng.extractors` for a package installed with pip. What an extractor returns is checked: only the attributes it declares, as lists of strings. An embedding with clusters, a classifier or a call to your own service is the same thing from here on. The contract and the lookup are in [extractors.py](extractors.py); `tests/plugin_example.py` is a plugin as an outside author would write it.
+
+What this has and has not been run against: the tests use a word list, a fake model and a plugin file. **No real model has been asked for attributes**, so how well `llm` labels real text is untested.
 
 ## Tests
 
@@ -112,10 +148,10 @@ The aligner turns that into one entry per node. Each node gets up to four entiti
 
 ```json
 {"A1": {"Theme": "Economic Boom", "ThemeDescription": "…", "Entity": ["…"], "Time": ["2023-01-01", "2023-05-02"],
-        "Prev": [], "StuctureInstruction": "…"}}
+        "Prev": [], "StructureInstruction": "…"}}
 ```
 
-`StuctureInstruction` is misspelled in the code and in the data. Keep the spelling when reading or writing these files.
+The key is `StructureInstruction`, as in the thesis appendix. Files written by earlier versions of this code, including the archived runs, spell it `StuctureInstruction`; the writer reads both, and every aligner here writes the correct one.
 
 The writer returns `{"chapters": [{"id", "title", "time_period", "Topic", "entity", "content"}]}`, with each `content` around 100 words in plain English (the prompt asks for CEFR A1 and the style of a newspaper lead).
 
@@ -147,8 +183,11 @@ The other context files hold different sets: `_b` (2 structures), `_train` (5), 
 | `prompts/chapter.md` | The chapter prompt, with `{placeholders}` |
 | `llm.py` | The client interface the writer calls, and its two clients: `OpenAIClient` and `OpenRouterClient` |
 | `ttng_story.py` | Writes a graph's chapters into the editor's file; see above |
+| `extractors.py` | The extractor contract, the lookup of plugins, and the built-in `lexicon` and `llm` extractors |
+| `ttng_extract.py` | Builds a graph file from passages of text with extractors; see above |
+| `prompts/extract.md` | The prompt of the `llm` extractor |
 | `ttng_align.py` | Aligns a TTNG graph (the web editor's shape) into the same alignment the writer takes; see below |
-| `ttng_edges.py` | The editor's edge rule in Python, tested against the same fixtures as the web version |
+| `ttng_edges.py` | The editor's Linking Rule in Python (the next column, and a predicate on the linking attribute), tested against the same fixtures as the web version |
 | `meta/types.py` | Pydantic models for chapters and stories (also `Node`, `Edge`, `Graph`, `Article` from the earlier pipeline) |
 | `meta/narrative_context_*.json` | Structures with themes and entities |
 | `story_packer.py` | Bundles story files; see the warning below |

@@ -5,12 +5,14 @@ import { useGraphContext } from '../context/GraphContext';
 import { TEMPORAL_KEYS } from '../constants';
 import { toPng, toSvg } from 'html-to-image';
 import { buildGraphFile } from '../utils/graphFile';
+import { LINK_PREDICATES, type LinkPredicateName } from '../utils/linkPredicates';
 
 interface TrackPanelProps {
     onImport: (file: File) => void;
+    onLoadExample: () => void;
 }
 
-export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
+export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport, onLoadExample }) => {
     const {
         activeAttribute,
         setActiveAttribute,
@@ -19,9 +21,12 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
         deleteAttribute,
         linkingAttribute,
         setLinkingAttribute,
+        linkingPredicate,
+        setLinkingPredicate,
         clearGraph,
         graph,
-        gridConfig
+        gridConfig,
+        rowLabelMap
     } = useGraphContext();
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,7 +41,18 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
 
     const handleExportJSON = () => {
         // Edges are left out of the file because they are derived from rules
-        const exportObject = buildGraphFile(graph, { rows: gridConfig.rows, cols: gridConfig.cols });
+        const priority: Record<string, string[]> = {};
+        availableAttributes.forEach(attr => {
+            if (!graph.nodes.some(n => attr in n.attributes)) return; // an attribute no node uses has only placeholder tracks
+            const labels = (rowLabelMap[attr] || []).filter(l => l);
+            if (labels.length > 0) priority[attr] = labels;
+        });
+        const exportObject = buildGraphFile(
+            graph,
+            { rows: gridConfig.rows, cols: gridConfig.cols },
+            new Date(),
+            { organising: activeAttribute, linking: linkingAttribute, predicate: linkingPredicate, priority }
+        );
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
@@ -73,18 +89,18 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
     };
 
     return (
-        <div className="w-80 bg-white border-r border-slate-200 h-full flex flex-col shadow-xl z-20 shrink-0">
+        <div className="w-64 min-[1400px]:w-80 bg-white border-r border-neutral-200 h-full flex flex-col overflow-y-auto shadow-xl z-20 shrink-0">
             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".json" />
 
-            <div className="px-5 py-5 border-b border-slate-200 bg-white">
+            <div className="px-5 py-5 border-b border-neutral-200 bg-white">
                 <div className="flex items-center gap-2 mb-1">
-                    <Settings2 className="w-4 h-4 text-slate-800" />
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Configuration</span>
+                    <Settings2 className="w-4 h-4 text-neutral-800" />
+                    <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Configuration</span>
                 </div>
-                <h2 className="font-serif text-lg font-bold text-slate-900">Graph Settings</h2>
+                <h2 className="font-serif text-lg font-bold text-neutral-900">Graph Settings</h2>
             </div>
 
-            <div className="p-5 border-b border-slate-200 bg-slate-50/50 space-y-4">
+            <div className="p-5 border-b border-neutral-200 bg-neutral-50/50 space-y-4">
                 <Dropdown
                     label="Organising Axis (&alpha;)"
                     value={activeAttribute}
@@ -104,29 +120,39 @@ export const TrackPanel: React.FC<TrackPanelProps> = ({ onImport }) => {
                     onChange={setLinkingAttribute}
                     className="w-full"
                 />
+                <Dropdown
+                    label="Linked when"
+                    value={linkingPredicate}
+                    options={Object.keys(LINK_PREDICATES)}
+                    onChange={(value) => setLinkingPredicate(value as LinkPredicateName)}
+                    className="w-full"
+                />
             </div>
 
-            <div className="flex-1 px-5 py-4 text-xs text-slate-400 leading-relaxed bg-white">
+            <div className="flex-1 px-5 py-4 text-xs text-neutral-400 leading-relaxed bg-white">
                 Tracks are edited beside the graph: hover a track name to drag, hide or delete it.
+                <button onClick={onLoadExample} className="mt-4 w-full text-xs text-neutral-600 hover:text-neutral-900 font-medium px-3 py-2 rounded-lg bg-neutral-50 border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all">
+                    Load example: Little Red Riding Hood
+                </button>
             </div>
 
-            <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col gap-3">
+            <div className="p-4 border-t border-neutral-200 bg-neutral-50 flex flex-col gap-3">
                 <div className="grid grid-cols-2 gap-2">
-                    <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
+                    <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-2 text-xs text-neutral-600 hover:text-neutral-900 font-medium px-3 py-2 rounded-lg bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all">
                         <Upload className="w-3.5 h-3.5" /> Import
                     </button>
-                    <button onClick={handleExportJSON} className="flex items-center justify-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
+                    <button onClick={handleExportJSON} className="flex items-center justify-center gap-2 text-xs text-neutral-600 hover:text-neutral-900 font-medium px-3 py-2 rounded-lg bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all">
                         <FileJson className="w-3.5 h-3.5" /> JSON
                     </button>
                 </div>
 
-                <div className="h-px bg-slate-200 w-full"></div>
+                <div className="h-px bg-neutral-200 w-full"></div>
 
                 <div className="grid grid-cols-2 gap-2">
-                    <button onClick={() => handleExportImage('png')} className="flex items-center justify-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
+                    <button onClick={() => handleExportImage('png')} className="flex items-center justify-center gap-2 text-xs text-neutral-600 hover:text-neutral-900 font-medium px-3 py-2 rounded-lg bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all">
                         <ImageIcon className="w-3.5 h-3.5" /> PNG
                     </button>
-                    <button onClick={() => handleExportImage('svg')} className="flex items-center justify-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
+                    <button onClick={() => handleExportImage('svg')} className="flex items-center justify-center gap-2 text-xs text-neutral-600 hover:text-neutral-900 font-medium px-3 py-2 rounded-lg bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all">
                         <PenTool className="w-3.5 h-3.5" /> SVG
                     </button>
                 </div>

@@ -59,6 +59,14 @@ def make_chapter(
     return chapter_parser.parse(output)
 
 
+def structure_instruction(node, details):
+    """The node's instruction text. Files from earlier versions of this code spell the key `StuctureInstruction`."""
+    for key in ("StructureInstruction", "StuctureInstruction"):
+        if key in details:
+            return details[key]
+    raise KeyError(f"alignment entry {node!r} has no StructureInstruction")
+
+
 def create_story(alignment, client: Optional[LLMClient] = None, model_name: str = "gpt-4"):
     client = client or OpenAIClient()
     story = Story(chapters=[])
@@ -88,7 +96,7 @@ def create_story(alignment, client: Optional[LLMClient] = None, model_name: str 
             theme_context=details["ThemeDescription"],
             entity=details["Entity"],
             time_period=details["Time"],
-            narrative_structure=details["StuctureInstruction"],
+            narrative_structure=structure_instruction(node, details),
             prev_content=prev_content,
             model_name=model_name,
             temperature=0.5,

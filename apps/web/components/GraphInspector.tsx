@@ -195,28 +195,28 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
         {mode === 'preview' && type === 'node' && (() => {
             const displayNodes = clusterNodes.length > 0 ? clusterNodes : (nodeData ? [nodeData] : []);
             return (
-                <div className="pointer-events-none bg-white/95 backdrop-blur text-slate-800 text-[10px] p-2 rounded-lg shadow-xl flex flex-col gap-2 max-w-[240px] max-h-[400px] border border-slate-200 animate-in fade-in zoom-in-95 duration-150 overflow-hidden">
-                    <div className="flex justify-between items-center border-b border-slate-100 pb-1 px-1">
+                <div className="pointer-events-none bg-white/95 backdrop-blur text-neutral-800 text-[10px] p-2 rounded-lg shadow-xl flex flex-col gap-2 max-w-[240px] max-h-[400px] border border-neutral-200 animate-in fade-in zoom-in-95 duration-150 overflow-hidden">
+                    <div className="flex justify-between items-center border-b border-neutral-100 pb-1 px-1">
                         <span className="font-bold uppercase tracking-wider text-blue-600">
                             {displayNodes.length > 1 ? `Cluster (${displayNodes.length})` : 'Fabula'}
                         </span>
-                        <span className="text-[9px] text-slate-400 font-mono">Click to Edit</span>
+                        <span className="text-[9px] text-neutral-400 font-mono">Click to Edit</span>
                     </div>
                     
                     <div className="overflow-y-auto flex flex-col gap-2 max-h-[300px]">
                         {displayNodes.map((node, idx) => (
-                            <div key={node.id} className={`flex flex-col gap-1 ${idx > 0 ? 'border-t border-slate-100 pt-2' : ''}`}>
+                            <div key={node.id} className={`flex flex-col gap-1 ${idx > 0 ? 'border-t border-neutral-100 pt-2' : ''}`}>
                                 {displayNodes.length > 1 && (
-                                    <div className="text-[9px] font-bold text-slate-400">#{idx + 1}</div>
+                                    <div className="text-[9px] font-bold text-neutral-400">#{idx + 1}</div>
                                 )}
-                                <div className="text-slate-600 text-xs italic leading-relaxed">
-                                    {node.content ? `"${node.content}"` : <span className="text-slate-400">(No statement)</span>}
+                                <div className="text-neutral-600 text-xs italic leading-relaxed">
+                                    {node.content ? `"${node.content}"` : <span className="text-neutral-400">(No statement)</span>}
                                 </div>
                                 <div className="flex flex-col gap-0.5">
                                     {Object.entries(node.attributes).map(([k, vals]) => (
                                         <div key={k} className="flex gap-2 justify-between items-start">
-                                            <span className="text-slate-400 font-medium shrink-0">{k}:</span>
-                                            <span className="text-right text-slate-800 break-words font-medium">
+                                            <span className="text-neutral-400 font-medium shrink-0">{k}:</span>
+                                            <span className="text-right text-neutral-800 break-words font-medium">
                                                 {(vals as string[]).join(', ') || '-'}
                                             </span>
                                         </div>
@@ -231,34 +231,34 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
 
         {/* RENDER: EDIT MODE */}
         {mode === 'edit' && (
-            <div className="w-80 bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 ring-1 ring-slate-900/5">
+            <div className="w-80 bg-white rounded-xl shadow-2xl border border-neutral-200 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 ring-1 ring-neutral-900/5">
                 {/* Header */}
                 <div 
-                    className="h-10 bg-slate-50/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-3 shrink-0 cursor-move active:cursor-grabbing select-none"
+                    className="h-10 bg-neutral-50/80 backdrop-blur border-b border-neutral-200 flex items-center justify-between px-3 shrink-0 cursor-move active:cursor-grabbing select-none"
                     onPointerDown={handlePointerDown}
                 >
                     <div className="flex items-center gap-2">
-                        {type === 'node' ? <GripHorizontal className="w-3.5 h-3.5 text-slate-400" /> : <Network className="w-3.5 h-3.5 text-slate-400" />}
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        {type === 'node' ? <GripHorizontal className="w-3.5 h-3.5 text-neutral-400" /> : <Network className="w-3.5 h-3.5 text-neutral-400" />}
+                        <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
                             {type === 'node' ? 'Edit Node' : 'Inspect Edge'}
                         </span>
                     </div>
 
                     {/* Pagination Controls */}
                     {type === 'node' && hasMultipleNodes && (
-                        <div className="flex items-center gap-1 bg-white rounded-md border border-slate-200 p-0.5 shadow-sm" onPointerDown={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-1 bg-white rounded-md border border-neutral-200 p-0.5 shadow-sm" onPointerDown={(e) => e.stopPropagation()}>
                             <button 
                                 onClick={handlePrev}
-                                className="p-0.5 hover:bg-slate-100 rounded text-slate-600"
+                                className="p-0.5 hover:bg-neutral-100 rounded text-neutral-600"
                             >
                                 <ChevronLeft className="w-3 h-3" />
                             </button>
-                            <span className="text-[10px] font-medium text-slate-500 w-12 text-center select-none">
+                            <span className="text-[10px] font-medium text-neutral-500 w-12 text-center select-none">
                                 {currentIndex + 1} of {clusterNodes.length}
                             </span>
                             <button 
                                 onClick={handleNext}
-                                className="p-0.5 hover:bg-slate-100 rounded text-slate-600"
+                                className="p-0.5 hover:bg-neutral-100 rounded text-neutral-600"
                             >
                                 <ChevronRight className="w-3 h-3" />
                             </button>
@@ -269,7 +269,7 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
                         type="button"
                         onPointerDown={(e) => e.stopPropagation()} 
                         onClick={onClose} 
-                        className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
+                        className="p-1 rounded hover:bg-neutral-200 text-neutral-400 hover:text-neutral-600 transition-colors"
                     >
                         <X className="w-3.5 h-3.5" />
                     </button>
@@ -280,28 +280,28 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
                     {type === 'node' && nodeData && (
                         <>
                             <div className="flex items-center justify-between">
-                                <label className="text-xs font-medium text-slate-400">Source Motif</label>
-                                <div className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">{nodeData.motifSource || 'Manual'}</div>
+                                <label className="text-xs font-medium text-neutral-400">Source Motif</label>
+                                <div className="text-xs font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded-full">{nodeData.motifSource || 'Manual'}</div>
                             </div>
 
                             <div className="space-y-1.5">
                                 <div className="flex items-center gap-2">
-                                    <AlignLeft className="w-3 h-3 text-slate-400" />
-                                    <label className="text-xs font-bold text-slate-800 uppercase tracking-wide">Statement</label>
+                                    <AlignLeft className="w-3 h-3 text-neutral-400" />
+                                    <label className="text-xs font-bold text-neutral-800 uppercase tracking-wide">Statement</label>
                                 </div>
                                 <textarea 
                                     autoFocus
                                     value={localContent}
                                     onChange={(e) => setLocalContent(e.target.value)}
                                     placeholder="Write the narrative..."
-                                    className="w-full h-24 text-sm px-3 py-2 border border-slate-200 rounded-lg focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-50/50 resize-none leading-relaxed text-slate-700 bg-white placeholder:text-slate-300 transition-all"
+                                    className="w-full h-24 text-sm px-3 py-2 border border-neutral-200 rounded-lg  focus:outline-none resize-none leading-relaxed text-neutral-700 bg-white placeholder:text-neutral-300 transition-all"
                                 />
                             </div>
 
-                            <div className="h-px bg-slate-100 w-full"></div>
+                            <div className="h-px bg-neutral-100 w-full"></div>
 
                             <div className="space-y-3">
-                                <label className="text-xs font-bold text-slate-800 block uppercase tracking-wide">Attributes</label>
+                                <label className="text-xs font-bold text-neutral-800 block uppercase tracking-wide">Attributes</label>
                                 
                                 {availableAttributes.map(attr => {
                                     const isActive = attr === activeAttribute;
@@ -315,7 +315,7 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
                                     return (
                                         <div key={attr} className="space-y-1">
                                             <div className="flex items-center justify-between">
-                                                <label className="text-xs text-slate-500 font-medium">{attr}</label>
+                                                <label className="text-xs text-neutral-500 font-medium">{attr}</label>
                                                 {isActive && (
                                                     <span className="text-[9px] px-1.5 py-px bg-blue-50 text-blue-600 rounded border border-blue-100 font-bold uppercase">
                                                         &alpha; Axis
@@ -351,7 +351,7 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
                                 <button 
                                     type="button"
                                     onClick={handleSaveNode}
-                                    className="flex-[2] bg-slate-900 text-white text-xs font-semibold py-2 rounded-lg hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-slate-200"
+                                    className="flex-[2] bg-neutral-900 text-white text-xs font-semibold py-2 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-neutral-200"
                                 >
                                     <Check className="w-3.5 h-3.5" />
                                     Save Changes
@@ -383,12 +383,12 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
                                 </div>
 
                                 <div>
-                                    <div className="text-xs font-medium text-slate-500 mb-2">Shared Values</div>
+                                    <div className="text-xs font-medium text-neutral-500 mb-2">Shared Values</div>
                                     {sharedValues.length > 0 ? (
                                         <div className="flex flex-col gap-2">
                                             {sharedValues.map(val => (
-                                                <div key={val} className="flex items-center justify-between p-2 bg-slate-50 border border-slate-100 rounded hover:bg-slate-100 transition-colors group">
-                                                    <span className="text-xs text-slate-700 font-medium">{val}</span>
+                                                <div key={val} className="flex items-center justify-between p-2 bg-neutral-50 border border-neutral-100 rounded hover:bg-neutral-100 transition-colors group">
+                                                    <span className="text-xs text-neutral-700 font-medium">{val}</span>
                                                     <button 
                                                         onClick={() => breakLink(val)}
                                                         className="opacity-0 group-hover:opacity-100 flex items-center gap-1 text-[10px] text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100 hover:bg-red-100 transition-all"
@@ -401,7 +401,7 @@ export const GraphInspector: React.FC<GraphInspectorProps> = ({
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="text-xs text-slate-400 italic">No direct match found (implicit connection)</div>
+                                        <div className="text-xs text-neutral-400 italic">No direct match found (implicit connection)</div>
                                     )}
                                 </div>
                             </>

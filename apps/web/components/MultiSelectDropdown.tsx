@@ -60,42 +60,42 @@ export const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
 
   return (
     <div className={`relative ${className}`} ref={containerRef}>
-      {label && <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">{label}</label>}
+      {label && <label className="block text-xs font-semibold text-neutral-500 mb-1 uppercase tracking-wider">{label}</label>}
       
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full min-h-[38px] flex items-center justify-between bg-white border border-slate-200 hover:border-slate-300 rounded px-2 py-1.5 text-sm text-slate-800 cursor-pointer focus-within:ring-2 focus-within:ring-blue-100 transition-colors"
+        className="w-full min-h-[38px] flex items-center justify-between bg-white border border-neutral-200 hover:border-neutral-300 rounded px-2 py-1.5 text-sm text-neutral-800 cursor-pointer   transition-colors"
       >
         <div className="flex flex-wrap gap-1.5 pr-6 w-full">
             {selectedValues.length > 0 ? (
                 selectedValues.map(v => (
-                    <span key={v} className="bg-slate-100 border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
+                    <span key={v} className="bg-neutral-100 border border-neutral-200 text-neutral-700 px-1.5 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
                         {v}
                         <span 
                             onClick={(e) => { e.stopPropagation(); toggleValue(v); }}
-                            className="hover:text-red-500 cursor-pointer rounded-full hover:bg-slate-200 p-0.5 transition-colors"
+                            className="hover:text-red-500 cursor-pointer rounded-full hover:bg-neutral-200 p-0.5 transition-colors"
                         >
                             <X className="w-2.5 h-2.5" />
                         </span>
                     </span>
                 ))
             ) : (
-                <span className="text-slate-400 pl-1">{placeholder}</span>
+                <span className="text-neutral-400 pl-1">{placeholder}</span>
             )}
         </div>
-        <ChevronDown className={`absolute right-3 w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`absolute right-3 w-4 h-4 text-neutral-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl z-50 animate-in fade-in zoom-in-95 duration-100 min-w-[220px] overflow-hidden">
-          <div className="p-2 border-b border-slate-100 bg-slate-50/50">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-xl z-50 animate-in fade-in zoom-in-95 duration-100 min-w-[220px] overflow-hidden">
+          <div className="p-2 border-b border-neutral-100 bg-neutral-50/50">
              <div className="flex gap-2">
                 <input 
                     type="text" 
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') handleAddNew(); }}
-                    className="w-full text-xs px-2 py-1.5 bg-white border border-slate-200 rounded focus:outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-100 transition-all"
+                    className="w-full text-xs px-2 py-1.5 bg-white border border-neutral-200 rounded focus:outline-none transition-all"
                     placeholder="Search or add..."
                     autoFocus
                 />
@@ -108,8 +108,8 @@ export const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                 </button>
              </div>
           </div>
-          <div className="max-h-52 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-slate-200">
-            {filteredOptions.length === 0 && !searchValue && <div className="px-3 py-2 text-xs text-slate-400 italic text-center">Type to add new value</div>}
+          <div className="max-h-52 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-neutral-200">
+            {filteredOptions.length === 0 && !searchValue && <div className="px-3 py-2 text-xs text-neutral-400 italic text-center">Type to add new value</div>}
             
             {filteredOptions.map((option) => {
                const isSelected = selectedValues.includes(option);
@@ -118,13 +118,13 @@ export const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                     key={option}
                     onClick={() => toggleValue(option)}
                     className={`
-                        flex items-center gap-2 px-3 py-2 cursor-pointer text-sm hover:bg-slate-50 transition-colors
+                        flex items-center gap-2 px-3 py-2 cursor-pointer text-sm hover:bg-neutral-50 transition-colors
                     `}
                   >
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-slate-300 bg-white'}`}>
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-neutral-300 bg-white'}`}>
                         {isSelected && <Check className="w-3 h-3 text-white" />}
                     </div>
-                    <span className={isSelected ? 'text-slate-900 font-medium' : 'text-slate-600'}>{option}</span>
+                    <span className={isSelected ? 'text-neutral-900 font-medium' : 'text-neutral-600'}>{option}</span>
                   </div>
                );
             })}

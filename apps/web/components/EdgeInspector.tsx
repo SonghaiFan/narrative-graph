@@ -27,15 +27,15 @@ export const EdgeInspector: React.FC<EdgeInspectorProps> = ({
 
     return (
         <div 
-            className="absolute right-6 top-20 w-72 bg-white rounded-lg shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-right-10 fade-in duration-200"
+            className="absolute right-6 top-20 w-72 bg-white rounded-lg shadow-2xl border border-neutral-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-right-10 fade-in duration-200"
             onClick={(e) => e.stopPropagation()}
         >
-            <div className="h-10 bg-slate-50 border-b border-slate-200 flex items-center justify-between px-4">
+            <div className="h-10 bg-neutral-50 border-b border-neutral-200 flex items-center justify-between px-4">
                 <div className="flex items-center gap-2">
-                    <Network className="w-3 h-3 text-slate-500" />
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Narrative Link</span>
+                    <Network className="w-3 h-3 text-neutral-500" />
+                    <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Narrative Link</span>
                 </div>
-                <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+                <button onClick={onClose} className="text-neutral-400 hover:text-neutral-600">
                     <X className="w-4 h-4" />
                 </button>
             </div>
@@ -51,22 +51,22 @@ export const EdgeInspector: React.FC<EdgeInspectorProps> = ({
                 </div>
 
                 <div>
-                    <div className="text-xs font-medium text-slate-500 mb-2">Shared Values</div>
+                    <div className="text-xs font-medium text-neutral-500 mb-2">Shared Values</div>
                     {sharedValues.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
                             {sharedValues.map(val => (
-                                <span key={val} className="px-2 py-1 bg-slate-100 rounded text-xs text-slate-700 font-medium">
+                                <span key={val} className="px-2 py-1 bg-neutral-100 rounded text-xs text-neutral-700 font-medium">
                                     {val}
                                 </span>
                             ))}
                         </div>
                     ) : (
-                        <div className="text-xs text-slate-400 italic">No direct match found (implicit connection)</div>
+                        <div className="text-xs text-neutral-400 italic">No direct match found (implicit connection)</div>
                     )}
                 </div>
 
-                <div className="text-[10px] text-slate-400 border-t border-slate-100 pt-3">
-                    Edges are automatically derived when adjacent nodes share values in the linking attribute.
+                <div className="text-[10px] text-neutral-400 border-t border-neutral-100 pt-3">
+                    Edges are derived between nodes in neighbouring columns that the linking attribute links, under the rule chosen in Linked when.
                 </div>
             </div>
         </div>

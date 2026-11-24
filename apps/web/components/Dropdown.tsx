@@ -39,19 +39,19 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div className={`relative ${className}`} ref={containerRef}>
-      {label && <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">{label}</label>}
+      {label && <label className="block text-xs font-semibold text-neutral-500 mb-1 uppercase tracking-wider">{label}</label>}
       
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between bg-white border border-slate-200 hover:border-slate-300 rounded px-3 py-1.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors"
+        className="w-full flex items-center justify-between bg-white border border-neutral-200 hover:border-neutral-300 rounded px-3 py-1.5 text-sm font-medium text-neutral-800 focus:outline-none transition-colors"
       >
         <span className="truncate">{value || placeholder}</span>
-        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl z-50 animate-in fade-in zoom-in-95 duration-100 min-w-[180px]">
-          <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-slate-200">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-xl z-50 animate-in fade-in zoom-in-95 duration-100 min-w-[180px]">
+          <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-neutral-200">
             {options.map((option) => (
               <div
                 key={option}
@@ -61,7 +61,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 }}
                 className={`
                     group flex items-center justify-between px-3 py-2 cursor-pointer text-sm
-                    ${option === value ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-700 hover:bg-slate-50'}
+                    ${option === value ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-neutral-700 hover:bg-neutral-50'}
                 `}
               >
                 <div className="flex items-center gap-2 overflow-hidden">
@@ -75,7 +75,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                             e.stopPropagation();
                             onDelete(option);
                         }}
-                        className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-all"
+                        className="opacity-0 group-hover:opacity-100 p-1 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded transition-all"
                         title="Delete option"
                     >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -90,7 +90,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         onAdd();
                         setIsOpen(false);
                     }}
-                    className="border-t border-slate-100 mt-1 px-3 py-2 flex items-center gap-2 text-sm text-blue-600 font-medium hover:bg-blue-50 cursor-pointer"
+                    className="border-t border-neutral-100 mt-1 px-3 py-2 flex items-center gap-2 text-sm text-blue-600 font-medium hover:bg-blue-50 cursor-pointer"
                 >
                     <Plus className="w-4 h-4" />
                     <span>Create New...</span>
