@@ -1,4 +1,22 @@
-# ttng
+<h1 align="center">
+  <a href="https://narrative-graph.songhai.site">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/brand/lockup-dark.svg" />
+      <img src=".github/brand/lockup-light.svg" width="170" alt="ttng" />
+    </picture>
+  </a>
+</h1>
+
+<p align="center"><b>Time Track Narrative Graph</b></p>
+
+<p align="center">
+  <a href="https://narrative-graph.songhai.site">Live editor</a> ·
+  <a href="#running-the-pieces-today">Run it</a> ·
+  <a href="python/README.md">Python engine</a> ·
+  <a href="docs/THESIS.md">Thesis notes</a>
+</p>
+
+![The ttng editor with the Little Red Riding Hood example on three tracks.](.github/brand/screenshot.jpg)
 
 Design a story as a graph, then let an LLM write it. ttng stands for Time Track Narrative Graph: a narrative laid out on a time-by-track grid. The repository is called `narrative-graph`.
 
@@ -32,3 +50,23 @@ Python engine: see [python/README.md](python/README.md).
 ## License
 
 [MIT](LICENSE). The repository was called `gpt_storytale` until it was renamed to `SonghaiFan/narrative-graph`; the old address redirects.
+
+<br />
+
+<p align="center">
+  <a href="https://syuze.songhai.site"><img src=".github/brand/series/syuze.svg" width="32" height="32" alt="syuze 叙仄" title="syuze 叙仄" /></a>&nbsp;
+  <a href="https://news-metro.songhai.site"><img src=".github/brand/series/news-metro.svg" width="32" height="32" alt="News Metro" title="News Metro" /></a>&nbsp;
+  <a href="https://narrative-graph.songhai.site"><img src=".github/brand/series/ttng.svg" width="32" height="32" alt="ttng" title="ttng" /></a>&nbsp;
+  <a href="https://visdelta.songhai.site"><img src=".github/brand/series/visdelta.svg" width="32" height="32" alt="VisDelta" title="VisDelta" /></a>&nbsp;
+  <a href="https://cytocausal.songhai.site"><img src=".github/brand/series/cytocausal.svg" width="32" height="32" alt="cytocausal" title="cytocausal" /></a>&nbsp;
+  <a href="https://aethel.songhai.site"><img src=".github/brand/series/aethel.svg" width="32" height="32" alt="Aethel" title="Aethel" /></a>
+</p>
+
+<p align="center"><sub>ttng is part of the Frank series.</sub></p>
+
+<p align="right">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/brand/frank-signature-dark.svg" />
+    <img src=".github/brand/frank-signature-light.svg" width="72" alt="Frank" />
+  </picture>
+</p>
