@@ -1,5 +1,5 @@
 {
-  "name": "narrative-graph-constructor",
+  "name": "narrative-graph",
   "private": true,
   "version": "0.0.0",
   "type": "module",

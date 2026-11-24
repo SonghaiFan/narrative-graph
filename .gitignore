@@ -24,3 +24,6 @@ python/logs/
 
 # Test caches
 .pytest_cache/
+
+# Local inspection and screenshot artifacts
+/output/
