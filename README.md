@@ -13,7 +13,8 @@
   <a href="https://narrative-graph.songhai.site">Live editor</a> ·
   <a href="#running-the-pieces-today">Run it</a> ·
   <a href="python/README.md">Python engine</a> ·
-  <a href="docs/THESIS.md">Thesis notes</a>
+  <a href="docs/THESIS.md">Thesis notes</a> ·
+  <a href="README.zh-CN.md">中文</a>
 </p>
 
 ![The ttng editor with the Little Red Riding Hood example on three tracks.](.github/brand/screenshot.jpg)
